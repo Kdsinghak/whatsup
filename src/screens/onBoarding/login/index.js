@@ -1,8 +1,8 @@
 import {View, Text, Image, StyleSheet} from 'react-native';
 import React from 'react';
-import localImages from '../../../utils/localImages';
-import colors from '../../../utils/colors';
-import localStrings from '../../../utils/localStrings';
+import localImages from '../../../utils/LocalImages';
+import colors from '../../../utils/Colors';
+import localStrings from '../../../utils/LocalStrings';
 import PhoneText from '../../../components/text/onBoardingText/index';
 export default function Login() {
   return (

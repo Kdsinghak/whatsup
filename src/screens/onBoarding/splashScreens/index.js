@@ -1,7 +1,7 @@
 import {View, Text, StyleSheet, Image} from 'react-native';
 import React from 'react';
-import localImages from '../../../utils/localImages';
-import colors from '../../../utils/colors';
+import localImages from '../../../utils/LocalImages';
+import colors from '../../../utils/Colors';
 export default function SplashScreen() {
   return (
     <View style={styles.container}>
