@@ -7,16 +7,17 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
 import colors from '../../../utils/Colors';
 import Colors from '../../../utils/Colors';
-import localImages from '../../../utils/LocalImages';
+import React, {useCallback, useState} from 'react';
 import {normalize} from '../../../utils/Dimensions';
+import localImages from '../../../utils/LocalImages';
 import localStrings from '../../../utils/LocalStrings';
 import PhoneText from '../../../components/customTextInput';
 import CustomButton from '../../../components/customButton/CustomButton';
 
 function Login() {
+  const [text, setText] = useState('');
   const [check, setCheck] = useState(false);
 
   const handleRemember = useCallback(() => {
@@ -41,6 +42,7 @@ function Login() {
           placeholder={localStrings.phoneNumber}
           keyBoardType="numeric"
           maxLength="20"
+          setText={setText}
         />
       </View>
       <TouchableOpacity
@@ -141,6 +143,7 @@ const styles = StyleSheet.create({
     marginTop: normalize(20),
     marginHorizontal: normalize(16),
   },
+
   labelStyle: {
     color: Colors.WHITE,
     fontSize: normalize(20),

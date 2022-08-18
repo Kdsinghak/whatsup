@@ -7,9 +7,11 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "pod": "cd ios && pod install && cd .."
   },
   "dependencies": {
+    "@react-native-firebase/app": "^15.3.0",
     "@react-navigation/native": "^6.0.11",
     "@react-navigation/native-stack": "^6.7.0",
     "react": "18.0.0",
