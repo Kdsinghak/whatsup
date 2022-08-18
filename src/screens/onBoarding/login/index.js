@@ -121,8 +121,8 @@ const styles = StyleSheet.create({
   },
   checkBoxView: {
     height: normalize(20),
+    width: normalize(100),
     flexDirection: 'row',
-    marginHorizontal: normalize(30),
     alignItems: 'center',
     marginLeft: normalize(30),
     marginTop: normalize(20),
