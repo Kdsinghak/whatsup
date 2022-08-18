@@ -1,70 +1,156 @@
-import {View, Text, Image, StyleSheet} from 'react-native';
-import React from 'react';
-import localImages from '../../../utils/LocalImages';
+import {
+  View,
+  Text,
+  Image,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+} from 'react-native';
+import React, {useCallback, useState} from 'react';
 import colors from '../../../utils/Colors';
+import Colors from '../../../utils/Colors';
+import localImages from '../../../utils/LocalImages';
+import {normalize} from '../../../utils/Dimensions';
 import localStrings from '../../../utils/LocalStrings';
-import PhoneText from '../../../components/text/onBoardingText/index';
-export default function Login() {
-  return (
-    <View style={styles.container}>
-      <Image source={localImages.spalshImg} style={styles.imageStyle} />
-      <View style={styles.innerView}>
-        <Text style={styles.signInHeadingStyle}>
-          {localStrings.sighinHeading}
-        </Text>
-        <Text style={styles.PhoneNumberText}>{localStrings.phoneNumber}</Text>
-        <View style={styles.TextInputView}>
-          <Image source={localImages.phone} style={styles.phoneStyle} />
+import PhoneText from '../../../components/customTextInput';
+import CustomButton from '../../../components/customButton/CustomButton';
 
-          <PhoneText
-            TextStyle={styles.loginText}
-            placeholder={localStrings.phoneNumber}
-            keyBoardType="numeric"
-            maxLength="20"
-          />
-        </View>
+function Login() {
+  const [check, setCheck] = useState(false);
+
+  const handleRemember = useCallback(() => {
+    setCheck(!check);
+  }, [check]);
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <Image source={localImages.spalshImg} style={styles.imageStyle} />
+
+      <Text style={styles.signInHeadingStyle}>
+        {localStrings.sighinHeading}
+      </Text>
+      <Text style={styles.phoneNumberText}>{localStrings.phoneNumber}</Text>
+      <View style={styles.TextInputView}>
+        <Image source={localImages.phone} style={styles.phoneStyle} />
+
+        <PhoneText
+          TextStyle={styles.loginText}
+          placeholder={localStrings.phoneNumber}
+          keyBoardType="numeric"
+          maxLength="20"
+        />
       </View>
-    </View>
+      <TouchableOpacity
+        activeOpacity={1}
+        style={styles.checkBoxView}
+        onPress={handleRemember}>
+        <Image
+          source={check ? localImages.check : localImages.uncheck}
+          style={styles.checkedImageStyle}
+        />
+        <Text style={styles.rememberTextStle}>{localStrings.remeberMe}</Text>
+      </TouchableOpacity>
+      <CustomButton
+        containerStyle={styles.buttonContainerStyle}
+        buttonLabel={localStrings.signIn}
+        labelStyle={styles.labelStyle}
+      />
+      <Text style={styles.noAccountTextStyle}>
+        {localStrings.noAccount}
+        <Text onPress={() => {}} style={styles.signUpTextStyle}>
+          {localStrings.signUp}
+        </Text>
+      </Text>
+    </KeyboardAvoidingView>
   );
 }
 
+export default React.memo(Login);
+
 const styles = StyleSheet.create({
   container: {
-    marginTop: '10%',
+    flex: 1,
     backgroundColor: colors.WHITE,
   },
-  innerView: {marginTop: 10},
+
   imageStyle: {
-    height: '70%',
+    height: '60%',
     width: '100%',
     alignSelf: 'center',
   },
   signInHeadingStyle: {
     alignSelf: 'center',
     color: colors.BLACK,
-    fontSize: 18,
+    fontSize: normalize(18),
     fontWeight: 'bold',
   },
-  PhoneNumberText: {marginLeft: '6%', marginTop: 20, padding: 10},
+  phoneNumberText: {
+    marginLeft: '6%',
+    marginTop: 20,
+    padding: 10,
+    opacity: 0.5,
+    fontWeight: 'bold',
+  },
   loginText: {
     marginHorizontal: '5%',
-    width: 250,
-    height: 30,
-    marginBottom: 14,
+    width: normalize(250),
+    height: normalize(40),
+    fontSize: normalize(18),
   },
   phoneStyle: {
-    height: 20,
-    width: 20,
-    alignSelf: 'center',
-    marginLeft: '5%',
+    height: normalize(18),
+    width: normalize(18),
+    marginLeft: normalize(15),
   },
   TextInputView: {
     flexDirection: 'row',
-    marginHorizontal: '5%',
+    marginHorizontal: normalize(16),
     borderColor: colors.GREEN,
-    borderWidth: 2,
-    borderRadius: 30,
-    height: 50,
+    borderWidth: normalize(2),
+    borderRadius: normalize(30),
+    height: normalize(50),
     alignItems: 'center',
+  },
+  checkedImageStyle: {
+    height: normalize(20),
+    width: normalize(20),
+    tintColor: Colors.LIGHTGREEN,
+  },
+  checkBoxView: {
+    height: normalize(20),
+    flexDirection: 'row',
+    marginHorizontal: normalize(30),
+    alignItems: 'center',
+    marginLeft: normalize(30),
+    marginTop: normalize(20),
+  },
+  rememberTextStle: {
+    color: Colors.BLACK,
+    marginLeft: normalize(7),
+  },
+
+  buttonContainerStyle: {
+    alignItems: 'center',
+    height: normalize(45),
+    justifyContent: 'center',
+    borderRadius: normalize(30),
+    backgroundColor: Colors.GREEN,
+    marginTop: normalize(20),
+    marginHorizontal: normalize(16),
+  },
+  labelStyle: {
+    color: Colors.WHITE,
+    fontSize: normalize(20),
+  },
+  noAccountTextStyle: {
+    color: Colors.BLACK,
+    alignSelf: 'center',
+    marginTop: normalize(10),
+  },
+  signUpTextStyle: {
+    color: Colors.GREEN,
   },
 });
