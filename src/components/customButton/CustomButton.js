@@ -2,14 +2,9 @@ import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {normalize} from '../../utils/Dimensions';
 
-const CustomButton = ({
-  containerStyle,
-  buttonLabel,
-  labelStyle,
-  onclickAction,
-}) => {
+const CustomButton = ({containerStyle, buttonLabel, labelStyle, onPress}) => {
   return (
-    <TouchableOpacity style={containerStyle} onPress={onclickAction}>
+    <TouchableOpacity style={containerStyle} onPress={onPress}>
       <Text style={labelStyle}>{buttonLabel}</Text>
     </TouchableOpacity>
   );

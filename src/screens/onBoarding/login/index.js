@@ -4,26 +4,28 @@ import {
   Image,
   Platform,
   StyleSheet,
-  TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
 import colors from '../../../utils/Colors';
 import Colors from '../../../utils/Colors';
-import React, {useCallback, useState} from 'react';
+import ScreenNames from '../../../utils/ScreenNames';
+import React, {useState, useRef} from 'react';
 import {normalize} from '../../../utils/Dimensions';
 import localImages from '../../../utils/LocalImages';
 import localStrings from '../../../utils/LocalStrings';
+import {useNavigation} from '@react-navigation/native';
 import PhoneText from '../../../components/customTextInput';
 import {signInWithPhoneNumber} from '../../../utils/CommonFunctions';
 import CustomButton from '../../../components/customButton/CustomButton';
 
 function Login() {
   const [text, setText] = useState('');
-  const [check, setCheck] = useState(false);
+  const navigation = useNavigation();
+  const textInput1 = useRef();
 
-  const handleRemember = useCallback(() => {
-    setCheck(!check);
-  }, [check]);
+  const handleSendOTP = () => {
+    navigation.navigate(ScreenNames.OTP);
+  };
 
   const handleSignIn = () => {
     signInWithPhoneNumber(
@@ -47,6 +49,7 @@ function Login() {
         <Image source={localImages.phone} style={styles.phoneStyle} />
 
         <PhoneText
+          ref={textInput1}
           TextStyle={styles.loginText}
           placeholder={localStrings.phoneNumber}
           keyBoardType="numeric"
@@ -55,18 +58,8 @@ function Login() {
         />
       </View>
 
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.checkBoxView}
-        onPress={handleRemember}>
-        <Image
-          source={check ? localImages.check : localImages.uncheck}
-          style={styles.checkedImageStyle}
-        />
-        <Text style={styles.rememberTextStle}>{localStrings.remeberMe}</Text>
-      </TouchableOpacity>
-
       <CustomButton
+        onPress={handleSendOTP}
         containerStyle={styles.buttonContainerStyle}
         buttonLabel={localStrings.signIn}
         labelStyle={styles.labelStyle}
@@ -158,13 +151,5 @@ const styles = StyleSheet.create({
   labelStyle: {
     color: Colors.WHITE,
     fontSize: normalize(20),
-  },
-  noAccountTextStyle: {
-    color: Colors.BLACK,
-    alignSelf: 'center',
-    marginTop: normalize(10),
-  },
-  signUpTextStyle: {
-    color: Colors.GREEN,
   },
 });

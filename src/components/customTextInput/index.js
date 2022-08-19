@@ -1,17 +1,22 @@
-import {TextInput} from 'react-native';
-import React from 'react';
+import {View, TextInput} from 'react-native';
+import React, {forwardRef} from 'react';
 
-export default function CustomText(props) {
-  const {placeholder, TextStyle, keyBoardType, maxLength, setText} = props;
+const CustomText = forwardRef((props, ref) => {
   return (
-    <TextInput
-      placeholder={placeholder}
-      style={TextStyle}
-      keyboardType={keyBoardType}
-      maxLength={parseInt(maxLength)}
-      onChangeText={text => {
-        setText(text);
-      }}
-    />
+    <View style={props.ContentContainerStyle}>
+      <TextInput
+        ref={ref}
+        placeholder={props.placeholder}
+        style={[props.TextStyle, props.customInputStyle]}
+        keyboardType={props.keyBoardType}
+        onChangeText={text => {
+          props.setText(text);
+        }}
+        onKeyPress={props?.onKeyPressText}
+        maxLength={parseInt(props.maxLength)}
+      />
+    </View>
   );
-}
+});
+
+export default CustomText;
