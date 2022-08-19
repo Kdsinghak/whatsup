@@ -24,14 +24,19 @@ function Login() {
   const textInput1 = useRef();
 
   const handleSendOTP = () => {
-    navigation.navigate(ScreenNames.OTP);
-  };
-
-  const handleSignIn = () => {
     signInWithPhoneNumber(
       text,
-      onucess => {},
-      onFailure => {},
+      response => {
+        if (response) {
+          const {_authResult} = response._auth;
+          if (_authResult) {
+            navigation.navigate(ScreenNames.OTP, response);
+          }
+        }
+      },
+      error => {
+        console.log('errorr', error);
+      },
     );
   };
 
@@ -63,7 +68,6 @@ function Login() {
         containerStyle={styles.buttonContainerStyle}
         buttonLabel={localStrings.signIn}
         labelStyle={styles.labelStyle}
-        onclickAction={handleSignIn}
       />
 
       <Text style={styles.noAccountTextStyle}>
