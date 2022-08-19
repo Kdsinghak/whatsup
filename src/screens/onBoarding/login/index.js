@@ -8,11 +8,12 @@ import {
 } from 'react-native';
 import colors from '../../../utils/Colors';
 import Colors from '../../../utils/Colors';
-import ScreenNames from '../../../utils/ScreenNames';
 import React, {useState, useRef} from 'react';
 import {normalize} from '../../../utils/Dimensions';
+import ScreenNames from '../../../utils/ScreenNames';
 import localImages from '../../../utils/LocalImages';
 import localStrings from '../../../utils/LocalStrings';
+import Loader from '../../../components/loader/Loader';
 import {useNavigation} from '@react-navigation/native';
 import PhoneText from '../../../components/customTextInput';
 import {signInWithPhoneNumber} from '../../../utils/CommonFunctions';
@@ -20,18 +21,21 @@ import CustomButton from '../../../components/customButton/CustomButton';
 
 function Login() {
   const [text, setText] = useState('');
+  const [loader, setLoader] = useState(false);
   const navigation = useNavigation();
   const textInput1 = useRef();
 
   const handleSendOTP = () => {
-    navigation.navigate(ScreenNames.OTP);
-  };
-
-  const handleSignIn = () => {
+    // setLoader(true);
     signInWithPhoneNumber(
       text,
-      onucess => {},
-      onFailure => {},
+      onSuccess => {
+        // setLoader(false);
+        navigation.navigate(ScreenNames.OTP);
+      },
+      onFailure => {
+        // setLoader(false);
+      },
     );
   };
 
@@ -40,7 +44,6 @@ function Login() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
       <Image source={localImages.spalshImg} style={styles.imageStyle} />
-
       <Text style={styles.signInHeadingStyle}>
         {localStrings.sighinHeading}
       </Text>
@@ -57,19 +60,14 @@ function Login() {
           setText={setText}
         />
       </View>
-
       <CustomButton
+        disable={text.length < 10 ? true : false}
         onPress={handleSendOTP}
         containerStyle={styles.buttonContainerStyle}
         buttonLabel={localStrings.signIn}
         labelStyle={styles.labelStyle}
-        onclickAction={handleSignIn}
       />
-
-      <Text style={styles.noAccountTextStyle}>
-        {localStrings.noAccount}
-        <Text style={styles.signUpTextStyle}>{localStrings.signUp}</Text>
-      </Text>
+      {loader && <Loader />}
     </KeyboardAvoidingView>
   );
 }
