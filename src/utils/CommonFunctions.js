@@ -1,11 +1,25 @@
 import auth from '@react-native-firebase/auth';
 
-export async function signInWithPhoneNumber(phoneNumber, sucess, fialure) {
+export async function signInWithPhoneNumber(phoneNumber, success, fialure) {
   console.log('phoneNumber', phoneNumber);
-  await auth()
-    .signInWithPhoneNumber('+91' + phoneNumber)
-    .then(res => console.log(res))
-    .catch(err => {
-      console.log(err);
-    });
+  try {
+    const confirmation = await auth().signInWithPhoneNumber(
+      '+91' + phoneNumber,
+    );
+    success(confirmation);
+  } catch (error) {
+    fialure(error);
+  }
+}
+
+export function verifyOTP(confirmation, otp, successCallback, failureCallback) {
+  console.log(confirmation);
+  //   confirmation
+  //     .confirm(otp)
+  //     .then(res => {
+  //       successCallback(res);
+  //     })
+  //     .catch(err => {
+  //       failureCallback(err);
+  //     });
 }

@@ -26,15 +26,18 @@ function Login() {
   const textInput1 = useRef();
 
   const handleSendOTP = () => {
-    // setLoader(true);
     signInWithPhoneNumber(
       text,
-      onSuccess => {
-        // setLoader(false);
-        navigation.navigate(ScreenNames.OTP);
+      response => {
+        if (response) {
+          const {_authResult} = response._auth;
+          if (_authResult) {
+            navigation.navigate(ScreenNames.OTP, response);
+          }
+        }
       },
-      onFailure => {
-        // setLoader(false);
+      error => {
+        console.log('errorr', error);
       },
     );
   };
