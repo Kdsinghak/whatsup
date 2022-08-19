@@ -14,6 +14,7 @@ import {normalize} from '../../../utils/Dimensions';
 import localImages from '../../../utils/LocalImages';
 import localStrings from '../../../utils/LocalStrings';
 import PhoneText from '../../../components/customTextInput';
+import {signInWithPhoneNumber} from '../../../utils/CommonFunctions';
 import CustomButton from '../../../components/customButton/CustomButton';
 
 function Login() {
@@ -23,6 +24,14 @@ function Login() {
   const handleRemember = useCallback(() => {
     setCheck(!check);
   }, [check]);
+
+  const handleSignIn = () => {
+    signInWithPhoneNumber(
+      text,
+      onucess => {},
+      onFailure => {},
+    );
+  };
 
   return (
     <KeyboardAvoidingView
@@ -45,6 +54,7 @@ function Login() {
           setText={setText}
         />
       </View>
+
       <TouchableOpacity
         activeOpacity={1}
         style={styles.checkBoxView}
@@ -55,16 +65,17 @@ function Login() {
         />
         <Text style={styles.rememberTextStle}>{localStrings.remeberMe}</Text>
       </TouchableOpacity>
+
       <CustomButton
         containerStyle={styles.buttonContainerStyle}
         buttonLabel={localStrings.signIn}
         labelStyle={styles.labelStyle}
+        onclickAction={handleSignIn}
       />
+
       <Text style={styles.noAccountTextStyle}>
         {localStrings.noAccount}
-        <Text onPress={() => {}} style={styles.signUpTextStyle}>
-          {localStrings.signUp}
-        </Text>
+        <Text style={styles.signUpTextStyle}>{localStrings.signUp}</Text>
       </Text>
     </KeyboardAvoidingView>
   );

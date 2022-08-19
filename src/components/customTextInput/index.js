@@ -1,4 +1,4 @@
-import {View, TextInput} from 'react-native';
+import {TextInput} from 'react-native';
 import React from 'react';
 
 export default function CustomText(props) {
