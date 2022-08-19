@@ -6,23 +6,33 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, {useRef} from 'react';
 import colors from '../../../utils/Colors';
 import Colors from '../../../utils/Colors';
-import {normalize} from '../../../utils/Dimensions';
 import ScreenNames from '../../../utils/ScreenNames';
+import React, {useState, useRef} from 'react';
+import {normalize} from '../../../utils/Dimensions';
 import localImages from '../../../utils/LocalImages';
 import localStrings from '../../../utils/LocalStrings';
 import {useNavigation} from '@react-navigation/native';
 import PhoneText from '../../../components/customTextInput';
+import {signInWithPhoneNumber} from '../../../utils/CommonFunctions';
 import CustomButton from '../../../components/customButton/CustomButton';
 
 function Login() {
+  const [text, setText] = useState('');
   const navigation = useNavigation();
   const textInput1 = useRef();
 
   const handleSendOTP = () => {
     navigation.navigate(ScreenNames.OTP);
+  };
+
+  const handleSignIn = () => {
+    signInWithPhoneNumber(
+      text,
+      onucess => {},
+      onFailure => {},
+    );
   };
 
   return (
@@ -44,6 +54,7 @@ function Login() {
           placeholder={localStrings.phoneNumber}
           keyBoardType="numeric"
           maxLength="20"
+          setText={setText}
         />
       </View>
 
@@ -52,7 +63,13 @@ function Login() {
         containerStyle={styles.buttonContainerStyle}
         buttonLabel={localStrings.signIn}
         labelStyle={styles.labelStyle}
+        onclickAction={handleSignIn}
       />
+
+      <Text style={styles.noAccountTextStyle}>
+        {localStrings.noAccount}
+        <Text style={styles.signUpTextStyle}>{localStrings.signUp}</Text>
+      </Text>
     </KeyboardAvoidingView>
   );
 }
@@ -130,6 +147,7 @@ const styles = StyleSheet.create({
     marginTop: normalize(20),
     marginHorizontal: normalize(16),
   },
+
   labelStyle: {
     color: Colors.WHITE,
     fontSize: normalize(20),
