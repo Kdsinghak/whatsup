@@ -15,8 +15,8 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import CustomHeader from '../../../components/customHeader/CustomHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
 import Loader from '../../../components/loader/Loader';
-
-const OTP = () => {
+import {verifyOTP} from '../../../utils/CommonFunctions';
+const OTP = ({route}) => {
   const navigation = useNavigation();
   const [Mpin, setMpin] = useState('');
   const [loader, setLoader] = useState(false);
@@ -176,9 +176,15 @@ const OTP = () => {
 
   const handleVerifyOTP = () => {
     setLoader(true);
-    setTimeout(() => {
-      setLoader(false);
-    }, 2000);
+
+    verifyOTP(
+      route.params,
+      Mpin,
+      response => {
+        if (response) setLoader(false);
+      },
+      error => {},
+    );
   };
 
   return (
