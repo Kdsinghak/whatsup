@@ -4,24 +4,26 @@ import {
   Image,
   Platform,
   StyleSheet,
-  TouchableOpacity,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, {useCallback, useState} from 'react';
+import React, {useRef} from 'react';
 import colors from '../../../utils/Colors';
 import Colors from '../../../utils/Colors';
-import localImages from '../../../utils/LocalImages';
 import {normalize} from '../../../utils/Dimensions';
+import ScreenNames from '../../../utils/ScreenNames';
+import localImages from '../../../utils/LocalImages';
 import localStrings from '../../../utils/LocalStrings';
+import {useNavigation} from '@react-navigation/native';
 import PhoneText from '../../../components/customTextInput';
 import CustomButton from '../../../components/customButton/CustomButton';
 
 function Login() {
-  const [check, setCheck] = useState(false);
+  const navigation = useNavigation();
+  const textInput1 = useRef();
 
-  const handleRemember = useCallback(() => {
-    setCheck(!check);
-  }, [check]);
+  const handleSendOTP = () => {
+    navigation.navigate(ScreenNames.OTP);
+  };
 
   return (
     <KeyboardAvoidingView
@@ -37,33 +39,20 @@ function Login() {
         <Image source={localImages.phone} style={styles.phoneStyle} />
 
         <PhoneText
+          ref={textInput1}
           TextStyle={styles.loginText}
           placeholder={localStrings.phoneNumber}
           keyBoardType="numeric"
           maxLength="20"
         />
       </View>
-      <TouchableOpacity
-        activeOpacity={1}
-        style={styles.checkBoxView}
-        onPress={handleRemember}>
-        <Image
-          source={check ? localImages.check : localImages.uncheck}
-          style={styles.checkedImageStyle}
-        />
-        <Text style={styles.rememberTextStle}>{localStrings.remeberMe}</Text>
-      </TouchableOpacity>
+
       <CustomButton
+        onPress={handleSendOTP}
         containerStyle={styles.buttonContainerStyle}
         buttonLabel={localStrings.signIn}
         labelStyle={styles.labelStyle}
       />
-      <Text style={styles.noAccountTextStyle}>
-        {localStrings.noAccount}
-        <Text onPress={() => {}} style={styles.signUpTextStyle}>
-          {localStrings.signUp}
-        </Text>
-      </Text>
     </KeyboardAvoidingView>
   );
 }
@@ -144,13 +133,5 @@ const styles = StyleSheet.create({
   labelStyle: {
     color: Colors.WHITE,
     fontSize: normalize(20),
-  },
-  noAccountTextStyle: {
-    color: Colors.BLACK,
-    alignSelf: 'center',
-    marginTop: normalize(10),
-  },
-  signUpTextStyle: {
-    color: Colors.GREEN,
   },
 });
