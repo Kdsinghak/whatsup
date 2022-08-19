@@ -10,11 +10,12 @@ import Colors from '../../../utils/Colors';
 import {normalize} from '../../../utils/Dimensions';
 import {useNavigation} from '@react-navigation/native';
 import LocalStrings from '../../../utils/LocalStrings';
+import Loader from '../../../components/loader/Loader';
 import CustomTextInput from '../../../components/customTextInput';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import CustomHeader from '../../../components/customHeader/CustomHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
-import Loader from '../../../components/loader/Loader';
+
 import {verifyOTP} from '../../../utils/CommonFunctions';
 const OTP = ({route}) => {
   const navigation = useNavigation();
