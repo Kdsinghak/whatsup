@@ -4,6 +4,7 @@ export default {
   phoneNumber: 'Phone Number',
   remeberMe: 'Remember me',
   signIn: 'Sign In',
-  signUp: 'Sign Up',
-  noAccount: " Don't have an account? ",
+  OTP_Header: 'Enter OTP Code',
+  code_Sent: 'Code has been send to',
+  Verify: 'Verify',
 };

@@ -1,16 +1,16 @@
-import {View, StyleSheet, Image} from 'react-native';
 import React, {useEffect} from 'react';
-import localImages from '../../../utils/LocalImages';
 import colors from '../../../utils/Colors';
-import {useNavigation} from '@react-navigation/native';
+import {View, StyleSheet, Image} from 'react-native';
+import localImages from '../../../utils/LocalImages';
 import ScreenNames from '../../../utils/ScreenNames';
+import {useNavigation} from '@react-navigation/native';
 
 export default function SplashScreen() {
   const navigation = useNavigation();
 
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate(ScreenNames.LOGIN);
+      navigation.replace(ScreenNames.LOGIN);
     }, 2000);
   });
 
