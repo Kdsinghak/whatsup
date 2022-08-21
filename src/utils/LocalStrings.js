@@ -7,4 +7,8 @@ export default {
   OTP_Header: 'Enter OTP Code',
   code_Sent: 'Code has been send to',
   Verify: 'Verify',
+  Profile: 'Profile',
+  Name: 'Name',
+  About: 'About',
+  Phone: 'Phone',
 };

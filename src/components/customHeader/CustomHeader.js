@@ -3,16 +3,21 @@ import React from 'react';
 import LocalImages from '../../utils/LocalImages';
 
 import {normalize} from '../../utils/Dimensions';
-import LocalStrings from '../../utils/LocalStrings';
+
 import Colors from '../../utils/Colors';
 
-const CustomHeader = ({onPress}) => {
+const CustomHeader = ({onPress, headerTitle, image}) => {
   return (
     <View style={styles.headerContainer}>
-      <TouchableOpacity style={styles.backArrowView} onPress={onPress}>
-        <Image source={LocalImages.backArrow} style={styles.backArrowImage} />
+      <View style={styles.innerView}>
+        <TouchableOpacity style={styles.backArrowView} onPress={onPress}>
+          <Image source={LocalImages.backArrow} style={styles.backArrowImage} />
+        </TouchableOpacity>
+        <Text style={styles.headerTextStyle}>{headerTitle}</Text>
+      </View>
+      <TouchableOpacity style={styles.rightIconView} hitSlop={styles.hitslop}>
+        {image ? <Image source={image} style={styles.rightIcon} /> : null}
       </TouchableOpacity>
-      <Text style={styles.headerTextStyle}>{LocalStrings.OTP_Header}</Text>
     </View>
   );
 };
@@ -28,17 +33,30 @@ const styles = StyleSheet.create({
     height: normalize(20),
     width: normalize(20),
   },
+  innerView: {flexDirection: 'row'},
   headerContainer: {
     flexDirection: 'row',
     height: normalize(50),
     marginTop: normalize(50),
     paddingLeft: normalize(10),
     alignItems: 'center',
+    justifyContent: 'space-between',
   },
   headerTextStyle: {
     color: Colors.BLACK,
-    marginLeft: normalize(10),
-    fontWeight: '500',
-    fontSize: normalize(16),
+    marginLeft: normalize(15),
+    fontWeight: 'bold',
+    fontSize: normalize(18),
+  },
+  rightIcon: {
+    height: 20,
+    width: 25,
+  },
+  rightIconView: {marginRight: normalize(15)},
+  hitslop: {
+    right: 10,
+    top: 10,
+    bottom: 10,
+    left: 10,
   },
 });
