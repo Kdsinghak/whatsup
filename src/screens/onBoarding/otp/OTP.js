@@ -1,11 +1,11 @@
 import {
-  View,
   Text,
+  View,
+  Alert,
   Platform,
   Keyboard,
   StyleSheet,
   KeyboardAvoidingView,
-  Alert,
 } from 'react-native';
 import Colors from '../../../utils/Colors';
 import {normalize} from '../../../utils/Dimensions';

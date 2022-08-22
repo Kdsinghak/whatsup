@@ -10,8 +10,8 @@ import CustomHeader from '../../../components/customHeader/CustomHeader';
 import {View, Image, StyleSheet, TouchableOpacity, Text} from 'react-native';
 
 export default function Profile({route}) {
-  const uid = route.params.response.user._user.uid;
   const navigation = useNavigation();
+  const uid = route.params.response.user._user.uid;
 
   const [image, setImage] = useState(
     'https://cdn-icons-png.flaticon.com/128/149/149071.png',
