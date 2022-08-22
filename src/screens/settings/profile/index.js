@@ -8,6 +8,7 @@ import {useNavigation} from '@react-navigation/native';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import CustomHeader from '../../../components/customHeader/CustomHeader';
 import {View, Image, StyleSheet, TouchableOpacity, Text} from 'react-native';
+import {setDataInFirbase} from '../../../utils/CommonFunctions';
 
 export default function Profile({route}) {
   const navigation = useNavigation();
@@ -16,12 +17,18 @@ export default function Profile({route}) {
   const [image, setImage] = useState(
     'https://cdn-icons-png.flaticon.com/128/149/149071.png',
   );
+  const [name, setName] = useState('');
+  const [about, setAbout] = useState('');
+  const [number, setNumber] = useState('');
 
   useEffect(() => {
     getDataFromFirebase(
       uid,
       response => {
-        console.log(response);
+        setName(response._data.Name);
+        setAbout(response._data.About);
+        setImage(response._data.image);
+        setNumber(response._data.number);
       },
       error => {
         console.log(error);
@@ -92,7 +99,7 @@ export default function Profile({route}) {
           </View>
           <View>
             <Text style={styles.textStyle}>{LocalStrings.Name}</Text>
-            <Text style={styles.detailsTextStyle}>{'KULDEEP'}</Text>
+            <Text style={styles.detailsTextStyle}>{name}</Text>
           </View>
         </View>
 
@@ -111,7 +118,7 @@ export default function Profile({route}) {
           </View>
           <View style={{marginLeft: normalize(15)}}>
             <Text style={styles.textStyle}>{LocalStrings.About}</Text>
-            <Text style={styles.detailsTextStyle}>{'Available'}</Text>
+            <Text style={styles.detailsTextStyle}>{about}</Text>
           </View>
         </View>
 
@@ -130,13 +137,18 @@ export default function Profile({route}) {
           </View>
           <View style={{marginLeft: normalize(15)}}>
             <Text style={styles.textStyle}>{LocalStrings.Phone}</Text>
-            <Text style={styles.detailsTextStyle}>{'9027432415'}</Text>
+            <Text style={styles.detailsTextStyle}>{number}</Text>
           </View>
         </View>
 
         <View style={styles.iconStyleView}>
           <Image style={styles.iconStyles} source={LocalImages.pencil} />
         </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={{justifyContent: 'center', alignItems: 'center'}}
+        onPress={() => setDataInFirbase(uid, {image, name, about, number})}>
+        <Text>UPDATE</Text>
       </TouchableOpacity>
     </>
   );
