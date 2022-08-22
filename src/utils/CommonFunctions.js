@@ -1,5 +1,5 @@
 import auth from '@react-native-firebase/auth';
-
+import firestore from '@react-native-firebase/firestore';
 export async function signInWithPhoneNumber(phoneNumber, success, fialure) {
   console.log('phoneNumber', phoneNumber);
   try {
@@ -21,4 +21,9 @@ export function verifyOTP(confirmation, otp, successCallback, failureCallback) {
     .catch(err => {
       failureCallback(err);
     });
+}
+
+export function setDataInFirbase(uid, details) {
+  console.log(details);
+  firestore().collection('Users').doc(uid).set(details);
 }

@@ -191,10 +191,10 @@ const OTP = ({route}) => {
             let uid = response.user._user.uid;
             let phone = response.user._user.phoneNumber;
             firestore().collection('Users').doc(uid).set({
-              Name: '',
-              About: '',
-              Phone: phone,
-              photo: '',
+              name: '',
+              about: '',
+              number: phone,
+              image: '',
             });
             navigation.navigate('Profile', {response});
           }

@@ -6,4 +6,5 @@ export default {
   DARK_GREY: '#545A63',
   LIGHTGREEN: '#87DFBD',
   SILVER: '#bfbfbf',
+  LIGHTGREEN: '  #e2f5f2',
 };

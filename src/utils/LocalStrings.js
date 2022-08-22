@@ -11,4 +11,6 @@ export default {
   Name: 'Name',
   About: 'About',
   Phone: 'Phone',
+  Next: 'Next',
+  WhatsUp: 'WhatsUp',
 };

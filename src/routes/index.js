@@ -1,5 +1,6 @@
 import React from 'react';
 import {StatusBar} from 'react-native';
+import Home from '../screens/home/Home';
 import ScreenNames from '../utils/ScreenNames';
 import OTP from '../screens/onBoarding/otp/OTP';
 import Login from '../screens/onBoarding/login';
@@ -19,12 +20,12 @@ const AppRoutes = () => {
         barStyle="dark-content"
       />
       <Stack.Navigator
-        screenOptions={{headerShown: false}}
-        initialRouteName={ScreenNames.PROFILE}>
+        screenOptions={{headerShown: false, gestureEnabled: false}}>
         <Stack.Screen component={SplashScreen} name={ScreenNames.SPLASH} />
         <Stack.Screen component={Login} name={ScreenNames.LOGIN} />
         <Stack.Screen component={OTP} name={ScreenNames.OTP} />
-        <Stack.Screen component={Profile} name={'Profile'} />
+        <Stack.Screen component={Profile} name={ScreenNames.PROFILE} />
+        <Stack.Screen component={Home} name={ScreenNames.HOME} />
       </Stack.Navigator>
     </NavigationContainer>
   );

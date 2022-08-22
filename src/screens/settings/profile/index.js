@@ -11,7 +11,6 @@ import {
 import Colors from '../../../utils/Colors';
 import React, {useState, useEffect, useRef} from 'react';
 import {getDataFromFirebase} from './profileUtils';
-
 import {normalize} from '../../../utils/Dimensions';
 import LocalImages from '../../../utils/LocalImages';
 import LocalStrings from '../../../utils/LocalStrings';
@@ -19,28 +18,36 @@ import {useNavigation} from '@react-navigation/native';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import CustomHeader from '../../../components/customHeader/CustomHeader';
 import CustomText from '../../../components/customTextInput';
+import {setDataInFirbase} from '../../../utils/CommonFunctions';
+import CustomButton from '../../../components/customButton/CustomButton';
+import ScreenNames from '../../../utils/ScreenNames';
 
 export default function Profile({route}) {
   const navigation = useNavigation();
-  // const uid = route.params.response.user._user.uid;
+  const uid = route.params.response.user._user.uid;
 
   const [image, setImage] = useState(
     'https://cdn-icons-png.flaticon.com/128/149/149071.png',
   );
+  const [name, setName] = useState('');
+  const [about, setAbout] = useState('');
+  const [number, setNumber] = useState('');
   const textInput1 = useRef();
   const [modal, setModal] = useState(false);
 
-  // useEffect(() => {
-  //   getDataFromFirebase(
-  //     uid,
-  //     response => {
-  //       console.log(response);
-  //     },
-  //     error => {
-  //       console.log(error);
-  //     },
-  //   );
-  // }, []);
+  useEffect(() => {
+    getDataFromFirebase(
+      uid,
+      response => {
+        setName(response._data.name);
+        setAbout(response._data.about);
+        setNumber(response._data.number);
+      },
+      error => {
+        console.log(error);
+      },
+    );
+  }, []);
 
   const handleImagepick = () => {
     ImageCropPicker.openPicker({
@@ -60,7 +67,7 @@ export default function Profile({route}) {
     navigation.goBack();
   };
 
-  const HandleName = () => {
+  const handleName = () => {
     setModal(!modal);
   };
 
@@ -73,6 +80,13 @@ export default function Profile({route}) {
   const handleSave = () => {
     setModal(!modal);
   };
+  const onPressNext = () => {
+    navigation.navigate(ScreenNames.HOME);
+  };
+  // const handleDisable = () => {
+  //   if (text.length < 10 || text.length >= 11) return true;
+  //   else return false;
+  // };
   return (
     <>
       <CustomHeader
@@ -91,72 +105,46 @@ export default function Profile({route}) {
         </View>
         <TouchableOpacity
           onPress={handleImagepick}
-          style={{
-            backgroundColor: Colors.GREY,
-            borderRadius: normalize(7),
-            bottom: normalize(25),
-            left: normalize(40),
-          }}>
-          <Image
-            style={{height: normalize(25), width: normalize(25)}}
-            source={LocalImages.edit}
-          />
+          style={styles.editIconContainer}>
+          <Image style={styles.editImageIcon} source={LocalImages.edit} />
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={HandleName} style={styles.detailsContainer}>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: normalize(100),
-            justifyContent: 'space-between',
-          }}>
-          <View style={styles.iconStyleView}>
-            <Image
-              source={LocalImages.userNameIcon}
-              style={styles.iconStyles}
-            />
-          </View>
-          <View>
-            <Text style={styles.textStyle}>{LocalStrings.Name}</Text>
-            <Text style={styles.detailsTextStyle}>{'KULDEEP'}</Text>
-          </View>
+      <TouchableOpacity onPress={handleName} style={styles.detailsContainer}>
+        <View style={styles.iconStyleView}>
+          <Image source={LocalImages.userNameIcon} style={styles.iconStyles} />
         </View>
-
+        <View style={styles.userDetailsContainer}>
+          <Text style={styles.textStyle}>{LocalStrings.Name}</Text>
+          <Text style={styles.detailsTextStyle}>{name}</Text>
+        </View>
         <View style={styles.iconStyleView}>
           <Image style={styles.iconStyles} source={LocalImages.pencil} />
         </View>
       </TouchableOpacity>
       <View style={styles.detailsContainer}>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: normalize(200),
-          }}>
-          <View style={styles.iconStyleView}>
-            <Image source={LocalImages.info} style={styles.iconStyles} />
-          </View>
-          <View style={{marginLeft: normalize(15)}}>
-            <Text style={styles.textStyle}>{LocalStrings.About}</Text>
-            <Text style={styles.detailsTextStyle}>{'Available'}</Text>
-          </View>
+        <View style={styles.iconStyleView}>
+          <Image source={LocalImages.info} style={styles.iconStyles} />
+        </View>
+        <View style={styles.userAboutContainer}>
+          <Text style={styles.textStyle}>{LocalStrings.About}</Text>
+          <Text style={styles.detailsTextStyle}>{about}</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.detailsContainer}>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: normalize(200),
-          }}>
-          <View style={styles.iconStyleView}>
-            <Image source={LocalImages.phone} style={styles.iconStyles} />
-          </View>
-          <View style={{marginLeft: normalize(15)}}>
-            <Text style={styles.textStyle}>{LocalStrings.Phone}</Text>
-            <Text style={styles.detailsTextStyle}>{'9027432415'}</Text>
-          </View>
+      <View style={styles.detailsContainer}>
+        <View style={styles.iconStyleView}>
+          <Image source={LocalImages.phone} style={styles.iconStyles} />
         </View>
-      </TouchableOpacity>
-
+        <View style={styles.userAboutContainer}>
+          <Text style={styles.textStyle}>{LocalStrings.Phone}</Text>
+          <Text style={styles.detailsTextStyle}>{number}</Text>
+        </View>
+      </View>
+      <CustomButton
+        onPress={onPressNext}
+        containerStyle={styles.enablebuttonContainerStyle}
+        buttonLabel={LocalStrings.Next}
+        labelStyle={styles.labelStyle}
+      />
       <Modal animationType="slide" transparent={true} visible={modal}>
         <View style={{flex: 1, justifyContent: 'center'}}>
           <KeyboardAvoidingView
@@ -176,7 +164,6 @@ export default function Profile({route}) {
               <Text onPress={handleCancel} style={styles.modalOptionTextStyle}>
                 {'Cancel'}
               </Text>
-
               <Text onPress={handleSave} style={styles.modalOptionTextStyle}>
                 {'Save'}
               </Text>
@@ -190,17 +177,13 @@ export default function Profile({route}) {
 
 const styles = StyleSheet.create({
   profileImageView: {
-    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderBottomColor: Colors.SILVER,
-    borderTopColor: Colors.SILVER,
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    marginHorizontal: normalize(10),
     marginTop: normalize(10),
-    height: normalize(180),
+    paddingTop: normalize(20),
+    borderColor: Colors.SILVER,
+    borderTopWidth: normalize(1),
+    borderBottomWidth: normalize(1),
+    marginHorizontal: normalize(10),
   },
 
   profileImage: {
@@ -225,6 +208,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     padding: normalize(15),
     marginTop: normalize(20),
+    borderBottomColor: Colors.SILVER,
     marginHorizontal: normalize(16),
     justifyContent: 'space-between',
   },
@@ -272,5 +256,44 @@ const styles = StyleSheet.create({
     marginRight: normalize(20),
     borderBottomWidth: normalize(2),
     borderBottomColor: Colors.GREEN,
+  },
+  editImageIcon: {height: normalize(25), width: normalize(25)},
+
+  enablebuttonContainerStyle: {
+    alignItems: 'center',
+    height: normalize(45),
+    justifyContent: 'center',
+    marginTop: normalize(100),
+    borderRadius: normalize(30),
+    backgroundColor: Colors.GREEN,
+    marginHorizontal: normalize(16),
+  },
+  disablebuttonContainerStyle: {
+    alignItems: 'center',
+    height: normalize(45),
+    justifyContent: 'center',
+    borderRadius: normalize(30),
+    backgroundColor: Colors.LIGHTGREEN,
+    marginTop: normalize(20),
+    marginHorizontal: normalize(16),
+  },
+
+  labelStyle: {
+    color: Colors.WHITE,
+    fontSize: normalize(20),
+  },
+  editIconContainer: {
+    backgroundColor: Colors.GREY,
+    borderRadius: normalize(7),
+    bottom: normalize(25),
+    left: normalize(40),
+  },
+  userDetailsContainer: {
+    width: '75%',
+    height: normalize(50),
+  },
+  userAboutContainer: {
+    width: '85%',
+    height: normalize(50),
   },
 });
