@@ -18,7 +18,9 @@ const AppRoutes = () => {
         backgroundColor="transparent"
         barStyle="dark-content"
       />
-      <Stack.Navigator screenOptions={{headerShown: false}}>
+      <Stack.Navigator
+        screenOptions={{headerShown: false}}
+        initialRouteName={ScreenNames.PROFILE}>
         <Stack.Screen component={SplashScreen} name={ScreenNames.SPLASH} />
         <Stack.Screen component={Login} name={ScreenNames.LOGIN} />
         <Stack.Screen component={OTP} name={ScreenNames.OTP} />
