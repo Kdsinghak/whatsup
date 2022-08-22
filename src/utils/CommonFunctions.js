@@ -13,17 +13,25 @@ export async function signInWithPhoneNumber(phoneNumber, success, fialure) {
 }
 
 export function verifyOTP(confirmation, otp, successCallback, failureCallback) {
-  confirmation
+  return confirmation
     .confirm(otp)
     .then(res => {
       successCallback(res);
+      return res;
     })
     .catch(err => {
       failureCallback(err);
     });
 }
 
-export function setDataInFirbase(uid, details) {
+export function updateDataInFirbase(uid, details) {
   console.log(details);
-  firestore().collection('Users').doc(uid).set(details);
+  firestore()
+    .collection('Users')
+    .doc(uid)
+    .update(details)
+    .then(res => {
+      console.log('update', res);
+    })
+    .catch(err => console.log(err));
 }

@@ -8,25 +8,23 @@ import {useNavigation} from '@react-navigation/native';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import CustomHeader from '../../../components/customHeader/CustomHeader';
 import {View, Image, StyleSheet, TouchableOpacity, Text} from 'react-native';
-import {setDataInFirbase} from '../../../utils/CommonFunctions';
+import {updateDataInFirbase} from '../../../utils/CommonFunctions';
 
 export default function Profile({route}) {
   const navigation = useNavigation();
   const uid = route.params.response.user._user.uid;
 
-  const [image, setImage] = useState(
-    'https://cdn-icons-png.flaticon.com/128/149/149071.png',
-  );
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
+  const [image, setImage] = useState('');
   const [number, setNumber] = useState('');
 
   useEffect(() => {
     getDataFromFirebase(
       uid,
       response => {
-        setName(response._data.Name);
-        setAbout(response._data.About);
+        setName(response._data.name);
+        setAbout(response._data.about);
         setImage(response._data.image);
         setNumber(response._data.number);
       },
@@ -147,7 +145,7 @@ export default function Profile({route}) {
       </TouchableOpacity>
       <TouchableOpacity
         style={{justifyContent: 'center', alignItems: 'center'}}
-        onPress={() => setDataInFirbase(uid, {image, name, about, number})}>
+        onPress={() => updateDataInFirbase(uid, {image, name, about, number})}>
         <Text>UPDATE</Text>
       </TouchableOpacity>
     </>
