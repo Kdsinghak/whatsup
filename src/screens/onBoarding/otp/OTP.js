@@ -18,12 +18,16 @@ import CustomTextInput from '../../../components/customTextInput';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import CustomHeader from '../../../components/customHeader/CustomHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
-
+import {useDispatch} from 'react-redux';
+import {
+  requestConfirmUid,
+  requestForStoreData,
+} from '../../../redux/userDetails/action';
 const OTP = ({route}) => {
   const navigation = useNavigation();
   const [Mpin, setMpin] = useState('');
   const [loader, setLoader] = useState(false);
-
+  const dispatch = useDispatch();
   const textInput1 = useRef();
   const textInput2 = useRef();
   const textInput3 = useRef();
@@ -179,32 +183,60 @@ const OTP = ({route}) => {
 
   const handleVerifyOTP = () => {
     setLoader(true);
-    verifyOTP(
-      route.params,
-      Mpin,
-      response => {
-        if (response) {
-          const {_authResult} = response?.user?._auth;
-          if (_authResult) {
-            setLoader(false);
-            console.log('verifieddd', response);
-            let uid = response.user._user.uid;
-            let phone = response.user._user.phoneNumber;
-            firestore().collection('Users').doc(uid).set({
-              name: '',
-              about: '',
-              number: phone,
-              image: '',
-            });
-            navigation.navigate('Profile', {response});
+    dispatch(
+      requestConfirmUid(
+        route.params,
+        Mpin,
+        response => {
+          if (response) {
+            const {_authResult} = response?.user?._auth;
+            if (_authResult) {
+              setLoader(false);
+              let uid = response.user._user.uid;
+              let phone = response.user._user.phoneNumber;
+              firestore().collection('Users').doc(uid).set({
+                name: '',
+                about: '',
+                number: phone,
+                image: 'https://cdn-icons-png.flaticon.com/128/149/149071.png',
+              });
+              navigation.navigate('Profile', {response});
+            }
           }
-        }
-      },
-      error => {
-        Alert.alert(error.message);
-        setLoader(false);
-      },
+        },
+        error => {
+          Alert.alert(error.message);
+          setLoader(false);
+        },
+      ),
     );
+    // verifyOTP(
+    //   route.params,
+    //   Mpin,
+    //   response => {
+    //     if (response) {
+    //       const {_authResult} = response?.user?._auth;
+    //       if (_authResult) {
+    //         setLoader(false);
+    //         console.log('verifieddd', response);
+    //         let uid = response.user._user.uid;
+    //         let phone = response.user._user.phoneNumber;
+    //         dispatch(requestForStoreData(uid));
+    //         firestore().collection('Users').doc(uid).set({
+    //           name: '',
+    //           about: '',
+    //           number: phone,
+    //           image: 'https://cdn-icons-png.flaticon.com/128/149/149071.png',
+    //         });
+    //         navigation.navigate('Profile', {response});
+    //       }
+    //     }
+    //   },
+    //   error => {
+    //     Alert.alert(error.message);
+    //     setLoader(false);
+    //   },
+    // );
   };
 
   return (

@@ -18,7 +18,7 @@ import {useNavigation} from '@react-navigation/native';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import CustomHeader from '../../../components/customHeader/CustomHeader';
 import CustomText from '../../../components/customTextInput';
-import {setDataInFirbase} from '../../../utils/CommonFunctions';
+import {updateDataInFirbase} from '../../../utils/CommonFunctions';
 import CustomButton from '../../../components/customButton/CustomButton';
 import ScreenNames from '../../../utils/ScreenNames';
 
@@ -26,11 +26,9 @@ export default function Profile({route}) {
   const navigation = useNavigation();
   const uid = route.params.response.user._user.uid;
 
-  const [image, setImage] = useState(
-    'https://cdn-icons-png.flaticon.com/128/149/149071.png',
-  );
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
+  const [image, setImage] = useState('');
   const [number, setNumber] = useState('');
   const textInput1 = useRef();
   const [modal, setModal] = useState(false);
@@ -41,6 +39,7 @@ export default function Profile({route}) {
       response => {
         setName(response._data.name);
         setAbout(response._data.about);
+        setImage(response._data.image);
         setNumber(response._data.number);
       },
       error => {
@@ -87,6 +86,7 @@ export default function Profile({route}) {
   //   if (text.length < 10 || text.length >= 11) return true;
   //   else return false;
   // };
+
   return (
     <>
       <CustomHeader

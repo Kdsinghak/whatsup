@@ -20,5 +20,3 @@ const CustomButton = ({
 };
 
 export default CustomButton;
-
-const styles = StyleSheet.create({});
