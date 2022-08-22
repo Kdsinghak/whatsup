@@ -9,4 +9,6 @@ export default {
   userNameIcon: require('../assets/icons/user.png'),
   pencil: require('../assets/icons/pencil.png'),
   info: require('../assets/icons/information.png'),
+  cross: require('../assets/icons/cancel.png'),
+  search: require('../assets/icons/search.png'),
 };

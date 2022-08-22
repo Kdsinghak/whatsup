@@ -14,6 +14,7 @@ const CustomText = forwardRef((props, ref) => {
         }}
         onKeyPress={props?.onKeyPressText}
         maxLength={parseInt(props.maxLength)}
+        // autoFocus={true}
       />
     </View>
   );
