@@ -4,5 +4,6 @@ export default {
   GREEN: '#21C585',
   BLACK: '#09101D',
   DARK_GREY: '#545A63',
-  LIGHTGREEN: '#0FD386',
+  LIGHTGREEN: '#87DFBD',
+  SILVER: '#bfbfbf',
 };

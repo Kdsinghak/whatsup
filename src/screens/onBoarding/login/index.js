@@ -32,6 +32,7 @@ function Login() {
         if (response) {
           const {_authResult} = response._auth;
           if (_authResult) {
+            console.log(_authResult);
             navigation.navigate(ScreenNames.OTP, response);
           }
         }
@@ -40,6 +41,11 @@ function Login() {
         console.log('errorr', error);
       },
     );
+  };
+
+  const handleDisable = () => {
+    if (text.length < 10 || text.length >= 11) return true;
+    else return false;
   };
 
   return (
@@ -64,9 +70,13 @@ function Login() {
         />
       </View>
       <CustomButton
-        disable={text.length < 10 ? true : false}
+        disable={handleDisable()}
         onPress={handleSendOTP}
-        containerStyle={styles.buttonContainerStyle}
+        containerStyle={
+          handleDisable()
+            ? styles.disablebuttonContainerStyle
+            : styles.enablebuttonContainerStyle
+        }
         buttonLabel={localStrings.signIn}
         labelStyle={styles.labelStyle}
       />
@@ -121,30 +131,22 @@ const styles = StyleSheet.create({
     height: normalize(50),
     alignItems: 'center',
   },
-  checkedImageStyle: {
-    height: normalize(20),
-    width: normalize(20),
-    tintColor: Colors.LIGHTGREEN,
-  },
-  checkBoxView: {
-    height: normalize(20),
-    width: normalize(100),
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: normalize(30),
-    marginTop: normalize(20),
-  },
-  rememberTextStle: {
-    color: Colors.BLACK,
-    marginLeft: normalize(7),
-  },
 
-  buttonContainerStyle: {
+  enablebuttonContainerStyle: {
     alignItems: 'center',
     height: normalize(45),
     justifyContent: 'center',
     borderRadius: normalize(30),
     backgroundColor: Colors.GREEN,
+    marginTop: normalize(20),
+    marginHorizontal: normalize(16),
+  },
+  disablebuttonContainerStyle: {
+    alignItems: 'center',
+    height: normalize(45),
+    justifyContent: 'center',
+    borderRadius: normalize(30),
+    backgroundColor: Colors.LIGHTGREEN,
     marginTop: normalize(20),
     marginHorizontal: normalize(16),
   },

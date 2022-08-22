@@ -1,6 +1,7 @@
 import {
-  View,
   Text,
+  View,
+  Alert,
   Platform,
   Keyboard,
   StyleSheet,
@@ -8,15 +9,16 @@ import {
 } from 'react-native';
 import Colors from '../../../utils/Colors';
 import {normalize} from '../../../utils/Dimensions';
-import {useNavigation} from '@react-navigation/native';
 import LocalStrings from '../../../utils/LocalStrings';
 import Loader from '../../../components/loader/Loader';
+import {useNavigation} from '@react-navigation/native';
+import {verifyOTP} from '../../../utils/CommonFunctions';
+import firestore from '@react-native-firebase/firestore';
 import CustomTextInput from '../../../components/customTextInput';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import CustomHeader from '../../../components/customHeader/CustomHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
 
-import {verifyOTP} from '../../../utils/CommonFunctions';
 const OTP = ({route}) => {
   const navigation = useNavigation();
   const [Mpin, setMpin] = useState('');
@@ -177,20 +179,40 @@ const OTP = ({route}) => {
 
   const handleVerifyOTP = () => {
     setLoader(true);
-
     verifyOTP(
       route.params,
       Mpin,
       response => {
-        if (response) setLoader(false);
+        if (response) {
+          const {_authResult} = response?.user?._auth;
+          if (_authResult) {
+            setLoader(false);
+            console.log('verifieddd', response);
+            let uid = response.user._user.uid;
+            let phone = response.user._user.phoneNumber;
+            firestore().collection('Users').doc(uid).set({
+              Name: '',
+              About: '',
+              Phone: phone,
+              photo: '',
+            });
+            navigation.navigate('Profile', {response});
+          }
+        }
       },
-      error => {},
+      error => {
+        Alert.alert(error.message);
+        setLoader(false);
+      },
     );
   };
 
   return (
     <>
-      <CustomHeader onPress={handleBack} />
+      <CustomHeader
+        onPress={handleBack}
+        headerTitle={LocalStrings.OTP_Header}
+      />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <Text style={styles.codeSentTextStyle}>{LocalStrings.code_Sent}</Text>
@@ -256,6 +278,7 @@ const OTP = ({route}) => {
           {'Resend Code'}
         </Text>
       </KeyboardAvoidingView>
+
       <CustomButton
         onPress={handleVerifyOTP}
         labelStyle={styles.labelStyle}

@@ -13,13 +13,12 @@ export async function signInWithPhoneNumber(phoneNumber, success, fialure) {
 }
 
 export function verifyOTP(confirmation, otp, successCallback, failureCallback) {
-  console.log(confirmation);
-  //   confirmation
-  //     .confirm(otp)
-  //     .then(res => {
-  //       successCallback(res);
-  //     })
-  //     .catch(err => {
-  //       failureCallback(err);
-  //     });
+  confirmation
+    .confirm(otp)
+    .then(res => {
+      successCallback(res);
+    })
+    .catch(err => {
+      failureCallback(err);
+    });
 }

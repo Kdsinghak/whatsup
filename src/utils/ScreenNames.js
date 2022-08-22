@@ -1,5 +1,6 @@
 export default {
-  SPLASH: 'Splash_Screen',
-  LOGIN: 'Login',
   OTP: 'Otp',
+  LOGIN: 'Login',
+  PROFILE: 'Profile',
+  SPLASH: 'Splash_Screen',
 };
