@@ -15,12 +15,14 @@ export async function getAllmessages(docid, success, error) {
       .collection('ChatRooms')
       .doc(docid)
       .collection('messages')
-      .get();
+      .orderBy('createdAt', 'desc');
+    data.onSnapshot(onsnap => {
+      const allmessages = onsnap.docs.map(items => {
+        return {...items.data(), createdAt: items.data().createdAt.toDate()};
+      });
 
-    const allmessages = data.docs.map(items => {
-      return {...items.data(), createdAt: items.data().createdAt.toDate()};
+      success(allmessages);
     });
-    success(allmessages);
   } catch (error) {
     error(error);
   }
