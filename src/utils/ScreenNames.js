@@ -7,4 +7,5 @@ export default {
   PROFILE: 'Profile',
   CHATLIST: 'ChatList',
   SPLASH: 'Splash_Screen',
+  CHATROOM: 'ChatRoom',
 };

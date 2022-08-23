@@ -7,7 +7,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Alert,
 } from 'react-native';
+import {useSelector} from 'react-redux';
 import Colors from '../../../utils/Colors';
 import {getDataFromFirebase} from './profileUtils';
 import {normalize} from '../../../utils/Dimensions';
@@ -22,20 +24,20 @@ import {updateDataInFirbase} from '../../../utils/CommonFunctions';
 import CustomHeader from '../../../components/customHeader/CustomHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
 
-export default function Profile({route}) {
+export default function Profile() {
   const navigation = useNavigation();
-  const uid = route?.params?.response?.user?._user?.uid;
+
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
   const [image, setImage] = useState('');
   const [number, setNumber] = useState('');
   const [modal, setModal] = useState(false);
-
+  const {userId} = useSelector(store => store.userDetailsReducer);
   const textInput1 = useRef();
 
   useEffect(() => {
     getDataFromFirebase(
-      uid,
+      userId,
       response => {
         setName(response._data.name);
         setImage(response._data.image);
@@ -100,8 +102,16 @@ export default function Profile({route}) {
     setModal(!modal);
   };
   const onPressNext = () => {
-    updateDataInFirbase(uid, {image, name, about, number});
-    navigation.navigate(ScreenNames.HOME);
+    updateDataInFirbase(
+      userId,
+      {image, name, about, number},
+      success => {
+        navigation.navigate(ScreenNames.HOME, {success});
+      },
+      error => {
+        Alert.alert(error.message);
+      },
+    );
   };
   // const handleDisable = () => {
   //   if (text.length < 10 || text.length >= 11) return true;

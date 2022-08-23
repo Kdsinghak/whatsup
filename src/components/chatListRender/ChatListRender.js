@@ -2,10 +2,20 @@ import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {normalize} from '../../utils/Dimensions';
 import Colors from '../../utils/Colors';
+import {useNavigation} from '@react-navigation/native';
+import ScreenNames from '../../utils/ScreenNames';
 
-const ChatListRender = ({name, chatImage, message}) => {
+const ChatListRender = ({name, chatImage, message, id}) => {
+  console.log(id);
+  const navigation = useNavigation();
+  const handleNavigation = id => {
+    navigation.navigate(ScreenNames.CHATROOM, {userID: id});
+  };
+
   return (
-    <TouchableOpacity style={styles.contentContainer}>
+    <TouchableOpacity
+      style={styles.contentContainer}
+      onPress={() => handleNavigation(id)}>
       <View style={styles.userIconContainer}>
         <Image
           source={{uri: chatImage}}
