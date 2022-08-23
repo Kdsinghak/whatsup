@@ -24,8 +24,7 @@ import ScreenNames from '../../../utils/ScreenNames';
 
 export default function Profile({route}) {
   const navigation = useNavigation();
-  const uid = route.params.response.user._user.uid;
-
+  const uid = route?.params?.response?.user?._user?.uid;
   const [name, setName] = useState('');
   const [about, setAbout] = useState('');
   const [image, setImage] = useState('');
@@ -50,15 +49,37 @@ export default function Profile({route}) {
 
   const handleImagepick = () => {
     ImageCropPicker.openPicker({
-      width: 300,
-      height: 400,
       cropping: true,
+      mediaType: 'photo',
     })
       .then(image => {
-        setImage(image.sourceURL);
+        let userImage;
+        if (Platform.OS === 'ios') {
+          userImage = image.sourceURL;
+        } else {
+          userImage = image.path;
+        }
+        setImage(userImage);
       })
-      .catch(err => {
-        console.log(err);
+      .catch(error => {
+        if (error.message == LocalStrings.Image_picker_Error) {
+          Alert.alert(
+            LocalStrings.Gallery_Permission,
+            LocalStrings.Image_Selection_Alert_Description,
+            [
+              {
+                text: LocalStrings.cancel,
+                onPress: () => null,
+                style: 'cancel',
+              },
+              {
+                text: LocalStrings.Setting,
+                onPress: () => Linking.openSettings(),
+              },
+            ],
+            {cancelable: true},
+          );
+        }
       });
   };
 
@@ -82,10 +103,6 @@ export default function Profile({route}) {
   const onPressNext = () => {
     navigation.navigate(ScreenNames.HOME);
   };
-  // const handleDisable = () => {
-  //   if (text.length < 10 || text.length >= 11) return true;
-  //   else return false;
-  // };
 
   return (
     <>
@@ -293,7 +310,7 @@ const styles = StyleSheet.create({
     height: normalize(50),
   },
   userAboutContainer: {
-    width: '85%',
+    width: '87%',
     height: normalize(50),
   },
 });

@@ -1,6 +1,6 @@
 import {all} from 'redux-saga/effects';
-import {watcherSaveData} from './userDetails/saga';
+import {watcherDeleteData, watcherSaveData} from './userDetails/saga';
 
 export default function* rootSaga() {
-  yield all([watcherSaveData()]);
+  yield all([watcherSaveData(), watcherDeleteData()]);
 }

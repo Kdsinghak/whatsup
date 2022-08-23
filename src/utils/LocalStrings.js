@@ -8,9 +8,17 @@ export default {
   code_Sent: 'Code has been send to',
   Verify: 'Verify',
   Profile: 'Profile',
+  save: 'save',
   Name: 'Name',
   About: 'About',
   Phone: 'Phone',
+  Setting: 'Setting',
   Next: 'Next',
+  cancel: 'cancel',
   WhatsUp: 'WhatsUp',
+  Logout: 'Logout',
+  Gallery_Permission: 'Gallery Permission Denied!',
+  Image_picker_Error: 'User did not grant library permission.',
+  Image_Selection_Alert_Description:
+    'In order to choose an image from your gallery please give access to Urban SandBox by clicking on Setting',
 };

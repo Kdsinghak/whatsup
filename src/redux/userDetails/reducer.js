@@ -7,6 +7,8 @@ export const userDetailsReducer = (state = initialState, action) => {
   switch (type) {
     case 'ADD_DETAILS':
       return {...state, ...payload};
+    case 'DELETE_DETAILS':
+      return {...state, ...payload};
     default:
       return state;
   }
