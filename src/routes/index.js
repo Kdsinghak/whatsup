@@ -45,6 +45,7 @@ const AppRoutes = () => {
           name={ScreenNames.HOME}
           options={{gestureEnabled: false}}
         />
+        <Stack.Screen component={ChatRoom} name={ScreenNames.CHATROOM} />
       </Stack.Navigator>
     </NavigationContainer>
   );

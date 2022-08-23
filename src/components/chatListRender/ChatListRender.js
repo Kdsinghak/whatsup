@@ -1,14 +1,15 @@
 import React from 'react';
 import Colors from '../../utils/Colors';
 import {normalize} from '../../utils/Dimensions';
-import Colors from '../../utils/Colors';
 import {useNavigation} from '@react-navigation/native';
 import ScreenNames from '../../utils/ScreenNames';
+import {StyleSheet, TouchableOpacity, Image, View, Text} from 'react-native';
 
 const ChatListRender = ({name, chatImage, message, id}) => {
-  console.log(id);
+  console.log('1234567890--0987654321', id);
   const navigation = useNavigation();
   const handleNavigation = id => {
+    console.log('23456789opo765432', id);
     navigation.navigate(ScreenNames.CHATROOM, {userID: id});
   };
 
