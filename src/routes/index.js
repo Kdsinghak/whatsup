@@ -19,14 +19,32 @@ const AppRoutes = () => {
         backgroundColor="transparent"
         barStyle="dark-content"
       />
-      <Stack.Navigator
-        screenOptions={{headerShown: false, gestureEnabled: false}}>
-        <Stack.Screen component={SplashScreen} name={ScreenNames.SPLASH} />
-        <Stack.Screen component={Login} name={ScreenNames.LOGIN} />
-        <Stack.Screen component={OTP} name={ScreenNames.OTP} />
-        <Stack.Screen component={Profile} name={ScreenNames.PROFILE} />
-        <Stack.Screen component={Home} name={ScreenNames.HOME} />
-        <Stack.Screen component={ChatRoom} name={ScreenNames.CHATROOM} />
+      <Stack.Navigator screenOptions={{headerShown: false}}>
+        <Stack.Screen
+          component={SplashScreen}
+          name={ScreenNames.SPLASH}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          component={Login}
+          name={ScreenNames.LOGIN}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          component={OTP}
+          name={ScreenNames.OTP}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          component={Profile}
+          name={ScreenNames.PROFILE}
+          options={{gestureEnabled: false}}
+        />
+        <Stack.Screen
+          component={Home}
+          name={ScreenNames.HOME}
+          options={{gestureEnabled: false}}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

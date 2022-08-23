@@ -1,13 +1,12 @@
-import {StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {normalize} from '../../utils/Dimensions';
+import {Text, TouchableOpacity} from 'react-native';
 
 const CustomButton = ({
-  containerStyle,
-  buttonLabel,
-  labelStyle,
-  onPress,
   disable,
+  onPress,
+  labelStyle,
+  buttonLabel,
+  containerStyle,
 }) => {
   return (
     <TouchableOpacity
@@ -19,4 +18,4 @@ const CustomButton = ({
   );
 };
 
-export default CustomButton;
+export default React.memo(CustomButton);

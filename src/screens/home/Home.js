@@ -1,5 +1,5 @@
-import {Platform, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import {Alert, Platform, StyleSheet, Text, View, Image} from 'react-native';
+import React, {useRef, useState} from 'react';
 import ChatHeader from '../../components/chatHeader/ChatHeader';
 import {useNavigation} from '@react-navigation/native';
 import LocalImages from '../../utils/LocalImages';
@@ -15,9 +15,12 @@ import {useDispatch} from 'react-redux';
 import {requestDeleteUid} from '../../redux/userDetails/action';
 import {CommonActions} from '@react-navigation/native';
 import Loader from '../../components/loader/Loader';
+import auth from '@react-native-firebase/auth';
+import CustomTextInput from '../../components/customTextInput';
 
 const Home = () => {
   const navigation = useNavigation();
+  const {inputRef} = useRef();
   const [showTip, setTip] = useState(false);
   const [loader, setLoader] = useState(false);
   const dispatch = useDispatch();
@@ -28,15 +31,29 @@ const Home = () => {
   };
 
   const logoutUser = () => {
-    dispatch(requestDeleteUid());
     setLoader(true);
-    setTimeout(() => {
-      navigation.dispatch(
-        CommonActions.reset({index: 0, routes: [{name: ScreenNames.LOGIN}]}),
-      );
-      setLoader(false);
-    }, 2000);
+    setTip(!showTip);
+    auth()
+      .signOut()
+      .then(() => {
+        dispatch(requestDeleteUid()),
+          Alert.alert('User Logged Out'),
+          setTimeout(() => {
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{name: ScreenNames.LOGIN}],
+              }),
+            );
+            setLoader(false);
+          }, 2000);
+      })
+      .catch(error => {
+        Alert.alert(error.message);
+      });
   };
+  const onSearchText = () => {};
+
   return (
     <View style={styles.contentContainer}>
       <ChatHeader
@@ -45,6 +62,18 @@ const Home = () => {
         rightIconProfile={LocalImages.more}
         rightIconSearch={LocalImages.search}
       />
+      <View style={styles.searchView}>
+        <Image source={LocalImages.backArrow} style={styles.backArrowImage} />
+        <CustomTextInput
+          ref={inputRef}
+          ContentContainerStyle={styles.ContentContainerStyle}
+          placeholder="Search..."
+          keyBoardType={'default'}
+          setText={onSearchText}
+          maxLength={30}
+          customInputStyle={styles.customInputStyle}
+        />
+      </View>
       <Tooltip
         topAdjustment={Platform.OS === 'android' ? -StatusBar.currentHeight : 0}
         backgroundColor="transparent"
@@ -66,7 +95,7 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default React.memo(Home);
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -75,13 +104,33 @@ const styles = StyleSheet.create({
   },
   toolTipView: {
     zIndex: -1,
-    top: normalize(-30),
     elevation: -1,
+    top: normalize(-30),
     position: 'absolute',
   },
   toolTipContentStyle: {
-    position: 'absolute',
     top: 0,
-    right: 10,
+    right: normalize(10),
+    position: 'absolute',
+  },
+  backArrowImage: {
+    height: normalize(25),
+    width: normalize(25),
+  },
+  searchView: {
+    flexDirection: 'row',
+
+    height: normalize(50),
+    alignItems: 'center',
+    marginHorizontal: normalize(16),
+  },
+  ContentContainerStyle: {
+    height: normalize(40),
+    width: '80%',
+    justifyContent: 'center',
+    marginHorizontal: normalize(10),
+  },
+  customInputStyle: {
+    fontSize: normalize(20),
   },
 });

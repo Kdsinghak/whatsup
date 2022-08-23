@@ -1,10 +1,8 @@
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 import React from 'react';
-import LocalImages from '../../utils/LocalImages';
-
-import {normalize} from '../../utils/Dimensions';
-
 import Colors from '../../utils/Colors';
+import {normalize} from '../../utils/Dimensions';
+import LocalImages from '../../utils/LocalImages';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 
 const CustomHeader = ({onPress, headerTitle, image}) => {
   return (
@@ -15,48 +13,42 @@ const CustomHeader = ({onPress, headerTitle, image}) => {
         </TouchableOpacity>
         <Text style={styles.headerTextStyle}>{headerTitle}</Text>
       </View>
-      <TouchableOpacity style={styles.rightIconView} hitSlop={styles.hitslop}>
-        {image ? <Image source={image} style={styles.rightIcon} /> : null}
+      <TouchableOpacity style={styles.rightIconView} hitSlop={(10, 10, 10, 10)}>
+        {image && <Image source={image} style={styles.rightIcon} />}
       </TouchableOpacity>
     </View>
   );
 };
 
-export default CustomHeader;
+export default React.memo(CustomHeader);
 
 const styles = StyleSheet.create({
   backArrowImage: {
-    height: '100%',
     width: '100%',
+    height: '100%',
   },
   backArrowView: {
-    height: normalize(20),
     width: normalize(20),
+    height: normalize(20),
   },
   innerView: {flexDirection: 'row'},
   headerContainer: {
     flexDirection: 'row',
+    alignItems: 'center',
     height: normalize(50),
     marginTop: normalize(50),
     paddingLeft: normalize(10),
-    alignItems: 'center',
     justifyContent: 'space-between',
   },
   headerTextStyle: {
-    color: Colors.BLACK,
-    marginLeft: normalize(15),
     fontWeight: 'bold',
+    color: Colors.BLACK,
     fontSize: normalize(18),
+    marginLeft: normalize(15),
   },
   rightIcon: {
-    height: 20,
-    width: 25,
+    width: normalize(25),
+    height: normalize(20),
   },
   rightIconView: {marginRight: normalize(15)},
-  hitslop: {
-    right: 10,
-    top: 10,
-    bottom: 10,
-    left: 10,
-  },
 });

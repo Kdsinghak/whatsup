@@ -1,7 +1,7 @@
-import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
-import {normalize} from '../../utils/Dimensions';
 import Colors from '../../utils/Colors';
+import {normalize} from '../../utils/Dimensions';
+import {StyleSheet, Text, View, TouchableOpacity, Image} from 'react-native';
 
 const ChatHeader = props => {
   const {
@@ -14,6 +14,7 @@ const ChatHeader = props => {
     onRightIconClick = () => {},
     rightIconProfile,
   } = props;
+
   return (
     <View style={styles.contentContainer}>
       <View style={styles.leftHeaderContainer}>
@@ -71,7 +72,7 @@ const ChatHeader = props => {
   );
 };
 
-export default ChatHeader;
+export default React.memo(ChatHeader);
 
 const styles = StyleSheet.create({
   contentContainer: {
