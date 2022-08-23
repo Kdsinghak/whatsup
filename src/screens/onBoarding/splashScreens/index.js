@@ -4,13 +4,19 @@ import {View, StyleSheet, Image} from 'react-native';
 import localImages from '../../../utils/LocalImages';
 import ScreenNames from '../../../utils/ScreenNames';
 import {useNavigation} from '@react-navigation/native';
+import {useSelector} from 'react-redux';
 
 export default function SplashScreen() {
   const navigation = useNavigation();
+  const {userId} = useSelector(store => store.userDetailsReducer);
 
   useEffect(() => {
     setTimeout(() => {
-      navigation.replace(ScreenNames.LOGIN);
+      if (userId) {
+        navigation.replace(ScreenNames.HOME);
+      } else {
+        navigation.replace(ScreenNames.LOGIN);
+      }
     }, 2000);
   });
 
