@@ -39,6 +39,7 @@ const Chats = () => {
   const flatListItemSeparator = () => {
     return <View style={styles.itemSeparatorStyle} />;
   };
+
   return (
     <View style={styles.contentContainer}>
       <FlatList
@@ -50,7 +51,7 @@ const Chats = () => {
   );
 };
 
-export default Chats;
+export default React.memo(Chats);
 
 const styles = StyleSheet.create({
   contentContainer: {

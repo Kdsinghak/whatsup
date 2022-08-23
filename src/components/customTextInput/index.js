@@ -1,5 +1,5 @@
-import {View, TextInput} from 'react-native';
 import React, {forwardRef} from 'react';
+import {View, TextInput} from 'react-native';
 
 const CustomText = forwardRef((props, ref) => {
   return (
@@ -14,10 +14,12 @@ const CustomText = forwardRef((props, ref) => {
         }}
         onKeyPress={props?.onKeyPressText}
         maxLength={parseInt(props.maxLength)}
-        // autoFocus={true}
+        autoCapitalize={false}
+        autoCorrect={false}
+        autoComplete={false}
       />
     </View>
   );
 });
 
-export default CustomText;
+export default React.memo(CustomText);

@@ -26,8 +26,6 @@ const Home = () => {
     navigation.navigate(ScreenNames.PROFILE);
   };
 
-  // const handleSkip = () => {};
-
   const logoutUser = () => {
     dispatch(requestDeleteUid());
     setLoader(true);
@@ -67,7 +65,7 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default React.memo(Home);
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -76,13 +74,13 @@ const styles = StyleSheet.create({
   },
   toolTipView: {
     zIndex: -1,
-    top: normalize(-30),
     elevation: -1,
+    top: normalize(-30),
     position: 'absolute',
   },
   toolTipContentStyle: {
-    position: 'absolute',
     top: 0,
     right: 10,
+    position: 'absolute',
   },
 });

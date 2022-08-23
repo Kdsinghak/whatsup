@@ -101,14 +101,14 @@ const styles = StyleSheet.create({
   signInHeadingStyle: {
     alignSelf: 'center',
     color: colors.BLACK,
-    fontSize: normalize(18),
     fontWeight: 'bold',
+    fontSize: normalize(18),
   },
   phoneNumberText: {
-    marginLeft: '6%',
-    marginTop: 20,
-    padding: 10,
     opacity: 0.5,
+    padding: 10,
+    marginTop: 20,
+    marginLeft: '6%',
     fontWeight: 'bold',
   },
   loginText: {
@@ -124,21 +124,21 @@ const styles = StyleSheet.create({
   },
   TextInputView: {
     flexDirection: 'row',
-    marginHorizontal: normalize(16),
+    alignItems: 'center',
+    height: normalize(50),
     borderColor: colors.GREEN,
     borderWidth: normalize(2),
     borderRadius: normalize(30),
-    height: normalize(50),
-    alignItems: 'center',
+    marginHorizontal: normalize(16),
   },
 
   enablebuttonContainerStyle: {
     alignItems: 'center',
     height: normalize(45),
     justifyContent: 'center',
+    marginTop: normalize(20),
     borderRadius: normalize(30),
     backgroundColor: Colors.GREEN,
-    marginTop: normalize(20),
     marginHorizontal: normalize(16),
   },
   disablebuttonContainerStyle: {
@@ -146,9 +146,9 @@ const styles = StyleSheet.create({
     height: normalize(45),
     justifyContent: 'center',
     borderRadius: normalize(30),
-    backgroundColor: Colors.LIGHTGREEN,
     marginTop: normalize(20),
     marginHorizontal: normalize(16),
+    backgroundColor: Colors.LIGHTGREEN,
   },
 
   labelStyle: {

@@ -1,7 +1,7 @@
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {normalize} from '../../utils/Dimensions';
 import Colors from '../../utils/Colors';
+import {normalize} from '../../utils/Dimensions';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 
 const ChatListRender = ({name, chatImage, message}) => {
   return (
@@ -9,7 +9,7 @@ const ChatListRender = ({name, chatImage, message}) => {
       <View style={styles.userIconContainer}>
         <Image
           source={{uri: chatImage}}
-          resizeMode="contain"
+          resizeMode="cover"
           style={styles.smallImage}
         />
       </View>
@@ -21,7 +21,7 @@ const ChatListRender = ({name, chatImage, message}) => {
   );
 };
 
-export default ChatListRender;
+export default React.memo(ChatListRender);
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -29,17 +29,17 @@ const styles = StyleSheet.create({
     padding: normalize(10),
   },
   userIconContainer: {
-    height: normalize(60),
-    width: normalize(60),
-    borderRadius: normalize(30),
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.GREY,
     overflow: 'hidden',
+    width: normalize(60),
+    height: normalize(60),
+    justifyContent: 'center',
+    borderRadius: normalize(30),
+    backgroundColor: Colors.GREY,
   },
   smallImage: {
-    width: '90%',
-    height: '90%',
+    width: '100%',
+    height: '100%',
   },
   userName: {
     fontWeight: 'bold',
