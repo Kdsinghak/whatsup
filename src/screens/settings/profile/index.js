@@ -9,18 +9,18 @@ import {
   KeyboardAvoidingView,
 } from 'react-native';
 import Colors from '../../../utils/Colors';
-import React, {useState, useEffect, useRef} from 'react';
 import {getDataFromFirebase} from './profileUtils';
 import {normalize} from '../../../utils/Dimensions';
 import LocalImages from '../../../utils/LocalImages';
-import LocalStrings from '../../../utils/LocalStrings';
+import ScreenNames from '../../../utils/ScreenNames';
 import {useNavigation} from '@react-navigation/native';
+import LocalStrings from '../../../utils/LocalStrings';
+import React, {useState, useEffect, useRef} from 'react';
 import ImageCropPicker from 'react-native-image-crop-picker';
-import CustomHeader from '../../../components/customHeader/CustomHeader';
 import CustomText from '../../../components/customTextInput';
 import {updateDataInFirbase} from '../../../utils/CommonFunctions';
+import CustomHeader from '../../../components/customHeader/CustomHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
-import ScreenNames from '../../../utils/ScreenNames';
 
 export default function Profile({route}) {
   const navigation = useNavigation();
@@ -29,16 +29,17 @@ export default function Profile({route}) {
   const [about, setAbout] = useState('');
   const [image, setImage] = useState('');
   const [number, setNumber] = useState('');
-  const textInput1 = useRef();
   const [modal, setModal] = useState(false);
+
+  const textInput1 = useRef();
 
   useEffect(() => {
     getDataFromFirebase(
       uid,
       response => {
         setName(response._data.name);
-        setAbout(response._data.about);
         setImage(response._data.image);
+        setAbout(response._data.about);
         setNumber(response._data.number);
       },
       error => {
@@ -91,8 +92,6 @@ export default function Profile({route}) {
     setModal(!modal);
   };
 
-  const setText = () => {};
-
   const handleCancel = () => {
     setModal(!modal);
   };
@@ -101,8 +100,13 @@ export default function Profile({route}) {
     setModal(!modal);
   };
   const onPressNext = () => {
+    updateDataInFirbase(uid, {image, name, about, number});
     navigation.navigate(ScreenNames.HOME);
   };
+  // const handleDisable = () => {
+  //   if (text.length < 10 || text.length >= 11) return true;
+  //   else return false;
+  // };
 
   return (
     <>
@@ -174,7 +178,7 @@ export default function Profile({route}) {
               TextStyle={styles.nameTextStyle}
               keyBoardType="default"
               maxLength="20"
-              setText={setText}
+              setText={setName}
               ContentContainerStyle={styles.ContentContainerStyle}
             />
             <View style={styles.modalCloseText}>

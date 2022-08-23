@@ -3,7 +3,9 @@ import React, {useState} from 'react';
 import ChatHeader from '../../components/chatHeader/ChatHeader';
 import {useNavigation} from '@react-navigation/native';
 import LocalImages from '../../utils/LocalImages';
+
 import LocalStrings from '../../utils/LocalStrings';
+
 import MyTabs from '../../routes/topTabNavigator/TopNavigation';
 import Colors from '../../utils/Colors';
 import Tooltip from 'react-native-walkthrough-tooltip';
@@ -23,6 +25,8 @@ const Home = () => {
     setTip(!showTip);
     navigation.navigate(ScreenNames.PROFILE);
   };
+
+  // const handleSkip = () => {};
 
   const logoutUser = () => {
     dispatch(requestDeleteUid());
