@@ -1,5 +1,8 @@
+import Snackbar from 'react-native-snackbar';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
+import Colors from './Colors';
+
 export async function signInWithPhoneNumber(phoneNumber, success, fialure) {
   console.log('phoneNumber', phoneNumber);
   try {
@@ -50,3 +53,12 @@ export async function getDatafromFirebase(uid, success, error) {
     error(error);
   }
 }
+
+export const showToast = message => {
+  Snackbar.show({
+    text: message,
+    backgroundColor: Colors.BLACK,
+    duration: 1000,
+    textColor: Colors.WHITE,
+  });
+};

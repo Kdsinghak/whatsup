@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView,
+  ScrollView,
 } from 'react-native';
 import Colors from '../../../utils/Colors';
 import {getDataFromFirebase} from './profileUtils';
@@ -115,57 +116,62 @@ export default function Profile({route}) {
         headerTitle={LocalStrings.Profile}
         image={LocalImages.more}
       />
-      <View style={styles.profileImageView}>
-        <View style={styles.profileImage}>
-          <Image
-            source={{
-              uri: image,
-            }}
-            style={styles.profileImage}
-          />
+      <ScrollView bounces={false}>
+        <View style={styles.profileImageView}>
+          <View style={styles.profileImage}>
+            <Image
+              source={{
+                uri: image,
+              }}
+              style={styles.profileImage}
+            />
+          </View>
+          <TouchableOpacity
+            onPress={handleImagepick}
+            style={styles.editIconContainer}>
+            <Image style={styles.editImageIcon} source={LocalImages.edit} />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          onPress={handleImagepick}
-          style={styles.editIconContainer}>
-          <Image style={styles.editImageIcon} source={LocalImages.edit} />
+        <TouchableOpacity onPress={handleName} style={styles.detailsContainer}>
+          <View style={styles.iconStyleView}>
+            <Image
+              source={LocalImages.userNameIcon}
+              style={styles.iconStyles}
+            />
+          </View>
+          <View style={styles.userDetailsContainer}>
+            <Text style={styles.textStyle}>{LocalStrings.Name}</Text>
+            <Text style={styles.detailsTextStyle}>{name}</Text>
+          </View>
+          <View style={styles.iconStyleView}>
+            <Image style={styles.iconStyles} source={LocalImages.pencil} />
+          </View>
         </TouchableOpacity>
-      </View>
-      <TouchableOpacity onPress={handleName} style={styles.detailsContainer}>
-        <View style={styles.iconStyleView}>
-          <Image source={LocalImages.userNameIcon} style={styles.iconStyles} />
+        <View style={styles.detailsContainer}>
+          <View style={styles.iconStyleView}>
+            <Image source={LocalImages.info} style={styles.iconStyles} />
+          </View>
+          <View style={styles.userAboutContainer}>
+            <Text style={styles.textStyle}>{LocalStrings.About}</Text>
+            <Text style={styles.detailsTextStyle}>{about}</Text>
+          </View>
         </View>
-        <View style={styles.userDetailsContainer}>
-          <Text style={styles.textStyle}>{LocalStrings.Name}</Text>
-          <Text style={styles.detailsTextStyle}>{name}</Text>
+        <View style={styles.detailsContainer}>
+          <View style={styles.iconStyleView}>
+            <Image source={LocalImages.phone} style={styles.iconStyles} />
+          </View>
+          <View style={styles.userAboutContainer}>
+            <Text style={styles.textStyle}>{LocalStrings.Phone}</Text>
+            <Text style={styles.detailsTextStyle}>{number}</Text>
+          </View>
         </View>
-        <View style={styles.iconStyleView}>
-          <Image style={styles.iconStyles} source={LocalImages.pencil} />
-        </View>
-      </TouchableOpacity>
-      <View style={styles.detailsContainer}>
-        <View style={styles.iconStyleView}>
-          <Image source={LocalImages.info} style={styles.iconStyles} />
-        </View>
-        <View style={styles.userAboutContainer}>
-          <Text style={styles.textStyle}>{LocalStrings.About}</Text>
-          <Text style={styles.detailsTextStyle}>{about}</Text>
-        </View>
-      </View>
-      <View style={styles.detailsContainer}>
-        <View style={styles.iconStyleView}>
-          <Image source={LocalImages.phone} style={styles.iconStyles} />
-        </View>
-        <View style={styles.userAboutContainer}>
-          <Text style={styles.textStyle}>{LocalStrings.Phone}</Text>
-          <Text style={styles.detailsTextStyle}>{number}</Text>
-        </View>
-      </View>
-      <CustomButton
-        onPress={onPressNext}
-        containerStyle={styles.enablebuttonContainerStyle}
-        buttonLabel={LocalStrings.Next}
-        labelStyle={styles.labelStyle}
-      />
+        <CustomButton
+          onPress={onPressNext}
+          containerStyle={styles.enablebuttonContainerStyle}
+          buttonLabel={LocalStrings.Next}
+          labelStyle={styles.labelStyle}
+        />
+      </ScrollView>
       <Modal animationType="slide" transparent={true} visible={modal}>
         <View style={{flex: 1, justifyContent: 'center'}}>
           <KeyboardAvoidingView
@@ -284,8 +290,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: normalize(45),
     justifyContent: 'center',
-    marginTop: normalize(100),
     borderRadius: normalize(30),
+    marginVertical: normalize(50),
     backgroundColor: Colors.GREEN,
     marginHorizontal: normalize(16),
   },
