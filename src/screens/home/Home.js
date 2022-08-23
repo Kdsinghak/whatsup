@@ -1,11 +1,11 @@
-import {StyleSheet, Text, View} from 'react-native';
-import React from 'react';
-import ChatHeader from '../../components/chatHeader/ChatHeader';
-import {useNavigation} from '@react-navigation/native';
-import LocalImages from '../../utils/LocalImages';
-import LocalStrings from '../../utils/LocalStrings';
-import MyTabs from '../../routes/topTabNavigator/TopNavigation';
+import React, {useEffect, useState} from 'react';
 import Colors from '../../utils/Colors';
+import LocalImages from '../../utils/LocalImages';
+import {Alert, StyleSheet, Text, View} from 'react-native';
+import LocalStrings from '../../utils/LocalStrings';
+import {useNavigation} from '@react-navigation/native';
+import ChatHeader from '../../components/chatHeader/ChatHeader';
+import MyTabs from '../../routes/topTabNavigator/TopNavigation';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -13,13 +13,14 @@ const Home = () => {
     navigation.goBack();
   };
 
-  const handleSkip = () => {};
+  // const handleSkip = () => {};
+
   return (
     <View style={styles.contentContainer}>
       <ChatHeader
         backHandle={onBackpress}
         text={LocalStrings.WhatsUp}
-        onRightIconClick={handleSkip}
+        // onRightIconClick={handleSkip}
         rightIconProfile={LocalImages.more}
         rightIconSearch={LocalImages.search}
       />
