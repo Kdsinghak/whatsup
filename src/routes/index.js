@@ -8,7 +8,7 @@ import Profile from '../screens/settings/profile';
 import {NavigationContainer} from '@react-navigation/native';
 import SplashScreen from '../screens/onBoarding/splashScreens';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
+import ChatRoom from '../screens/chat/ChatRoom';
 const Stack = createNativeStackNavigator();
 
 const AppRoutes = () => {
@@ -26,6 +26,7 @@ const AppRoutes = () => {
         <Stack.Screen component={OTP} name={ScreenNames.OTP} />
         <Stack.Screen component={Profile} name={ScreenNames.PROFILE} />
         <Stack.Screen component={Home} name={ScreenNames.HOME} />
+        <Stack.Screen component={ChatRoom} name={ScreenNames.CHATROOM} />
       </Stack.Navigator>
     </NavigationContainer>
   );

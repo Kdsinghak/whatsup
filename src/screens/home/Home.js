@@ -21,12 +21,11 @@ const Home = () => {
   const [showTip, setTip] = useState(false);
   const [loader, setLoader] = useState(false);
   const dispatch = useDispatch();
+
   const handleTooltipPress = () => {
     setTip(!showTip);
     navigation.navigate(ScreenNames.PROFILE);
   };
-
-  // const handleSkip = () => {};
 
   const logoutUser = () => {
     dispatch(requestDeleteUid());
