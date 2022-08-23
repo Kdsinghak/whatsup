@@ -1,7 +1,7 @@
 import {useSelector} from 'react-redux';
 import {View, StyleSheet} from 'react-native';
 import {GiftedChat} from 'react-native-gifted-chat';
-import React, {useCallback, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {createRoom, getAllmessages} from './ChatUtils';
 import firestore from '@react-native-firebase/firestore';
 
