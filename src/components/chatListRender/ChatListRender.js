@@ -8,7 +8,7 @@ const ChatListRender = ({name, chatImage, message}) => {
     <TouchableOpacity style={styles.contentContainer}>
       <View style={styles.userIconContainer}>
         <Image
-          source={chatImage}
+          source={{uri: chatImage}}
           resizeMode="contain"
           style={styles.smallImage}
         />

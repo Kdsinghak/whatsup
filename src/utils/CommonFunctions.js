@@ -35,3 +35,18 @@ export function updateDataInFirbase(uid, details) {
     })
     .catch(err => console.log(err));
 }
+
+export async function getDatafromFirebase(uid, success, error) {
+  console.log(uid);
+  try {
+    const data = await firestore()
+      .collection('Users')
+      .where('id', '!=', uid)
+      .get();
+    console.log(data);
+    const allUsers = data.docs.map(items => items.data());
+    success(allUsers);
+  } catch (error) {
+    error(error);
+  }
+}

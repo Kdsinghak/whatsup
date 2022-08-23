@@ -1,16 +1,37 @@
-import React from 'react';
 import Colors from '../../utils/Colors';
-import Data from '../../utils/StaticData';
+import {useSelector} from 'react-redux';
+import React, {useState, useEffect} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
+import {getDatafromFirebase} from '../../utils/CommonFunctions';
 import ChatListRender from '../../components/chatListRender/ChatListRender';
 
 const Chats = () => {
+  const [users, setAllUsers] = useState();
+
+  const {userId} = useSelector(store => store.userDetailsReducer);
+
+  const getAllUsers = () => {
+    getDatafromFirebase(
+      userId,
+      success => {
+        setAllUsers(success);
+      },
+      error => {
+        Alert.alert(error.meaasge);
+      },
+    );
+  };
+
+  useEffect(() => {
+    getAllUsers();
+  }, []);
+
   const onRender = ({item}) => {
     return (
       <ChatListRender
         name={item.name}
-        message={item.message}
-        chatImage={item.profile}
+        // message={item.message}
+        chatImage={item.image}
       />
     );
   };
@@ -21,7 +42,7 @@ const Chats = () => {
   return (
     <View style={styles.contentContainer}>
       <FlatList
-        data={Data}
+        data={users}
         renderItem={onRender}
         ItemSeparatorComponent={flatListItemSeparator}
       />
