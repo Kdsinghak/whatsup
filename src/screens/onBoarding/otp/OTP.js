@@ -19,10 +19,7 @@ import React, {useCallback, useEffect, useRef, useState} from 'react';
 import CustomHeader from '../../../components/customHeader/CustomHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
 import {useDispatch} from 'react-redux';
-import {
-  requestConfirmUid,
-  requestForStoreData,
-} from '../../../redux/userDetails/action';
+import {requestConfirmUid} from '../../../redux/userDetails/action';
 const OTP = ({route}) => {
   const navigation = useNavigation();
   const [Mpin, setMpin] = useState('');
@@ -196,12 +193,12 @@ const OTP = ({route}) => {
               let phone = response.user._user.phoneNumber;
               firestore().collection('Users').doc(uid).set({
                 name: '',
-                about: 'start your conversation',
+                about: 'Available',
                 number: phone,
                 image: 'https://cdn-icons-png.flaticon.com/128/149/149071.png',
                 id: uid,
               });
-              navigation.navigate('Profile', {response});
+              navigation.navigate('Profile');
             }
           }
         },

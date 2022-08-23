@@ -32,6 +32,7 @@ const Chats = () => {
         name={item.name}
         // message={item.message}
         chatImage={item.image}
+        id={item.id}
       />
     );
   };

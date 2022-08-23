@@ -8,7 +8,7 @@ import Profile from '../screens/settings/profile';
 import {NavigationContainer} from '@react-navigation/native';
 import SplashScreen from '../screens/onBoarding/splashScreens';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
+import ChatRoom from '../screens/chat/ChatRoom';
 const Stack = createNativeStackNavigator();
 
 const AppRoutes = () => {

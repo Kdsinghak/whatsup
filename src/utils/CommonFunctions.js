@@ -27,26 +27,26 @@ export function verifyOTP(confirmation, otp, successCallback, failureCallback) {
     });
 }
 
-export function updateDataInFirbase(uid, details) {
-  console.log(details);
+export function updateDataInFirbase(uid, details, success, failure) {
+  console.log('update details', uid, details);
   firestore()
     .collection('Users')
     .doc(uid)
     .update(details)
     .then(res => {
-      console.log('update', res);
+      success(res);
     })
-    .catch(err => console.log(err));
+    .catch(error => {
+      failure(error);
+    });
 }
 
 export async function getDatafromFirebase(uid, success, error) {
-  console.log(uid);
   try {
     const data = await firestore()
       .collection('Users')
       .where('id', '!=', uid)
       .get();
-    console.log(data);
     const allUsers = data.docs.map(items => items.data());
     success(allUsers);
   } catch (error) {
