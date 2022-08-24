@@ -22,7 +22,8 @@ import React, {useState, useEffect, useRef} from 'react';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import CustomText from '../../../components/customTextInput';
 import {updateDataInFirbase} from '../../../utils/CommonFunctions';
-import CustomHeader from '../../../components/customHeader/CustomHeader';
+
+import ChatHeader from '../../../components/chatHeader/ChatHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
 
 export default function Profile() {
@@ -114,17 +115,13 @@ export default function Profile() {
       },
     );
   };
-  // const handleDisable = () => {
-  //   if (text.length < 10 || text.length >= 11) return true;
-  //   else return false;
-  // };
 
   return (
     <>
-      <CustomHeader
-        onPress={handleNavigation}
-        headerTitle={LocalStrings.Profile}
-        image={LocalImages.more}
+      <ChatHeader
+        leftIcon={LocalImages.backArrow}
+        text={LocalStrings.Profile}
+        backHandle={handleNavigation}
       />
       <ScrollView bounces={false}>
         <View style={styles.profileImageView}>

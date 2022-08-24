@@ -12,7 +12,7 @@ import {normalize} from '../../../utils/Dimensions';
 import LocalStrings from '../../../utils/LocalStrings';
 import Loader from '../../../components/loader/Loader';
 import {useNavigation} from '@react-navigation/native';
-import {verifyOTP} from '../../../utils/CommonFunctions';
+import {showToast, verifyOTP} from '../../../utils/CommonFunctions';
 import firestore from '@react-native-firebase/firestore';
 import CustomTextInput from '../../../components/customTextInput';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
@@ -176,8 +176,6 @@ const OTP = ({route}) => {
     }
   };
 
-  const handleResendOTP = () => {};
-
   const handleVerifyOTP = () => {
     setLoader(true);
     dispatch(
@@ -278,9 +276,6 @@ const OTP = ({route}) => {
           />
         </View>
 
-        {/* <Text onPress={handleResendOTP} style={styles.sendLinkTextStyle}>
-          {'Resend Code'}
-        </Text> */}
         <CustomButton
           onPress={handleVerifyOTP}
           labelStyle={styles.labelStyle}
