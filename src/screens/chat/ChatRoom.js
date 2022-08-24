@@ -58,6 +58,7 @@ export default function ChatRoom({route}) {
         user={{
           _id: userId,
         }}
+        showAvatarForEveryMessage={true}
         messagesContainerStyle={{
           paddingTop: getStatusBarHeight() + normalize(5),
         }}

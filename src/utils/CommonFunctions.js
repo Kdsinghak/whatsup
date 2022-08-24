@@ -1,7 +1,7 @@
+import Colors from './Colors';
 import Snackbar from 'react-native-snackbar';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import Colors from './Colors';
 
 export async function signInWithPhoneNumber(phoneNumber, success, fialure) {
   console.log('phoneNumber', phoneNumber);

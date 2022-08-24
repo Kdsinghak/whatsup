@@ -1,25 +1,17 @@
-import {
-  Text,
-  View,
-  Alert,
-  Platform,
-  Keyboard,
-  StyleSheet,
-  KeyboardAvoidingView,
-} from 'react-native';
-import Colors from '../../../utils/Colors';
-import {normalize} from '../../../utils/Dimensions';
-import LocalStrings from '../../../utils/LocalStrings';
-import Loader from '../../../components/loader/Loader';
+import {styles} from './style';
+import {useDispatch} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
-import {showToast, verifyOTP} from '../../../utils/CommonFunctions';
+import Loader from '../../../components/loader/Loader';
+import LocalStrings from '../../../utils/LocalStrings';
+import {showToast} from '../../../utils/CommonFunctions';
 import firestore from '@react-native-firebase/firestore';
 import CustomTextInput from '../../../components/customTextInput';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import CustomHeader from '../../../components/customHeader/CustomHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
-import {useDispatch} from 'react-redux';
 import {requestConfirmUid} from '../../../redux/userDetails/action';
+import {View, Text, Keyboard} from 'react-native';
+
 const OTP = ({route}) => {
   const navigation = useNavigation();
   const [Mpin, setMpin] = useState('');
@@ -187,8 +179,9 @@ const OTP = ({route}) => {
             const {_authResult} = response?.user?._auth;
             if (_authResult) {
               setLoader(false);
-              let uid = response.user._user.uid;
-              let phone = response.user._user.phoneNumber;
+              let uid = response?.user?._user?.uid;
+              let phone = response?.user?._user?.phoneNumber;
+
               firestore().collection('Users').doc(uid).set({
                 name: '',
                 about: 'Available',
@@ -196,13 +189,13 @@ const OTP = ({route}) => {
                 image: 'https://cdn-icons-png.flaticon.com/128/149/149071.png',
                 id: uid,
               });
-              navigation.navigate('Profile');
+              navigation.navigate('Profile', {uid: uid});
             }
           }
         },
         error => {
-          Alert.alert(error.message);
           setLoader(false);
+          showToast(error.message);
         },
       ),
     );
@@ -214,9 +207,7 @@ const OTP = ({route}) => {
         onPress={handleBack}
         headerTitle={LocalStrings.OTP_Header}
       />
-      <KeyboardAvoidingView
-        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{flex: 1}}>
+      <View style={{flex: 1}}>
         <Text style={styles.codeSentTextStyle}>{LocalStrings.code_Sent}</Text>
 
         <View style={styles.inputcontainer}>
@@ -282,7 +273,7 @@ const OTP = ({route}) => {
           buttonLabel={LocalStrings.Verify}
           containerStyle={styles.buttonContainerStyle}
         />
-      </KeyboardAvoidingView>
+      </View>
 
       {loader && <Loader />}
     </>
@@ -290,53 +281,3 @@ const OTP = ({route}) => {
 };
 
 export default React.memo(OTP);
-
-const styles = StyleSheet.create({
-  customInputStyle: {
-    width: normalize(30),
-    height: normalize(40),
-    textAlign: 'center',
-    fontSize: normalize(17),
-  },
-  contentContainerStyle: {
-    flexDirection: 'row',
-    width: normalize(45),
-    alignItems: 'center',
-    height: normalize(50),
-    justifyContent: 'center',
-    borderWidth: normalize(1),
-    borderRadius: normalize(10),
-    borderColor: Colors.LIGHTGREEN,
-  },
-  inputcontainer: {
-    flexDirection: 'row',
-    marginTop: normalize(30),
-    justifyContent: 'space-around',
-    marginHorizontal: normalize(16),
-  },
-  codeSentTextStyle: {
-    alignSelf: 'center',
-    color: Colors.BLACK,
-    marginTop: normalize(100),
-  },
-
-  buttonContainerStyle: {
-    marginTop: '45%',
-    alignItems: 'center',
-    height: normalize(45),
-    justifyContent: 'center',
-    borderRadius: normalize(30),
-    marginBottom: normalize(100),
-    backgroundColor: Colors.GREEN,
-    marginHorizontal: normalize(16),
-  },
-  labelStyle: {
-    color: Colors.WHITE,
-    fontSize: normalize(20),
-  },
-  sendLinkTextStyle: {
-    color: Colors.BLACK,
-    textAlign: 'center',
-    marginTop: normalize(100),
-  },
-});
