@@ -1,4 +1,12 @@
-import {Alert, Platform, StyleSheet, Text, View, Image} from 'react-native';
+import {
+  Alert,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  StatusBar,
+} from 'react-native';
 import React, {useRef, useState} from 'react';
 import ChatHeader from '../../components/chatHeader/ChatHeader';
 import {useNavigation} from '@react-navigation/native';
