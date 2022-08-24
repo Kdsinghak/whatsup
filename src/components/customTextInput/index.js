@@ -16,7 +16,6 @@ const CustomText = forwardRef((props, ref) => {
         maxLength={parseInt(props.maxLength)}
         autoCapitalize={false}
         autoCorrect={false}
-        autoComplete={false}
       />
     </View>
   );

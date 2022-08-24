@@ -217,7 +217,8 @@ const OTP = ({route}) => {
         headerTitle={LocalStrings.OTP_Header}
       />
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{flex: 1}}>
         <Text style={styles.codeSentTextStyle}>{LocalStrings.code_Sent}</Text>
 
         <View style={styles.inputcontainer}>
@@ -277,17 +278,17 @@ const OTP = ({route}) => {
           />
         </View>
 
-        <Text onPress={handleResendOTP} style={styles.sendLinkTextStyle}>
+        {/* <Text onPress={handleResendOTP} style={styles.sendLinkTextStyle}>
           {'Resend Code'}
-        </Text>
+        </Text> */}
+        <CustomButton
+          onPress={handleVerifyOTP}
+          labelStyle={styles.labelStyle}
+          buttonLabel={LocalStrings.Verify}
+          containerStyle={styles.buttonContainerStyle}
+        />
       </KeyboardAvoidingView>
 
-      <CustomButton
-        onPress={handleVerifyOTP}
-        labelStyle={styles.labelStyle}
-        buttonLabel={LocalStrings.Verify}
-        containerStyle={styles.buttonContainerStyle}
-      />
       {loader && <Loader />}
     </>
   );
@@ -298,9 +299,9 @@ export default React.memo(OTP);
 const styles = StyleSheet.create({
   customInputStyle: {
     width: normalize(30),
-    height: normalize(30),
+    height: normalize(40),
     textAlign: 'center',
-    fontSize: normalize(20),
+    fontSize: normalize(17),
   },
   contentContainerStyle: {
     flexDirection: 'row',
@@ -313,7 +314,6 @@ const styles = StyleSheet.create({
     borderColor: Colors.LIGHTGREEN,
   },
   inputcontainer: {
-    flex: 1,
     flexDirection: 'row',
     marginTop: normalize(30),
     justifyContent: 'space-around',
@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
   },
 
   buttonContainerStyle: {
-    marginTop: 'auto',
+    marginTop: '45%',
     alignItems: 'center',
     height: normalize(45),
     justifyContent: 'center',
