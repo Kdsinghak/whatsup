@@ -17,6 +17,7 @@ export default {
   cancel: 'cancel',
   WhatsUp: 'WhatsUp',
   Logout: 'Logout',
+  EnterName: 'Enter Your Name',
   Gallery_Permission: 'Gallery Permission Denied!',
   Image_picker_Error: 'User did not grant library permission.',
   Image_Selection_Alert_Description:

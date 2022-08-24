@@ -1,10 +1,10 @@
+import {styles} from './styles';
 import React, {useEffect} from 'react';
-import colors from '../../../utils/Colors';
-import {View, StyleSheet, Image} from 'react-native';
+import {useSelector} from 'react-redux';
+import {View, Image} from 'react-native';
 import localImages from '../../../utils/LocalImages';
 import ScreenNames from '../../../utils/ScreenNames';
 import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
 
 export default function SplashScreen() {
   const navigation = useNavigation();
@@ -26,16 +26,3 @@ export default function SplashScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.WHITE,
-  },
-  ImageStyle: {
-    width: '80%',
-    height: '80%',
-  },
-});
