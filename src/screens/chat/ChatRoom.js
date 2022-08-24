@@ -4,6 +4,9 @@ import {GiftedChat} from 'react-native-gifted-chat';
 import React, {useState, useEffect} from 'react';
 import {createRoom, getAllmessages} from './ChatUtils';
 import firestore from '@react-native-firebase/firestore';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
+
+import {normalize} from '../../utils/Dimensions';
 
 export default function ChatRoom({route}) {
   const [messages, setMessages] = useState([]);
@@ -43,6 +46,12 @@ export default function ChatRoom({route}) {
 
   return (
     <View style={styles.container}>
+      <View
+        style={[
+          styles.headerViewStyle,
+          {marginTop: getStatusBarHeight()},
+        ]}></View>
+
       <GiftedChat
         messages={messages}
         onSend={messages => onSend(messages)}
@@ -50,6 +59,9 @@ export default function ChatRoom({route}) {
           _id: userId,
         }}
         showAvatarForEveryMessage={true}
+        messagesContainerStyle={{
+          paddingTop: getStatusBarHeight() + normalize(5),
+        }}
       />
     </View>
   );
@@ -59,5 +71,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'aqua',
+  },
+  headerViewStyle: {
+    backgroundColor: 'red',
+    height: normalize(50),
+    position: 'absolute',
+    width: '100%',
   },
 });

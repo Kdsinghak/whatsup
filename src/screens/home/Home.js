@@ -6,14 +6,15 @@ import {
   View,
   Image,
   StatusBar,
+  TouchableOpacity,
+  Animated,
 } from 'react-native';
 import React, {useRef, useState} from 'react';
 import ChatHeader from '../../components/chatHeader/ChatHeader';
 import {useNavigation} from '@react-navigation/native';
 import LocalImages from '../../utils/LocalImages';
-
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 import LocalStrings from '../../utils/LocalStrings';
-
 import MyTabs from '../../routes/topTabNavigator/TopNavigation';
 import Colors from '../../utils/Colors';
 import Tooltip from 'react-native-walkthrough-tooltip';
@@ -27,11 +28,24 @@ import auth from '@react-native-firebase/auth';
 import CustomTextInput from '../../components/customTextInput';
 
 const Home = () => {
+  console.log('mystatuss', StatusBar.currentHeight);
   const navigation = useNavigation();
   const {inputRef} = useRef();
   const [showTip, setTip] = useState(false);
   const [loader, setLoader] = useState(false);
+  const [isSearch, setSearch] = useState(false);
+  const transform = useState(new Animated.Value(0))[0];
   const dispatch = useDispatch();
+
+  let scale = [
+    {
+      scale: transform.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1],
+        extrapolate: 'clamp',
+      }),
+    },
+  ];
 
   const handleTooltipPress = () => {
     setTip(!showTip);
@@ -45,7 +59,6 @@ const Home = () => {
       .signOut()
       .then(() => {
         dispatch(requestDeleteUid()),
-          Alert.alert('User Logged Out'),
           setTimeout(() => {
             navigation.dispatch(
               CommonActions.reset({
@@ -55,6 +68,7 @@ const Home = () => {
             );
             setLoader(false);
           }, 2000);
+        Alert.alert('User Logged Out');
       })
       .catch(error => {
         Alert.alert(error.message);
@@ -62,26 +76,62 @@ const Home = () => {
   };
   const onSearchText = () => {};
 
+  const onRightIconSearchClick = () => {
+    Animated.timing(transform, {
+      duration: 400,
+      toValue: 1,
+      useNativeDriver: true,
+    }).start();
+    setSearch(true);
+  };
+  const handleTextInputBack = () => {
+    Animated.timing(transform, {
+      duration: 400,
+      toValue: 0,
+      useNativeDriver: true,
+    }).start(({finished}) => {
+      if (finished) {
+        setSearch(false);
+      }
+    });
+  };
+
   return (
     <View style={styles.contentContainer}>
-      <ChatHeader
-        text={LocalStrings.WhatsUp}
-        onRightIconClick={() => setTip(!showTip)}
-        rightIconProfile={LocalImages.more}
-        rightIconSearch={LocalImages.search}
-      />
-      <View style={styles.searchView}>
-        <Image source={LocalImages.backArrow} style={styles.backArrowImage} />
-        <CustomTextInput
-          ref={inputRef}
-          ContentContainerStyle={styles.ContentContainerStyle}
-          placeholder="Search..."
-          keyBoardType={'default'}
-          setText={onSearchText}
-          maxLength={30}
-          customInputStyle={styles.customInputStyle}
+      {isSearch ? (
+        <Animated.View
+          style={[
+            styles.searchView,
+            {
+              marginTop: getStatusBarHeight(),
+              transform: scale,
+            },
+          ]}>
+          <TouchableOpacity onPress={handleTextInputBack}>
+            <Image
+              source={LocalImages.backArrow}
+              style={styles.backArrowImage}
+            />
+          </TouchableOpacity>
+          <CustomTextInput
+            ref={inputRef}
+            ContentContainerStyle={styles.ContentContainerStyle}
+            placeholder="Search..."
+            keyBoardType={'default'}
+            setText={onSearchText}
+            maxLength={30}
+            customInputStyle={styles.customInputStyle}
+          />
+        </Animated.View>
+      ) : (
+        <ChatHeader
+          text={LocalStrings.WhatsUp}
+          onRightIconClick={() => setTip(!showTip)}
+          rightIconProfile={LocalImages.more}
+          rightIconSearch={LocalImages.search}
+          onRightIconSearchClick={onRightIconSearchClick}
         />
-      </View>
+      )}
       <Tooltip
         topAdjustment={Platform.OS === 'android' ? -StatusBar.currentHeight : 0}
         backgroundColor="transparent"
@@ -90,8 +140,12 @@ const Home = () => {
         isVisible={showTip}
         content={
           <>
-            <Text onPress={handleTooltipPress}>{LocalStrings.Profile}</Text>
-            <Text onPress={logoutUser}>{LocalStrings.Logout}</Text>
+            <Text style={styles.toolTipTextStyle} onPress={handleTooltipPress}>
+              {LocalStrings.Profile}
+            </Text>
+            <Text style={styles.toolTipTextStyle} onPress={logoutUser}>
+              {LocalStrings.Logout}
+            </Text>
           </>
         }
         onClose={() => setTip(!showTip)}>
@@ -140,5 +194,9 @@ const styles = StyleSheet.create({
   },
   customInputStyle: {
     fontSize: normalize(20),
+  },
+  toolTipTextStyle: {
+    color: Colors.BLACK,
+    fontSize: normalize(18),
   },
 });

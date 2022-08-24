@@ -2,12 +2,13 @@ import {
   View,
   Text,
   Modal,
-  Alert,
   Image,
   Platform,
-  ScrollView,
+  StyleSheet,
   TouchableOpacity,
   KeyboardAvoidingView,
+  Alert,
+  ScrollView,
 } from 'react-native';
 import {styles} from './style';
 import {getDataFromFirebase} from './profileUtils';
@@ -18,7 +19,8 @@ import React, {useState, useEffect, useRef} from 'react';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import CustomText from '../../../components/customTextInput';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import CustomHeader from '../../../components/customHeader/CustomHeader';
+
+import ChatHeader from '../../../components/chatHeader/ChatHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
 import {showToast, updateDataInFirbase} from '../../../utils/CommonFunctions';
 
@@ -102,7 +104,7 @@ export default function Profile() {
   };
   const onPressNext = () => {
     updateDataInFirbase(
-      userId,
+      uid,
       {image, name, about, number},
       success => {
         navigation.navigate(ScreenNames.HOME, {success});
@@ -112,17 +114,13 @@ export default function Profile() {
       },
     );
   };
-  // const handleDisable = () => {
-  //   if (text.length < 10 || text.length >= 11) return true;
-  //   else return false;
-  // };
 
   return (
     <>
-      <CustomHeader
-        onPress={handleNavigation}
-        headerTitle={LocalStrings.Profile}
-        image={LocalImages.more}
+      <ChatHeader
+        leftIcon={LocalImages.backArrow}
+        text={LocalStrings.Profile}
+        backHandle={handleNavigation}
       />
       <ScrollView bounces={false}>
         <View style={styles.profileImageView}>

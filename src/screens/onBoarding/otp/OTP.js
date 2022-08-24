@@ -6,18 +6,17 @@ import LocalStrings from '../../../utils/LocalStrings';
 import {showToast} from '../../../utils/CommonFunctions';
 import firestore from '@react-native-firebase/firestore';
 import CustomTextInput from '../../../components/customTextInput';
-import {requestConfirmUid} from '../../../redux/userDetails/action';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Text, View, Keyboard, KeyboardAvoidingView} from 'react-native';
 import CustomHeader from '../../../components/customHeader/CustomHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
+import {requestConfirmUid} from '../../../redux/userDetails/action';
+import {View, Text, Keyboard} from 'react-native';
 
 const OTP = ({route}) => {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [Mpin, setMpin] = useState('');
   const [loader, setLoader] = useState(false);
-
+  const dispatch = useDispatch();
   const textInput1 = useRef();
   const textInput2 = useRef();
   const textInput3 = useRef();
@@ -208,7 +207,7 @@ const OTP = ({route}) => {
         onPress={handleBack}
         headerTitle={LocalStrings.OTP_Header}
       />
-      <KeyboardAvoidingView style={{flex: 1}}>
+      <View style={{flex: 1}}>
         <Text style={styles.codeSentTextStyle}>{LocalStrings.code_Sent}</Text>
 
         <View style={styles.inputcontainer}>
@@ -268,16 +267,13 @@ const OTP = ({route}) => {
           />
         </View>
 
-        {/* <Text onPress={handleResendOTP} style={styles.sendLinkTextStyle}>
-          {'Resend Code'}
-        </Text> */}
         <CustomButton
           onPress={handleVerifyOTP}
           labelStyle={styles.labelStyle}
           buttonLabel={LocalStrings.Verify}
           containerStyle={styles.buttonContainerStyle}
         />
-      </KeyboardAvoidingView>
+      </View>
 
       {loader && <Loader />}
     </>

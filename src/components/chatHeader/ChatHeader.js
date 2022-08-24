@@ -11,6 +11,7 @@ const ChatHeader = props => {
     rightIconMail,
     rightAlignText,
     rightIconSearch,
+    onRightIconSearchClick,
     onRightIconClick = () => {},
     rightIconProfile,
   } = props;
@@ -34,7 +35,9 @@ const ChatHeader = props => {
       </View>
       <View style={styles.rightIconsContainer}>
         {rightIconSearch ? (
-          <TouchableOpacity style={styles.containerSearch}>
+          <TouchableOpacity
+            onPress={onRightIconSearchClick}
+            style={styles.containerSearch}>
             <Image
               style={styles.smallImage}
               source={rightIconSearch}
@@ -84,9 +87,8 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === 'ios' ? normalize(40) : normalize(40),
   },
   container: {
-    width: normalize(18),
-    height: normalize(17),
-    marginTop: normalize(3),
+    width: normalize(25),
+    height: normalize(25),
   },
   smallImage: {
     height: '100%',
