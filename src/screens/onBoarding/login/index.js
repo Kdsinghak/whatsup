@@ -5,9 +5,9 @@ import ScreenNames from '../../../utils/ScreenNames';
 import Loader from '../../../components/loader/Loader';
 import {useNavigation} from '@react-navigation/native';
 import localStrings from '../../../utils/LocalStrings';
-import {showToast} from '../../../utils/CommonFunctions';
+
 import PhoneText from '../../../components/customTextInput';
-import {signInWithPhoneNumber} from '../../../utils/CommonFunctions';
+import {showToast, signInWithPhoneNumber} from '../../../utils/CommonFunctions';
 import CustomButton from '../../../components/customButton/CustomButton';
 import {View, Text, Image, Platform, KeyboardAvoidingView} from 'react-native';
 
@@ -32,9 +32,9 @@ function Login() {
         }
       },
       error => {
+        console.log('errorr', error);
+        showToast('Too many request, Try again later');
         setLoader(false);
-        // showToast(error.message);
-        console.log(error.message);
       },
     );
   };

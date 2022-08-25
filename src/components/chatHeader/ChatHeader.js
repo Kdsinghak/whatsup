@@ -8,7 +8,6 @@ const ChatHeader = props => {
     text,
     leftIcon,
     backHandle,
-    rightIconMail,
     rightAlignText,
     rightIconSearch,
     onRightIconSearchClick,
@@ -45,15 +44,7 @@ const ChatHeader = props => {
             />
           </TouchableOpacity>
         ) : null}
-        {rightIconMail ? (
-          <TouchableOpacity
-            style={styles.containerMail}
-            onPress={() => {
-              navigation.navigate(ScreenNames.LOGIN);
-            }}>
-            <Image source={rightIconMail} resizeMode="contain" />
-          </TouchableOpacity>
-        ) : null}
+
         {rightIconProfile ? (
           <TouchableOpacity
             onPress={onRightIconClick}
