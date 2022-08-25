@@ -27,9 +27,13 @@ const Chats = () => {
   }, []);
 
   const onRender = ({item}) => {
-    console.log('itemsss', item);
     return (
-      <ChatListRender name={item.name} chatImage={item.image} id={item.id} />
+      <ChatListRender
+        name={item.name}
+        chatImage={item.image}
+        id={item.id}
+        status={item.status}
+      />
     );
   };
 

@@ -8,11 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* whatsUPTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* whatsUPTests.m */; };
-		0B22BEDEEDF3C111568DC1E6 /* libPods-whatsUP-whatsUPTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94A12D60026D2746AF351573 /* libPods-whatsUP-whatsUPTests.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		27B5BD6A30F2A0FAC35E34B2 /* libPods-whatsUP.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCDBA903771248BB4ED4D27 /* libPods-whatsUP.a */; };
+		3DD71D6B43A6B1242094CDE3 /* Pods_whatsUP_whatsUPTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 75FB25FBC1367A8FD7F2A2CC /* Pods_whatsUP_whatsUPTests.framework */; };
+		712B28AA0840D2A8E989F295 /* Pods_whatsUP.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A6838FE8414EDD8F0FD9065 /* Pods_whatsUP.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		845EA09E28AE6BD800E67E0E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 845EA09D28AE6BD800E67E0E /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
@@ -37,14 +37,14 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = whatsUP/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = whatsUP/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = whatsUP/main.m; sourceTree = "<group>"; };
-		2FCDBA903771248BB4ED4D27 /* libPods-whatsUP.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-whatsUP.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4392A12AC88292D35C810B /* Pods-whatsUP.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-whatsUP.debug.xcconfig"; path = "Target Support Files/Pods-whatsUP/Pods-whatsUP.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-whatsUP.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-whatsUP.release.xcconfig"; path = "Target Support Files/Pods-whatsUP/Pods-whatsUP.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-whatsUP-whatsUPTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-whatsUP-whatsUPTests.debug.xcconfig"; path = "Target Support Files/Pods-whatsUP-whatsUPTests/Pods-whatsUP-whatsUPTests.debug.xcconfig"; sourceTree = "<group>"; };
+		75FB25FBC1367A8FD7F2A2CC /* Pods_whatsUP_whatsUPTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_whatsUP_whatsUPTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A6838FE8414EDD8F0FD9065 /* Pods_whatsUP.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_whatsUP.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = whatsUP/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		845EA09D28AE6BD800E67E0E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-whatsUP-whatsUPTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-whatsUP-whatsUPTests.release.xcconfig"; path = "Target Support Files/Pods-whatsUP-whatsUPTests/Pods-whatsUP-whatsUPTests.release.xcconfig"; sourceTree = "<group>"; };
-		94A12D60026D2746AF351573 /* libPods-whatsUP-whatsUPTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-whatsUP-whatsUPTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -53,7 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0B22BEDEEDF3C111568DC1E6 /* libPods-whatsUP-whatsUPTests.a in Frameworks */,
+				3DD71D6B43A6B1242094CDE3 /* Pods_whatsUP_whatsUPTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				27B5BD6A30F2A0FAC35E34B2 /* libPods-whatsUP.a in Frameworks */,
+				712B28AA0840D2A8E989F295 /* Pods_whatsUP.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,8 +102,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				2FCDBA903771248BB4ED4D27 /* libPods-whatsUP.a */,
-				94A12D60026D2746AF351573 /* libPods-whatsUP-whatsUPTests.a */,
+				7A6838FE8414EDD8F0FD9065 /* Pods_whatsUP.framework */,
+				75FB25FBC1367A8FD7F2A2CC /* Pods_whatsUP_whatsUPTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -162,7 +162,6 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */,
 				F6A41C54EA430FDDC6A6ED99 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -185,7 +184,6 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */,
 				E235C05ADACE081382539298 /* [CP] Copy Pods Resources */,
 				050E3E9F063DA13449D94D33 /* [CP-User] [RNFB] Core Configuration */,
 			);
@@ -271,23 +269,6 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nWITH_ENVIRONMENT=\"../node_modules/react-native/scripts/xcode/with-environment.sh\"\nREACT_NATIVE_XCODE=\"../node_modules/react-native/scripts/react-native-xcode.sh\"\n\n/bin/sh -c \"$WITH_ENVIRONMENT $REACT_NATIVE_XCODE\"\n";
 		};
-		00EEFC60759A1932668264C0 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-whatsUP/Pods-whatsUP-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-whatsUP/Pods-whatsUP-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-whatsUP/Pods-whatsUP-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		050E3E9F063DA13449D94D33 /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -343,23 +324,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C59DA0FBD6956966B86A3779 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-whatsUP-whatsUPTests/Pods-whatsUP-whatsUPTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-whatsUP-whatsUPTests/Pods-whatsUP-whatsUPTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-whatsUP-whatsUPTests/Pods-whatsUP-whatsUPTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		E235C05ADACE081382539298 /* [CP] Copy Pods Resources */ = {

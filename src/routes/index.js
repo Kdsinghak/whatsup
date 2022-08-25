@@ -1,5 +1,5 @@
-import React from 'react';
-import {StatusBar} from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import {AppState, StatusBar} from 'react-native';
 import Home from '../screens/home/Home';
 import ScreenNames from '../utils/ScreenNames';
 import OTP from '../screens/onBoarding/otp/OTP';
@@ -9,9 +9,38 @@ import {NavigationContainer} from '@react-navigation/native';
 import SplashScreen from '../screens/onBoarding/splashScreens';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import ChatRoom from '../screens/chat/ChatRoom';
+
+import firestore from '@react-native-firebase/firestore';
+import {useSelector} from 'react-redux';
+
 const Stack = createNativeStackNavigator();
 
 const AppRoutes = () => {
+  const appState = useRef(AppState.currentState);
+  const {userId} = useSelector(store => store.userDetailsReducer);
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', nextAppState => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        firestore().collection('Users').doc(userId).update({
+          status: 'online',
+        });
+      } else {
+        firestore().collection('Users').doc(userId).update({
+          status: 'offline',
+        });
+      }
+      appState.current = nextAppState;
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   return (
     <NavigationContainer>
       <StatusBar
