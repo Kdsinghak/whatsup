@@ -1,34 +1,33 @@
 import {
   Alert,
-  Platform,
-  StyleSheet,
   Text,
   View,
   Image,
-  StatusBar,
-  TouchableOpacity,
   Animated,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
 } from 'react-native';
-import React, {useRef, useState} from 'react';
-import ChatHeader from '../../components/chatHeader/ChatHeader';
-import {useNavigation} from '@react-navigation/native';
-import LocalImages from '../../utils/LocalImages';
-import {getStatusBarHeight} from 'react-native-status-bar-height';
-import LocalStrings from '../../utils/LocalStrings';
-import MyTabs from '../../routes/topTabNavigator/TopNavigation';
 import Colors from '../../utils/Colors';
-import Tooltip from 'react-native-walkthrough-tooltip';
+import {useDispatch, useSelector} from 'react-redux';
+import React, {useRef, useState} from 'react';
+import auth from '@react-native-firebase/auth';
 import {normalize} from '../../utils/Dimensions';
 import ScreenNames from '../../utils/ScreenNames';
-import {useDispatch} from 'react-redux';
-import {requestDeleteUid} from '../../redux/userDetails/action';
-import {CommonActions} from '@react-navigation/native';
+import LocalImages from '../../utils/LocalImages';
+import LocalStrings from '../../utils/LocalStrings';
 import Loader from '../../components/loader/Loader';
-import auth from '@react-native-firebase/auth';
+import Tooltip from 'react-native-walkthrough-tooltip';
+import {useNavigation} from '@react-navigation/native';
+import {CommonActions} from '@react-navigation/native';
 import CustomTextInput from '../../components/customTextInput';
+import ChatHeader from '../../components/chatHeader/ChatHeader';
+import MyTabs from '../../routes/topTabNavigator/TopNavigation';
+import {requestDeleteUid} from '../../redux/userDetails/action';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 
 const Home = () => {
-  console.log('mystatuss', StatusBar.currentHeight);
   const navigation = useNavigation();
   const {inputRef} = useRef();
   const [showTip, setTip] = useState(false);
@@ -36,6 +35,7 @@ const Home = () => {
   const [isSearch, setSearch] = useState(false);
   const transform = useState(new Animated.Value(0))[0];
   const dispatch = useDispatch();
+  const {userId} = useSelector(store => store.userDetailsReducer);
 
   let scale = [
     {
@@ -49,7 +49,7 @@ const Home = () => {
 
   const handleTooltipPress = () => {
     setTip(!showTip);
-    navigation.navigate(ScreenNames.PROFILE);
+    navigation.navigate(ScreenNames.PROFILE, {uid: userId});
   };
 
   const logoutUser = () => {

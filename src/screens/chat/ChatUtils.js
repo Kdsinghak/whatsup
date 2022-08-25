@@ -1,7 +1,6 @@
 import firestore from '@react-native-firebase/firestore';
 
 export const createRoom = (docId, messageDetails) => {
-  console.log(docId, messageDetails);
   firestore()
     .collection('ChatRooms')
     .doc(docId)

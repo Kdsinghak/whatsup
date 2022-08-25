@@ -19,7 +19,6 @@ import React, {useState, useEffect, useRef} from 'react';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import CustomText from '../../../components/customTextInput';
 import {useNavigation, useRoute} from '@react-navigation/native';
-
 import ChatHeader from '../../../components/chatHeader/ChatHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
 import {showToast, updateDataInFirbase} from '../../../utils/CommonFunctions';
@@ -102,6 +101,7 @@ export default function Profile() {
   const handleSave = () => {
     setModal(!modal);
   };
+
   const onPressNext = () => {
     updateDataInFirbase(
       uid,
