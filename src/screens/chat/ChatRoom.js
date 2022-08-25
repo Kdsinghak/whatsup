@@ -1,12 +1,11 @@
 import {useSelector} from 'react-redux';
 import {View, StyleSheet} from 'react-native';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {normalize} from '../../utils/Dimensions';
 import React, {useState, useEffect} from 'react';
+import {GiftedChat} from 'react-native-gifted-chat';
 import {createRoom, getAllmessages} from './ChatUtils';
 import firestore from '@react-native-firebase/firestore';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-
-import {normalize} from '../../utils/Dimensions';
 
 export default function ChatRoom({route}) {
   const [messages, setMessages] = useState([]);

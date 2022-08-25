@@ -2,19 +2,19 @@ import {
   View,
   Text,
   Modal,
+  Alert,
   Image,
   Platform,
-  StyleSheet,
+  ScrollView,
   TouchableOpacity,
   KeyboardAvoidingView,
-  Alert,
-  ScrollView,
 } from 'react-native';
 import {styles} from './style';
 import {getDataFromFirebase} from './profileUtils';
 import LocalImages from '../../../utils/LocalImages';
 import ScreenNames from '../../../utils/ScreenNames';
 import LocalStrings from '../../../utils/LocalStrings';
+import Loader from '../../../components/loader/Loader';
 import React, {useState, useEffect, useRef} from 'react';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import CustomText from '../../../components/customTextInput';
@@ -22,7 +22,6 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import ChatHeader from '../../../components/chatHeader/ChatHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
 import {showToast, updateDataInFirbase} from '../../../utils/CommonFunctions';
-
 export default function Profile() {
   const textInput1 = useRef();
   const {uid} = useRoute().params;
@@ -34,6 +33,7 @@ export default function Profile() {
   const [image, setImage] = useState(
     'https://cdn-icons-png.flaticon.com/128/149/149071.png',
   );
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     getDataFromFirebase(
@@ -103,10 +103,13 @@ export default function Profile() {
   };
 
   const onPressNext = () => {
+    setUploading(true);
+    setTransferred(0);
     updateDataInFirbase(
       uid,
       {image, name, about, number},
       success => {
+        setUploading(false);
         navigation.navigate(ScreenNames.HOME, {success});
       },
       error => {
@@ -178,6 +181,7 @@ export default function Profile() {
           labelStyle={styles.labelStyle}
         />
       </ScrollView>
+      {uploading && <Loader />}
       <Modal animationType="slide" transparent={true} visible={modal}>
         <View style={styles.madalView}>
           <KeyboardAvoidingView
