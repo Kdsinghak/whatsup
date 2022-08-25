@@ -10,36 +10,34 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import {useSelector} from 'react-redux';
-import Colors from '../../../utils/Colors';
+import {styles} from './style';
 import {getDataFromFirebase} from './profileUtils';
-import {normalize} from '../../../utils/Dimensions';
 import LocalImages from '../../../utils/LocalImages';
 import ScreenNames from '../../../utils/ScreenNames';
-import {useNavigation} from '@react-navigation/native';
 import LocalStrings from '../../../utils/LocalStrings';
 import React, {useState, useEffect, useRef} from 'react';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import CustomText from '../../../components/customTextInput';
-import {updateDataInFirbase} from '../../../utils/CommonFunctions';
-
+import {useNavigation, useRoute} from '@react-navigation/native';
 import ChatHeader from '../../../components/chatHeader/ChatHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
+import {showToast, updateDataInFirbase} from '../../../utils/CommonFunctions';
 
 export default function Profile() {
+  const textInput1 = useRef();
+  const {uid} = useRoute().params;
   const navigation = useNavigation();
-
   const [name, setName] = useState('');
-  const [about, setAbout] = useState('');
-  const [image, setImage] = useState('');
   const [number, setNumber] = useState('');
   const [modal, setModal] = useState(false);
-  const {userId} = useSelector(store => store.userDetailsReducer);
-  const textInput1 = useRef();
+  const [about, setAbout] = useState('Available');
+  const [image, setImage] = useState(
+    'https://cdn-icons-png.flaticon.com/128/149/149071.png',
+  );
 
   useEffect(() => {
     getDataFromFirebase(
-      userId,
+      uid,
       response => {
         setName(response._data.name);
         setImage(response._data.image);
@@ -47,7 +45,7 @@ export default function Profile() {
         setNumber(response._data.number);
       },
       error => {
-        console.log(error);
+        showToast(error.message);
       },
     );
   }, []);
@@ -103,15 +101,16 @@ export default function Profile() {
   const handleSave = () => {
     setModal(!modal);
   };
+
   const onPressNext = () => {
     updateDataInFirbase(
-      userId,
+      uid,
       {image, name, about, number},
       success => {
         navigation.navigate(ScreenNames.HOME, {success});
       },
       error => {
-        Alert.alert(error.message);
+        showToast(error.message);
       },
     );
   };
@@ -180,14 +179,14 @@ export default function Profile() {
         />
       </ScrollView>
       <Modal animationType="slide" transparent={true} visible={modal}>
-        <View style={{flex: 1, justifyContent: 'center'}}>
+        <View style={styles.madalView}>
           <KeyboardAvoidingView
             style={styles.modalContentContainer}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-            <Text style={styles.labelTextStyle}>{'Enter your name'}</Text>
+            <Text style={styles.labelTextStyle}>{LocalStrings.EnterName}</Text>
             <CustomText
               ref={textInput1}
-              placeholder={'Enter Name'}
+              placeholder={LocalStrings.EnterName}
               TextStyle={styles.nameTextStyle}
               keyBoardType="default"
               maxLength="20"
@@ -196,10 +195,10 @@ export default function Profile() {
             />
             <View style={styles.modalCloseText}>
               <Text onPress={handleCancel} style={styles.modalOptionTextStyle}>
-                {'Cancel'}
+                {LocalStrings.cancel}
               </Text>
               <Text onPress={handleSave} style={styles.modalOptionTextStyle}>
-                {'Save'}
+                {LocalStrings.save}
               </Text>
             </View>
           </KeyboardAvoidingView>
@@ -208,126 +207,3 @@ export default function Profile() {
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  profileImageView: {
-    alignItems: 'center',
-    marginTop: normalize(10),
-    paddingTop: normalize(20),
-    borderColor: Colors.SILVER,
-    borderTopWidth: normalize(1),
-    borderBottomWidth: normalize(1),
-    marginHorizontal: normalize(10),
-  },
-
-  profileImage: {
-    height: normalize(120),
-    width: normalize(120),
-    borderRadius: normalize(60),
-  },
-  iconStyleView: {
-    height: normalize(20),
-    width: normalize(20),
-    alignSelf: 'center',
-  },
-  iconStyles: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
-  },
-
-  detailsContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    borderBottomWidth: 1,
-    padding: normalize(15),
-    marginTop: normalize(20),
-    borderBottomColor: Colors.SILVER,
-    marginHorizontal: normalize(16),
-    justifyContent: 'space-between',
-  },
-  textStyle: {
-    color: Colors.BLACK,
-    fontSize: normalize(15),
-  },
-  detailsTextStyle: {
-    color: Colors.BLACK,
-    fontSize: normalize(15),
-    fontWeight: '400',
-  },
-
-  modalContentContainer: {
-    height: normalize(130),
-    justifyContent: 'center',
-    paddingLeft: normalize(10),
-    borderRadius: normalize(10),
-    backgroundColor: Colors.WHITE,
-    marginHorizontal: normalize(20),
-  },
-  nameTextStyle: {
-    fontWeight: '500',
-    fontSize: normalize(18),
-  },
-
-  labelTextStyle: {
-    color: Colors.BLACK,
-    fontSize: normalize(18),
-    marginLeft: normalize(5),
-  },
-  modalCloseText: {
-    flexDirection: 'row',
-    marginTop: normalize(5),
-    justifyContent: 'flex-end',
-  },
-  modalOptionTextStyle: {
-    color: Colors.BLACK,
-    fontSize: normalize(20),
-    marginHorizontal: normalize(20),
-  },
-  ContentContainerStyle: {
-    marginTop: normalize(20),
-    marginLeft: normalize(7),
-    marginRight: normalize(20),
-    borderBottomWidth: normalize(2),
-    borderBottomColor: Colors.GREEN,
-  },
-  editImageIcon: {height: normalize(25), width: normalize(25)},
-
-  enablebuttonContainerStyle: {
-    alignItems: 'center',
-    height: normalize(45),
-    justifyContent: 'center',
-    borderRadius: normalize(30),
-    marginVertical: normalize(50),
-    backgroundColor: Colors.GREEN,
-    marginHorizontal: normalize(16),
-  },
-  disablebuttonContainerStyle: {
-    alignItems: 'center',
-    height: normalize(45),
-    justifyContent: 'center',
-    borderRadius: normalize(30),
-    backgroundColor: Colors.LIGHTGREEN,
-    marginTop: normalize(20),
-    marginHorizontal: normalize(16),
-  },
-
-  labelStyle: {
-    color: Colors.WHITE,
-    fontSize: normalize(20),
-  },
-  editIconContainer: {
-    backgroundColor: Colors.GREY,
-    borderRadius: normalize(7),
-    bottom: normalize(25),
-    left: normalize(40),
-  },
-  userDetailsContainer: {
-    width: '75%',
-    height: normalize(50),
-  },
-  userAboutContainer: {
-    width: '87%',
-    height: normalize(50),
-  },
-});

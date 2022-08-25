@@ -1,10 +1,9 @@
-import {put, takeEvery, call} from 'redux-saga/effects';
-import {verifyOTP} from '../../utils/CommonFunctions';
 import {deleteData, saveData} from './action';
+import {verifyOTP} from '../../utils/CommonFunctions';
+import {put, takeEvery, call} from 'redux-saga/effects';
 
 export function* asyncSaveData(action) {
   const {uid, otp, sucess, error} = action;
-
   const data = yield call(verifyOTP, uid, otp, sucess, error);
   let uidID = data.user._user.uid;
   yield put(saveData(uidID));

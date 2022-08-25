@@ -1,16 +1,20 @@
+import {styles} from './styles';
 import React, {useEffect} from 'react';
-import colors from '../../../utils/Colors';
-import {View, StyleSheet, Image} from 'react-native';
+import {useSelector} from 'react-redux';
+import {View, Image} from 'react-native';
 import localImages from '../../../utils/LocalImages';
 import ScreenNames from '../../../utils/ScreenNames';
 import {useNavigation} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
-
+import auth from '@react-native-firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 export default function SplashScreen() {
   const navigation = useNavigation();
   const {userId} = useSelector(store => store.userDetailsReducer);
 
   useEffect(() => {
+    const suscriber = auth().onAuthStateChanged(user => {
+      firestore().collection('Users').doc(userId).update({status: 'online'});
+    });
     setTimeout(() => {
       if (userId) {
         navigation.replace(ScreenNames.HOME);
@@ -18,6 +22,7 @@ export default function SplashScreen() {
         navigation.replace(ScreenNames.LOGIN);
       }
     }, 2000);
+    return suscriber;
   });
 
   return (
@@ -26,16 +31,3 @@ export default function SplashScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.WHITE,
-  },
-  ImageStyle: {
-    width: '80%',
-    height: '80%',
-  },
-});

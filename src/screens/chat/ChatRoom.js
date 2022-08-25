@@ -55,6 +55,7 @@ export default function ChatRoom({route}) {
         user={{
           _id: userId,
         }}
+        showAvatarForEveryMessage={true}
         messagesContainerStyle={{
           paddingTop:
             Platform.OS === 'ios'

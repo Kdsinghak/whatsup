@@ -2,7 +2,7 @@ import Colors from '../../utils/Colors';
 import {useSelector} from 'react-redux';
 import React, {useState, useEffect} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import {getDatafromFirebase} from '../../utils/CommonFunctions';
+import {getDatafromFirebase, showToast} from '../../utils/CommonFunctions';
 import ChatListRender from '../../components/chatListRender/ChatListRender';
 
 const Chats = () => {
@@ -17,7 +17,7 @@ const Chats = () => {
         setAllUsers(success);
       },
       error => {
-        Alert.alert(error.meaasge);
+        showToast(error.message);
       },
     );
   };
