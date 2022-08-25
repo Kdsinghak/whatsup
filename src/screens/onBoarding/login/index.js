@@ -16,7 +16,7 @@ import localStrings from '../../../utils/LocalStrings';
 import Loader from '../../../components/loader/Loader';
 import {useNavigation} from '@react-navigation/native';
 import PhoneText from '../../../components/customTextInput';
-import {signInWithPhoneNumber} from '../../../utils/CommonFunctions';
+import {showToast, signInWithPhoneNumber} from '../../../utils/CommonFunctions';
 import CustomButton from '../../../components/customButton/CustomButton';
 
 function Login() {
@@ -26,12 +26,14 @@ function Login() {
   const textInput1 = useRef();
 
   const handleSendOTP = () => {
+    setLoader(true);
     signInWithPhoneNumber(
       text,
       response => {
         if (response) {
           const {_authResult} = response._auth;
           if (_authResult) {
+            setLoader(false);
             console.log(_authResult);
             navigation.navigate(ScreenNames.OTP, response);
           }
@@ -39,6 +41,8 @@ function Login() {
       },
       error => {
         console.log('errorr', error);
+        showToast('Too many request, Try again later');
+        setLoader(false);
       },
     );
   };

@@ -1,5 +1,5 @@
 import {useSelector} from 'react-redux';
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Platform} from 'react-native';
 import {GiftedChat} from 'react-native-gifted-chat';
 import React, {useState, useEffect} from 'react';
 import {createRoom, getAllmessages} from './ChatUtils';
@@ -11,7 +11,7 @@ import {normalize} from '../../utils/Dimensions';
 export default function ChatRoom({route}) {
   const [messages, setMessages] = useState([]);
   const {userId} = useSelector(store => store.userDetailsReducer);
-  const {userID} = route.params;
+  const {userID} = route?.params;
 
   let docid = userId > userID ? userId + '-' + userID : userID + '-' + userId;
 
@@ -47,10 +47,7 @@ export default function ChatRoom({route}) {
   return (
     <View style={styles.container}>
       <View
-        style={[
-          styles.headerViewStyle,
-          {marginTop: getStatusBarHeight()},
-        ]}></View>
+        style={[styles.headerViewStyle, {top: getStatusBarHeight()}]}></View>
 
       <GiftedChat
         messages={messages}
@@ -59,7 +56,10 @@ export default function ChatRoom({route}) {
           _id: userId,
         }}
         messagesContainerStyle={{
-          paddingTop: getStatusBarHeight() + normalize(5),
+          paddingTop:
+            Platform.OS === 'ios'
+              ? getStatusBarHeight()
+              : getStatusBarHeight() + normalize(22),
         }}
       />
     </View>
@@ -76,5 +76,7 @@ const styles = StyleSheet.create({
     height: normalize(50),
     position: 'absolute',
     width: '100%',
+    elevation: 1,
+    zIndex: 1,
   },
 });
