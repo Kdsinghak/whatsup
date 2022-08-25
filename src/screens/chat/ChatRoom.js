@@ -1,17 +1,29 @@
 import {useSelector} from 'react-redux';
-import {View, StyleSheet, Platform} from 'react-native';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {
+  View,
+  StyleSheet,
+  Platform,
+  Image,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import {GiftedChat, InputToolbar, Send} from 'react-native-gifted-chat';
 import React, {useState, useEffect} from 'react';
 import {createRoom, getAllmessages} from './ChatUtils';
 import firestore from '@react-native-firebase/firestore';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-
+import LocalImages from '../../utils/LocalImages';
 import {normalize} from '../../utils/Dimensions';
+import Colors from '../../utils/Colors';
+import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
+import {useNavigation} from '@react-navigation/native';
+import {useCallback} from 'react';
 
 export default function ChatRoom({route}) {
+  const navigation = useNavigation();
   const [messages, setMessages] = useState([]);
   const {userId} = useSelector(store => store.userDetailsReducer);
-  const {userID} = route?.params;
+  const {userID, image, name} = route?.params;
 
   let docid = userId > userID ? userId + '-' + userID : userID + '-' + userId;
 
@@ -43,11 +55,48 @@ export default function ChatRoom({route}) {
       .collection('messages')
       .add({...mymsg});
   };
+  const handleBack = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
+
+  const renderInputToolbar = props => {
+    return (
+      <InputToolbar
+        containerStyle={{
+          marginHorizontal: normalize(15),
+          borderRadius: normalize(10),
+          justifyContent: 'center',
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 4,
+            height: 3,
+          },
+          shadowOpacity: 0.2,
+          shadowRadius: 5.46,
+          elevation: 9,
+        }}
+        {...props}
+      />
+    );
+  };
+
+  const renderSend = props => {
+    return (
+      <Send {...props}>
+        <View style={styles.sendButtonContainer}>
+          <Image
+            resizeMode="contain"
+            source={LocalImages.send}
+            style={styles.imageStyle}
+          />
+        </View>
+      </Send>
+    );
+  };
 
   return (
     <View style={styles.container}>
-      <View
-        style={[styles.headerViewStyle, {top: getStatusBarHeight()}]}></View>
+      <ChatRoomHeader image={image} name={name} onBackPress={handleBack} />
 
       <GiftedChat
         messages={messages}
@@ -59,9 +108,11 @@ export default function ChatRoom({route}) {
         messagesContainerStyle={{
           paddingTop:
             Platform.OS === 'ios'
-              ? getStatusBarHeight()
-              : getStatusBarHeight() + normalize(22),
+              ? getStatusBarHeight() + normalize(5)
+              : getStatusBarHeight() + normalize(24),
         }}
+        renderInputToolbar={renderInputToolbar}
+        renderSend={renderSend}
       />
     </View>
   );
@@ -70,14 +121,16 @@ export default function ChatRoom({route}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'aqua',
+    backgroundColor: Colors.WHITE,
   },
-  headerViewStyle: {
-    backgroundColor: 'red',
-    height: normalize(50),
-    position: 'absolute',
+  sendButtonContainer: {
+    overflow: 'hidden',
+    width: normalize(30),
+    height: normalize(30),
+    borderRadius: normalize(15),
+  },
+  imageStyle: {
+    height: '100%',
     width: '100%',
-    elevation: 1,
-    zIndex: 1,
   },
 });
