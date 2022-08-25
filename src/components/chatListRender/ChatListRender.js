@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {styles} from './style';
 import ScreenNames from '../../utils/ScreenNames';
 import {useNavigation} from '@react-navigation/native';
@@ -7,9 +7,16 @@ import {TouchableOpacity, Image, View, Text} from 'react-native';
 const ChatListRender = ({name, chatImage, message, id}) => {
   const navigation = useNavigation();
 
-  const handleNavigation = id => {
-    navigation.navigate(ScreenNames.CHATROOM, {userID: id});
-  };
+  const handleNavigation = useCallback(
+    id => {
+      navigation.navigate(ScreenNames.CHATROOM, {
+        userID: id,
+        image: chatImage,
+        name,
+      });
+    },
+    [navigation],
+  );
 
   return (
     <TouchableOpacity
