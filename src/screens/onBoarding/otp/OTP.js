@@ -1,16 +1,16 @@
 import {styles} from './style';
 import {useDispatch} from 'react-redux';
+import {View, Text, Keyboard} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Loader from '../../../components/loader/Loader';
 import LocalStrings from '../../../utils/LocalStrings';
 import {showToast} from '../../../utils/CommonFunctions';
 import firestore from '@react-native-firebase/firestore';
 import CustomTextInput from '../../../components/customTextInput';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import CustomHeader from '../../../components/customHeader/CustomHeader';
-import CustomButton from '../../../components/customButton/CustomButton';
+import ChatHeader from '../../../components/chatHeader/ChatHeader';
 import {requestConfirmUid} from '../../../redux/userDetails/action';
-import {View, Text, Keyboard} from 'react-native';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import CustomButton from '../../../components/customButton/CustomButton';
 
 const OTP = ({route}) => {
   const navigation = useNavigation();
@@ -203,10 +203,7 @@ const OTP = ({route}) => {
 
   return (
     <>
-      <CustomHeader
-        onPress={handleBack}
-        headerTitle={LocalStrings.OTP_Header}
-      />
+      <ChatHeader onPress={handleBack} text={LocalStrings.OTP_Header} />
       <View style={{flex: 1}}>
         <Text style={styles.codeSentTextStyle}>{LocalStrings.code_Sent}</Text>
 

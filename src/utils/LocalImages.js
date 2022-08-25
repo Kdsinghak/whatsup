@@ -11,4 +11,5 @@ export default {
   info: require('../assets/icons/information.png'),
   cross: require('../assets/icons/cancel.png'),
   search: require('../assets/icons/search.png'),
+  send: require('../assets/icons/send.png'),
 };
