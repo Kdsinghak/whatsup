@@ -4,6 +4,7 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 import LocalImages from '../../utils/LocalImages';
 import {normalize} from '../../utils/Dimensions';
 import Colors from '../../utils/Colors';
+
 import firestore from '@react-native-firebase/firestore';
 
 const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
@@ -18,8 +19,6 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
         setStaus(status);
       });
   }, []);
-  import {useEffect} from 'react';
-  import {useState} from 'react';
 
   return (
     <View style={[styles.headerViewStyle, {top: getStatusBarHeight()}]}>
