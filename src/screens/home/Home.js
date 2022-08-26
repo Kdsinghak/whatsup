@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Colors from '../../utils/Colors';
 import {useDispatch, useSelector} from 'react-redux';
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import {normalize} from '../../utils/Dimensions';
 import ScreenNames from '../../utils/ScreenNames';
@@ -30,13 +30,14 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 const Home = () => {
   const navigation = useNavigation();
   const {inputRef} = useRef();
+  const [search, setDetails] = useState();
   const [showTip, setTip] = useState(false);
   const [loader, setLoader] = useState(false);
   const [isSearch, setSearch] = useState(false);
   const transform = useState(new Animated.Value(0))[0];
   const dispatch = useDispatch();
   const {userId} = useSelector(store => store.userDetailsReducer);
-
+  console.log(search);
   let scale = [
     {
       scale: transform.interpolate({
@@ -74,7 +75,22 @@ const Home = () => {
         Alert.alert(error.message);
       });
   };
-  const onSearchText = () => {};
+
+  const debounce = (fun, timeout) => {
+    let timer;
+    return args => {
+      clearTimeout(timer);
+      setTimeout(() => {
+        fun(args);
+      }, timeout);
+    };
+  };
+
+  const processChange = debounce(search => {}, 1000);
+
+  useEffect(() => {
+    processChange(search);
+  }, [search]);
 
   const onRightIconSearchClick = () => {
     Animated.timing(transform, {
@@ -118,7 +134,7 @@ const Home = () => {
             ContentContainerStyle={styles.ContentContainerStyle}
             placeholder="Search..."
             keyBoardType={'default'}
-            setText={onSearchText}
+            setText={setDetails}
             maxLength={30}
             customInputStyle={styles.customInputStyle}
           />
@@ -139,14 +155,14 @@ const Home = () => {
         contentStyle={styles.toolTipContentStyle}
         isVisible={showTip}
         content={
-          <>
+          <View style={{width: normalize(100)}}>
             <Text style={styles.toolTipTextStyle} onPress={handleTooltipPress}>
               {LocalStrings.Profile}
             </Text>
             <Text style={styles.toolTipTextStyle} onPress={logoutUser}>
               {LocalStrings.Logout}
             </Text>
-          </>
+          </View>
         }
         onClose={() => setTip(!showTip)}>
         <View style={styles.toolTipView} />
@@ -197,6 +213,7 @@ const styles = StyleSheet.create({
   },
   toolTipTextStyle: {
     color: Colors.BLACK,
-    fontSize: normalize(18),
+    fontSize: normalize(20),
+    lineHeight: normalize(26),
   },
 });
