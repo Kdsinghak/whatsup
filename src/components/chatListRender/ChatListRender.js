@@ -3,8 +3,9 @@ import {styles} from './style';
 import ScreenNames from '../../utils/ScreenNames';
 import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity, Image, View, Text} from 'react-native';
+import LocalImages from '../../utils/LocalImages';
 
-const ChatListRender = ({name, chatImage, message, id, status}) => {
+const ChatListRender = ({name, chatImage, message, id}) => {
   const navigation = useNavigation();
 
   const handleNavigation = useCallback(
@@ -13,7 +14,6 @@ const ChatListRender = ({name, chatImage, message, id, status}) => {
         userID: id,
         image: chatImage,
         name,
-        status,
       });
     },
     [navigation],
@@ -25,7 +25,7 @@ const ChatListRender = ({name, chatImage, message, id, status}) => {
       onPress={() => handleNavigation(id)}>
       <View style={styles.userIconContainer}>
         <Image
-          source={{uri: chatImage}}
+          source={{uri: chatImage} ?? LocalImages.userIcon}
           resizeMode="cover"
           style={styles.smallImage}
         />

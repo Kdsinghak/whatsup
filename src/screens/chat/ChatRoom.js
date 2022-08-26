@@ -84,7 +84,12 @@ export default function ChatRoom({route}) {
 
   return (
     <View style={styles.container}>
-      <ChatRoomHeader image={image} name={name} onBackPress={handleBack} />
+      <ChatRoomHeader
+        image={image}
+        name={name}
+        onBackPress={handleBack}
+        status={status}
+      />
 
       <GiftedChat
         messages={messages}

@@ -33,7 +33,10 @@ const AppRoutes = () => {
           status: 'offline',
         });
       }
+      console.log('nextAppState', nextAppState);
+
       appState.current = nextAppState;
+      console.log('qwedfghjkl;/', appState.current);
     });
 
     return () => {

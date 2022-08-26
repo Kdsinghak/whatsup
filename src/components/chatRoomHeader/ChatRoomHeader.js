@@ -4,8 +4,17 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 import LocalImages from '../../utils/LocalImages';
 import {normalize} from '../../utils/Dimensions';
 import Colors from '../../utils/Colors';
+import {useEffect} from 'react';
+import {useState} from 'react';
 
-const ChatRoomHeader = ({image, name, onBackPress}) => {
+const ChatRoomHeader = ({image, name, onBackPress, status}) => {
+  const [userDetails, setUserDetails] = useState();
+
+  useEffect(() => {
+    console.log('stat', status);
+    setUserDetails(status);
+  }, [status]);
+
   return (
     <View style={[styles.headerViewStyle, {top: getStatusBarHeight()}]}>
       <TouchableOpacity
@@ -17,12 +26,17 @@ const ChatRoomHeader = ({image, name, onBackPress}) => {
       <View style={styles.userImageView}>
         <Image source={{uri: image}} style={styles.UserImageStyle} />
       </View>
-      <Text
-        onPress={() => {}}
-        numberOfLines={1}
-        style={styles.userNameTextStyle}>
-        {name}
-      </Text>
+      <View style={styles.userDetailsView}>
+        <Text
+          onPress={() => {}}
+          numberOfLines={1}
+          style={styles.userNameTextStyle}>
+          {name}
+        </Text>
+        {status === 'online' && (
+          <Text style={styles.userNameTextStyle}>{status}</Text>
+        )}
+      </View>
       <View style={styles.rightOptionContainer}>
         <TouchableOpacity style={styles.iconImageViewStyle} activeOpacity={0.8}>
           <Image style={styles.rightImageStyle} source={LocalImages.phone} />
@@ -73,10 +87,7 @@ const styles = StyleSheet.create({
   userNameTextStyle: {
     fontWeight: '500',
     color: Colors.BLACK,
-    width: normalize(170),
     fontSize: normalize(20),
-    marginLeft: normalize(5),
-    lineHeight: normalize(50),
   },
   imageViewStyle: {
     backgroundColor: 'red',
@@ -106,4 +117,5 @@ const styles = StyleSheet.create({
     width: normalize(100),
     justifyContent: 'space-around',
   },
+  userDetailsView: {width: normalize(170), marginHorizontal: normalize(5)},
 });
