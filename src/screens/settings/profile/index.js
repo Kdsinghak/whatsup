@@ -102,6 +102,7 @@ export default function Profile() {
 
   const onPressNext = () => {
     setUploading(true);
+
     updateDataInFirbase(
       uid,
       {image, name, about, number},

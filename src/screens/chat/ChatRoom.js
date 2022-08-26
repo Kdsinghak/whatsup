@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {GiftedChat, InputToolbar, Send} from 'react-native-gifted-chat';
 import React, {useState, useEffect} from 'react';
-import {createRoom, getAllmessages} from './ChatUtils';
+import {getAllmessages} from './ChatUtils';
 import firestore from '@react-native-firebase/firestore';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import LocalImages from '../../utils/LocalImages';
@@ -18,6 +18,7 @@ import Colors from '../../utils/Colors';
 import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
 import {useNavigation} from '@react-navigation/native';
 import {useCallback} from 'react';
+import {showToast} from '../../utils/CommonFunctions';
 
 export default function ChatRoom({route}) {
   const navigation = useNavigation();
@@ -33,7 +34,9 @@ export default function ChatRoom({route}) {
       success => {
         setMessages(success);
       },
-      error => {},
+      error => {
+        showToast(error.error);
+      },
     );
   }, []);
 
@@ -88,7 +91,7 @@ export default function ChatRoom({route}) {
         image={image}
         name={name}
         onBackPress={handleBack}
-        status={status}
+        uid={userID}
       />
 
       <GiftedChat
@@ -106,6 +109,7 @@ export default function ChatRoom({route}) {
         }}
         renderInputToolbar={renderInputToolbar}
         renderSend={renderSend}
+        isTyping={true}
       />
     </View>
   );
