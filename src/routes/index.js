@@ -32,6 +32,7 @@ const AppRoutes = () => {
           status: 'offline',
         });
       }
+
       appState.current = nextAppState;
     });
 
