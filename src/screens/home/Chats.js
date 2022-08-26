@@ -1,24 +1,27 @@
 import Colors from '../../utils/Colors';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import React, {useState, useEffect} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {getDatafromFirebase, showToast} from '../../utils/CommonFunctions';
 import ChatListRender from '../../components/chatListRender/ChatListRender';
+import {requestDataAllUsers} from '../../redux/userDetails/action';
 
 const Chats = () => {
   const [users, setAllUsers] = useState();
-
+  const dispatch = useDispatch();
   const {userId} = useSelector(store => store.userDetailsReducer);
 
   const getAllUsers = () => {
-    getDatafromFirebase(
-      userId,
-      success => {
-        setAllUsers(success);
-      },
-      error => {
-        showToast(error.message);
-      },
+    dispatch(
+      requestDataAllUsers(
+        userId,
+        sucess => {
+          setAllUsers(sucess);
+        },
+        error => {
+          showToast(error.message);
+        },
+      ),
     );
   };
 

@@ -13,3 +13,11 @@ export const deleteData = () => {
 export const requestDeleteUid = () => {
   return {type: 'REQUEST_DELETE_UID'};
 };
+
+export const requestDataAllUsers = (uid, success, error) => {
+  return {type: 'REQUEST_ALL_USER', uid, success, error};
+};
+
+export const saveAllUserData = data => {
+  return {type: 'SAVE_ALL_USER_DATA', payload: {alluserData: data}};
+};

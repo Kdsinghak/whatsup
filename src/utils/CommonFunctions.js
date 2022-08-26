@@ -70,6 +70,7 @@ export async function getDatafromFirebase(uid, success) {
       .get();
     const allUsers = data.docs.map(items => items.data());
     success(allUsers);
+    return allUsers;
   } catch (error) {
     error(error);
   }

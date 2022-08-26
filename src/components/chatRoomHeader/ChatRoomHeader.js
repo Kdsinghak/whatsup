@@ -1,11 +1,24 @@
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import LocalImages from '../../utils/LocalImages';
 import {normalize} from '../../utils/Dimensions';
 import Colors from '../../utils/Colors';
+import firestore from '@react-native-firebase/firestore';
 
-const ChatRoomHeader = ({image, name, onBackPress}) => {
+const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
+  const [status, setStaus] = useState();
+
+  useEffect(() => {
+    firestore()
+      .collection('Users')
+      .doc(uid)
+      .onSnapshot(onchange => {
+        let status = onchange.data().status;
+        setStaus(status);
+      });
+  }, []);
+
   return (
     <View style={[styles.headerViewStyle, {top: getStatusBarHeight()}]}>
       <TouchableOpacity
@@ -23,6 +36,7 @@ const ChatRoomHeader = ({image, name, onBackPress}) => {
         style={styles.userNameTextStyle}>
         {name}
       </Text>
+      <Text>{status}</Text>
       <View style={styles.rightOptionContainer}>
         <TouchableOpacity style={styles.iconImageViewStyle} activeOpacity={0.8}>
           <Image style={styles.rightImageStyle} source={LocalImages.phone} />

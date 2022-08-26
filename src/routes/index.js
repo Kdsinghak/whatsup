@@ -1,17 +1,16 @@
-import React, {useEffect, useRef} from 'react';
-import {AppState, StatusBar} from 'react-native';
 import Home from '../screens/home/Home';
+import {useSelector} from 'react-redux';
+import React, {useEffect, useRef} from 'react';
 import ScreenNames from '../utils/ScreenNames';
-import OTP from '../screens/onBoarding/otp/OTP';
 import Login from '../screens/onBoarding/login';
+import ChatRoom from '../screens/chat/ChatRoom';
+import OTP from '../screens/onBoarding/otp/OTP';
+import {AppState, StatusBar} from 'react-native';
 import Profile from '../screens/settings/profile';
+import firestore from '@react-native-firebase/firestore';
 import {NavigationContainer} from '@react-navigation/native';
 import SplashScreen from '../screens/onBoarding/splashScreens';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import ChatRoom from '../screens/chat/ChatRoom';
-
-import firestore from '@react-native-firebase/firestore';
-import {useSelector} from 'react-redux';
 
 const Stack = createNativeStackNavigator();
 
@@ -33,6 +32,7 @@ const AppRoutes = () => {
           status: 'offline',
         });
       }
+
       appState.current = nextAppState;
     });
 
