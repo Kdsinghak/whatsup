@@ -62,19 +62,7 @@ export default function ChatRoom({route}) {
   const renderInputToolbar = props => {
     return (
       <InputToolbar
-        containerStyle={{
-          marginHorizontal: normalize(15),
-          borderRadius: normalize(10),
-          justifyContent: 'center',
-          shadowColor: '#000',
-          shadowOffset: {
-            width: 4,
-            height: 3,
-          },
-          shadowOpacity: 0.2,
-          shadowRadius: 5.46,
-          elevation: 9,
-        }}
+        containerStyle={styles.inputToolbarContainerStyle}
         {...props}
       />
     );
@@ -132,5 +120,19 @@ const styles = StyleSheet.create({
   imageStyle: {
     height: '100%',
     width: '100%',
+  },
+  inputToolbarContainerStyle: {
+    marginHorizontal: normalize(15),
+    borderRadius: normalize(10),
+    justifyContent: 'center',
+    marginBottom: normalize(5),
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 4,
+      height: 3,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 5.46,
+    elevation: 9,
   },
 });
