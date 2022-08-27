@@ -34,6 +34,7 @@ const AppRoutes = () => {
       }
 
       appState.current = nextAppState;
+      console.log('qwedfghjkl;/', appState.current);
     });
 
     return () => {

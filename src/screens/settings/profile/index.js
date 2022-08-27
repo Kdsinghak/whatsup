@@ -31,10 +31,10 @@ export default function Profile() {
   const [number, setNumber] = useState('');
   const [modal, setModal] = useState(false);
   const [about, setAbout] = useState('Available');
-  const [uploading, setUploading] = useState(false);
   const [image, setImage] = useState(
     'https://cdn-icons-png.flaticon.com/128/149/149071.png',
   );
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     getDataFromFirebase(
@@ -114,6 +114,7 @@ export default function Profile() {
         navigation.navigate(ScreenNames.HOME, {success});
       },
       error => {
+        setUploading(false);
         showToast(error.message);
       },
     );
@@ -130,9 +131,11 @@ export default function Profile() {
         <View style={styles.profileImageView}>
           <View style={styles.profileImage}>
             <Image
-              source={{
-                uri: image,
-              }}
+              source={
+                {
+                  uri: image,
+                } ?? LocalImages.userIcon
+              }
               style={styles.profileImage}
             />
           </View>
