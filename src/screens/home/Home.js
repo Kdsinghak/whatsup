@@ -1,5 +1,4 @@
 import {
-  Alert,
   Text,
   View,
   Image,
@@ -10,17 +9,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Colors from '../../utils/Colors';
-import {useDispatch, useSelector} from 'react-redux';
-import React, {useEffect, useRef, useState} from 'react';
 import auth from '@react-native-firebase/auth';
 import {normalize} from '../../utils/Dimensions';
 import ScreenNames from '../../utils/ScreenNames';
 import LocalImages from '../../utils/LocalImages';
-import LocalStrings from '../../utils/LocalStrings';
 import Loader from '../../components/loader/Loader';
+import LocalStrings from '../../utils/LocalStrings';
+import {useDispatch, useSelector} from 'react-redux';
+import {showToast} from '../../utils/CommonFunctions';
 import Tooltip from 'react-native-walkthrough-tooltip';
 import {useNavigation} from '@react-navigation/native';
 import {CommonActions} from '@react-navigation/native';
+import React, {useEffect, useRef, useState} from 'react';
 import CustomTextInput from '../../components/customTextInput';
 import ChatHeader from '../../components/chatHeader/ChatHeader';
 import MyTabs from '../../routes/topTabNavigator/TopNavigation';
@@ -28,16 +28,16 @@ import {requestDeleteUid} from '../../redux/userDetails/action';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 
 const Home = () => {
-  const navigation = useNavigation();
   const {inputRef} = useRef();
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   const [search, setDetails] = useState();
   const [showTip, setTip] = useState(false);
   const [loader, setLoader] = useState(false);
   const [isSearch, setSearch] = useState(false);
   const transform = useState(new Animated.Value(0))[0];
-  const dispatch = useDispatch();
   const {userId} = useSelector(store => store.userDetailsReducer);
-  console.log(search);
+
   let scale = [
     {
       scale: transform.interpolate({
@@ -69,10 +69,9 @@ const Home = () => {
             );
             setLoader(false);
           }, 2000);
-        Alert.alert('User Logged Out');
       })
       .catch(error => {
-        Alert.alert(error.message);
+        showToast(error.message);
       });
   };
 

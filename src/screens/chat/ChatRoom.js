@@ -1,3 +1,4 @@
+import {useCallback} from 'react';
 import {useSelector} from 'react-redux';
 import {
   View,
@@ -15,22 +16,21 @@ import {
   Time,
 } from 'react-native-gifted-chat';
 import React, {useState, useEffect} from 'react';
-import {getAllmessages} from './ChatUtils';
+import LocalImages from '../../utils/LocalImages';
+import {showToast} from '../../utils/CommonFunctions';
+import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-import LocalImages from '../../utils/LocalImages';
-import {normalize} from '../../utils/Dimensions';
-import Colors from '../../utils/Colors';
+import {View, StyleSheet, Platform, Image, Text} from 'react-native';
+import {GiftedChat, InputToolbar, Send} from 'react-native-gifted-chat';
 import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
-import {useNavigation} from '@react-navigation/native';
-import {useCallback} from 'react';
-import {showToast} from '../../utils/CommonFunctions';
 
 export default function ChatRoom({route}) {
   const navigation = useNavigation();
-  const [messages, setMessages] = useState([]);
-  const {userId} = useSelector(store => store.userDetailsReducer);
   const {userID, image, name} = route?.params;
+  const [messages, setMessages] = useState([]);
+  const [isTyping, setisTyping] = useState(false);
+  const {userId} = useSelector(store => store.userDetailsReducer);
 
   let docid = userId > userID ? userId + '-' + userID : userID + '-' + userId;
 
@@ -64,6 +64,7 @@ export default function ChatRoom({route}) {
       .collection('messages')
       .add({...mymsg});
   };
+
   const handleBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
@@ -76,6 +77,38 @@ export default function ChatRoom({route}) {
           {...props}
         />
       </View>
+    );
+  };
+  const debounce = (fun, timeout) => {
+    let timer;
+    return args => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        fun(args);
+      }, timeout);
+      setisTyping(true);
+    };
+  };
+
+  const startTyping = debounce(() => {
+    setisTyping(false);
+  }, 1000);
+
+  const detectTyping = text => {
+    if (text.length > 0) startTyping(false);
+  };
+
+  const renderFooter = () => {
+    return (
+      <View
+        style={{
+          marginBottom: 20,
+          height: 20,
+          backgroundColor: 'green',
+        }}>
+        <Text style={{color: 'red'}}>{`${isTyping}`}</Text>
+      </View>
+      // else return null;
     );
   };
 
@@ -119,7 +152,8 @@ export default function ChatRoom({route}) {
           }}
           renderInputToolbar={renderInputToolbar}
           renderSend={renderSend}
-          isTyping={true}
+          onInputTextChanged={detectTyping}
+          renderFooter={renderFooter}
           renderBubble={props => {
             return (
               <Bubble

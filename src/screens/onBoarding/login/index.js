@@ -5,10 +5,9 @@ import ScreenNames from '../../../utils/ScreenNames';
 import Loader from '../../../components/loader/Loader';
 import {useNavigation} from '@react-navigation/native';
 import localStrings from '../../../utils/LocalStrings';
-
 import PhoneText from '../../../components/customTextInput';
-import {showToast, signInWithPhoneNumber} from '../../../utils/CommonFunctions';
 import CustomButton from '../../../components/customButton/CustomButton';
+import {showToast, signInWithPhoneNumber} from '../../../utils/CommonFunctions';
 import {View, Text, Image, Platform, KeyboardAvoidingView} from 'react-native';
 
 function Login() {
