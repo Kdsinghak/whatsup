@@ -12,10 +12,10 @@ const CustomText = forwardRef((props, ref) => {
         onChangeText={text => {
           props.setText(text);
         }}
+        autoCorrect={false}
+        autoCapitalize={false}
         onKeyPress={props?.onKeyPressText}
         maxLength={parseInt(props.maxLength)}
-        autoCapitalize={false}
-        autoCorrect={false}
       />
     </View>
   );

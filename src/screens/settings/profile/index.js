@@ -22,6 +22,7 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import ChatHeader from '../../../components/chatHeader/ChatHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
 import {showToast, updateDataInFirbase} from '../../../utils/CommonFunctions';
+
 export default function Profile() {
   const textInput1 = useRef();
   const {uid} = useRoute().params;
@@ -30,10 +31,10 @@ export default function Profile() {
   const [number, setNumber] = useState('');
   const [modal, setModal] = useState(false);
   const [about, setAbout] = useState('Available');
+  const [uploading, setUploading] = useState(false);
   const [image, setImage] = useState(
     'https://cdn-icons-png.flaticon.com/128/149/149071.png',
   );
-  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     getDataFromFirebase(
@@ -104,7 +105,7 @@ export default function Profile() {
 
   const onPressNext = () => {
     setUploading(true);
-    
+
     updateDataInFirbase(
       uid,
       {image, name, about, number},

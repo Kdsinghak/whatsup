@@ -4,7 +4,7 @@ import Chats from '../../screens/home/Chats';
 import ScreenNames from '../../utils/ScreenNames';
 import Status from '../../screens/home/Status';
 import Colors from '../../utils/Colors';
-import {Text} from 'react-native';
+import {Text, StyleSheet} from 'react-native';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -12,25 +12,10 @@ function MyTabs() {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        tabBarStyle: {backgroundColor: 'transparent'},
+        tabBarStyle: {...styles.statusBarStyle},
         tabBarLabel: ({focused}) => {
           return (
-            <Text
-              style={
-                focused
-                  ? {
-                      fontSize: 16,
-                      fontWeight: 'bold',
-                      color: Colors.GREEN,
-                      textTransform: 'uppercase',
-                    }
-                  : {
-                      fontSize: 16,
-                      fontWeight: 'bold',
-                      color: Colors.BLACK,
-                      textTransform: 'uppercase',
-                    }
-              }>
+            <Text style={focused ? styles.focused : styles.notFocused}>
               {route.name}
             </Text>
           );
@@ -44,3 +29,21 @@ function MyTabs() {
 }
 
 export default MyTabs;
+
+const styles = StyleSheet.create({
+  statusBarStyle: {
+    backgroundColor: 'transparent',
+  },
+  focused: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.GREEN,
+    textTransform: 'uppercase',
+  },
+  notFocused: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: Colors.BLACK,
+    textTransform: 'uppercase',
+  },
+});
