@@ -6,7 +6,6 @@ import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
 
 export async function signInWithPhoneNumber(phoneNumber, success, fialure) {
-  console.log('phoneNumber', phoneNumber);
   try {
     const confirmation = await auth().signInWithPhoneNumber(
       '+91' + phoneNumber,
@@ -64,13 +63,15 @@ export function updateDataInFirbase(uid, details, success, failure) {
 
 export async function getDatafromFirebase(uid, success) {
   try {
-    const data = await firestore()
-      .collection('Users')
-      .where('id', '!=', uid)
-      .get();
-    const allUsers = data.docs.map(items => items.data());
-    success(allUsers);
-    return allUsers;
+    const data = await firestore().collection('Users').where('id', '!=', uid);
+
+    data.onSnapshot(onsnap => {
+      const allUsers = onsnap.docs.map(items => {
+        return items.data();
+      });
+
+      success(allUsers);
+    });
   } catch (error) {
     error(error);
   }

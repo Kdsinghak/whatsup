@@ -4,10 +4,16 @@ import {
   StyleSheet,
   Platform,
   Image,
-  Text,
-  TouchableOpacity,
+  ImageBackground,
+  SafeAreaView,
 } from 'react-native';
-import {GiftedChat, InputToolbar, Send} from 'react-native-gifted-chat';
+import {
+  Bubble,
+  GiftedChat,
+  InputToolbar,
+  Send,
+  Time,
+} from 'react-native-gifted-chat';
 import React, {useState, useEffect} from 'react';
 import {getAllmessages} from './ChatUtils';
 import firestore from '@react-native-firebase/firestore';
@@ -64,10 +70,12 @@ export default function ChatRoom({route}) {
 
   const renderInputToolbar = props => {
     return (
-      <InputToolbar
-        containerStyle={styles.inputToolbarContainerStyle}
-        {...props}
-      />
+      <View style={{marginTop: normalize(60)}}>
+        <InputToolbar
+          containerStyle={styles.inputToolbarContainerStyle}
+          {...props}
+        />
+      </View>
     );
   };
 
@@ -86,39 +94,88 @@ export default function ChatRoom({route}) {
   };
 
   return (
-    <View style={styles.container}>
-      <ChatRoomHeader
-        image={image}
-        name={name}
-        onBackPress={handleBack}
-        uid={userID}
-      />
+    <SafeAreaView style={styles.contentContainer}>
+      {Platform.OS === 'android' && <View style={styles.androidSafeView} />}
 
-      <GiftedChat
-        messages={messages}
-        onSend={messages => onSend(messages)}
-        user={{
-          _id: userId,
-        }}
-        showAvatarForEveryMessage={true}
-        messagesContainerStyle={{
-          paddingTop:
-            Platform.OS === 'ios'
-              ? getStatusBarHeight() + normalize(5)
-              : getStatusBarHeight() + normalize(24),
-        }}
-        renderInputToolbar={renderInputToolbar}
-        renderSend={renderSend}
-        isTyping={true}
-      />
-    </View>
+      <ImageBackground
+        style={styles.container}
+        source={LocalImages.backGroundImage}>
+        <ChatRoomHeader
+          image={image}
+          name={name}
+          onBackPress={handleBack}
+          uid={userID}
+        />
+
+        <GiftedChat
+          messages={messages}
+          onSend={messages => onSend(messages)}
+          user={{
+            _id: userId,
+          }}
+          showAvatarForEveryMessage={true}
+          messagesContainerStyle={{
+            paddingTop: Platform.OS === 'ios' ? normalize(10) : normalize(24),
+          }}
+          renderInputToolbar={renderInputToolbar}
+          renderSend={renderSend}
+          isTyping={true}
+          renderBubble={props => {
+            return (
+              <Bubble
+                {...props}
+                textStyle={{
+                  right: {
+                    color: Colors.BLACK,
+                  },
+                  left: {color: Colors.BLACK},
+                }}
+                wrapperStyle={{
+                  left: {
+                    backgroundColor: Colors.WHITE,
+                    marginVertical: normalize(5),
+                  },
+                  right: {
+                    backgroundColor: Colors.WHATSAPPGREEN,
+                  },
+                }}
+              />
+            );
+          }}
+          renderTime={props => {
+            return (
+              <Time
+                {...props}
+                timeTextStyle={{
+                  left: {
+                    color: Colors.BLACK,
+                    fontSize: normalize(13),
+                  },
+                  right: {
+                    color: Colors.BROWNISHGREY,
+                    fontSize: normalize(13),
+                  },
+                }}
+              />
+            );
+          }}
+        />
+      </ImageBackground>
+      {Platform.OS === 'android' && <View style={styles.dummyViewStyle} />}
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  dummyViewStyle: {
+    height: getStatusBarHeight(),
+    backgroundColor: Colors.ORCHAR,
+    elevation: -1,
+  },
+  contentContainer: {flex: 1, backgroundColor: Colors.WHITE},
   container: {
     flex: 1,
-    backgroundColor: Colors.WHITE,
+    backgroundColor: Colors.ORCHAR,
   },
   sendButtonContainer: {
     overflow: 'hidden',
@@ -134,7 +191,6 @@ const styles = StyleSheet.create({
     marginHorizontal: normalize(15),
     borderRadius: normalize(10),
     justifyContent: 'center',
-    marginBottom: normalize(5),
     shadowColor: '#000',
     shadowOffset: {
       width: 4,
@@ -143,5 +199,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 5.46,
     elevation: 9,
+  },
+  androidSafeView: {
+    height: getStatusBarHeight() + 10,
+    backgroundColor: Colors.WHITE,
+    elevation: -1,
   },
 });

@@ -4,6 +4,7 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 import LocalImages from '../../utils/LocalImages';
 import {normalize} from '../../utils/Dimensions';
 import Colors from '../../utils/Colors';
+
 import firestore from '@react-native-firebase/firestore';
 
 const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
@@ -20,7 +21,7 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
   }, []);
 
   return (
-    <View style={[styles.headerViewStyle, {top: getStatusBarHeight()}]}>
+    <View style={[styles.headerViewStyle]}>
       <TouchableOpacity
         onPress={onBackPress}
         style={styles.backImageViewStyle}
@@ -30,13 +31,17 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
       <View style={styles.userImageView}>
         <Image source={{uri: image}} style={styles.UserImageStyle} />
       </View>
-      <Text
-        onPress={() => {}}
-        numberOfLines={1}
-        style={styles.userNameTextStyle}>
-        {name}
-      </Text>
-      <Text>{status}</Text>
+      <View style={styles.userDetailsView}>
+        <Text
+          onPress={() => {}}
+          numberOfLines={1}
+          style={styles.userNameTextStyle}>
+          {name}
+        </Text>
+        {status === 'online' && (
+          <Text style={styles.userStatusTextStyle}>{status}</Text>
+        )}
+      </View>
       <View style={styles.rightOptionContainer}>
         <TouchableOpacity style={styles.iconImageViewStyle} activeOpacity={0.8}>
           <Image style={styles.rightImageStyle} source={LocalImages.phone} />
@@ -60,20 +65,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: normalize(55),
-    backgroundColor: 'white',
-    marginHorizontal: normalize(5),
+    backgroundColor: Colors.WHITE,
+    padding: normalize(7),
     borderBottomWidth: normalize(1),
     borderBottomColor: Colors.SILVER,
   },
   imageStyle: {
     width: '100%',
     height: '100%',
+    tintColor: '#04e08b',
   },
   userImageView: {
     overflow: 'hidden',
     alignItems: 'center',
-    width: normalize(50),
-    height: normalize(50),
+    width: normalize(45),
+    height: normalize(45),
     justifyContent: 'center',
     marginLeft: normalize(10),
     borderRadius: normalize(25),
@@ -87,10 +93,7 @@ const styles = StyleSheet.create({
   userNameTextStyle: {
     fontWeight: '500',
     color: Colors.BLACK,
-    width: normalize(170),
     fontSize: normalize(20),
-    marginLeft: normalize(5),
-    lineHeight: normalize(50),
   },
   imageViewStyle: {
     backgroundColor: 'red',
@@ -111,13 +114,18 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   rightImageStyle: {
-    width: '80%',
-    height: '80%',
-    tintColor: Colors.GREEN,
+    width: '50%',
+    height: '50%',
+    tintColor: '#04e08b',
   },
   rightOptionContainer: {
     flexDirection: 'row',
     width: normalize(100),
     justifyContent: 'space-around',
+  },
+  userDetailsView: {width: normalize(170), marginHorizontal: normalize(5)},
+  userStatusTextStyle: {
+    color: Colors.BROWNISHGREY,
+    lineHeight: normalize(20),
   },
 });

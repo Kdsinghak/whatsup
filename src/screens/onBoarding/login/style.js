@@ -30,6 +30,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: '5%',
     width: normalize(250),
     height: normalize(40),
+
     fontSize: normalize(18),
   },
   phoneStyle: {

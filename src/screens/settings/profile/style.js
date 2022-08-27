@@ -110,10 +110,10 @@ export const styles = StyleSheet.create({
     fontSize: normalize(20),
   },
   editIconContainer: {
-    backgroundColor: Colors.GREY,
     borderRadius: normalize(7),
     bottom: normalize(25),
     left: normalize(40),
+    width: normalize(30),
   },
   userDetailsContainer: {
     width: '75%',
