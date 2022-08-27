@@ -13,4 +13,5 @@ export default {
   search: require('../assets/icons/search.png'),
   send: require('../assets/icons/send.png'),
   userIcon: require('../assets/icons/userIcon.png'),
+  backGroundImage: require('../assets/images/DiscussionBg.png'),
 };

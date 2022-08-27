@@ -21,7 +21,7 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
   }, []);
 
   return (
-    <View style={[styles.headerViewStyle, {top: getStatusBarHeight()}]}>
+    <View style={[styles.headerViewStyle]}>
       <TouchableOpacity
         onPress={onBackPress}
         style={styles.backImageViewStyle}
@@ -39,7 +39,7 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
           {name}
         </Text>
         {status === 'online' && (
-          <Text style={styles.userNameTextStyle}>{status}</Text>
+          <Text style={styles.userStatusTextStyle}>{status}</Text>
         )}
       </View>
       <View style={styles.rightOptionContainer}>
@@ -65,20 +65,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: normalize(55),
-    backgroundColor: 'white',
-    marginHorizontal: normalize(5),
+    backgroundColor: Colors.WHITE,
+    padding: normalize(7),
     borderBottomWidth: normalize(1),
     borderBottomColor: Colors.SILVER,
   },
   imageStyle: {
     width: '100%',
     height: '100%',
+    tintColor: '#04e08b',
   },
   userImageView: {
     overflow: 'hidden',
     alignItems: 'center',
-    width: normalize(50),
-    height: normalize(50),
+    width: normalize(45),
+    height: normalize(45),
     justifyContent: 'center',
     marginLeft: normalize(10),
     borderRadius: normalize(25),
@@ -113,9 +114,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   rightImageStyle: {
-    width: '80%',
-    height: '80%',
-    tintColor: Colors.GREEN,
+    width: '50%',
+    height: '50%',
+    tintColor: '#04e08b',
   },
   rightOptionContainer: {
     flexDirection: 'row',
@@ -123,4 +124,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   userDetailsView: {width: normalize(170), marginHorizontal: normalize(5)},
+  userStatusTextStyle: {
+    color: Colors.BROWNISHGREY,
+    lineHeight: normalize(20),
+  },
 });
