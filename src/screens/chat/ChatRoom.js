@@ -244,7 +244,6 @@ const styles = StyleSheet.create({
     height: normalize(35),
     justifyContent: 'center',
     marginLeft: normalize(8),
-    borderRadius: normalize(10),
     marginVertical: normalize(5),
     backgroundColor: 'transparent',
   },
