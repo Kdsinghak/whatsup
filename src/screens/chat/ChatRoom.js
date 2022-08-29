@@ -59,10 +59,7 @@ export default function ChatRoom({route}) {
       createdAt: new Date(),
     };
 
-    console.log('messages.length', messages.length);
-    console.log('LOGIN,ANOYHER', userId, userID);
     if (messages.length < 1) {
-      console.log('YAHA');
       firestore()
         .collection('Users')
         .doc(userId)
@@ -70,7 +67,6 @@ export default function ChatRoom({route}) {
         .doc(userID)
         .set({name, id, lastMessage: mymsg});
     } else {
-      console.log('vaha');
       firestore()
         .collection('Users')
         .doc(userId)
@@ -133,7 +129,7 @@ export default function ChatRoom({route}) {
       .collection('typingStatus')
       .doc(userId)
       .onSnapshot(typingChange => {
-        setUserTypingStatus(typingChange.data().isTyping);
+        setUserTypingStatus(typingChange?.data()?.isTyping);
       });
   }, [isTyping]);
 
@@ -152,7 +148,7 @@ export default function ChatRoom({route}) {
           <Image
             resizeMode="contain"
             source={LocalImages.send}
-            style={styles.imageStyle}
+            style={styles.imageStylexcvn}
           />
         </View>
       </Send>
@@ -175,7 +171,7 @@ export default function ChatRoom({route}) {
 
         <GiftedChat
           messages={messages}
-          isTypin={true}
+          isTyping={getUserTypingStatus}
           onSend={messages => onSend(messages)}
           user={{
             _id: userId,
