@@ -10,7 +10,7 @@ const Chats = () => {
   const [users, setAllUsers] = useState();
   const dispatch = useDispatch();
   const {userId} = useSelector(store => store.userDetailsReducer);
-  console.log('wertyuiop;lkjhgfds', users);
+
   const getAllUsers = () => {
     dispatch(
       requestDataAllUsers(
@@ -51,7 +51,7 @@ const Chats = () => {
         renderItem={onRender}
         ItemSeparatorComponent={flatListItemSeparator}
         keyExtractor={item => {
-          item.id;
+          return item.id;
         }}
       />
     </View>

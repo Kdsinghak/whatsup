@@ -1,6 +1,6 @@
+import {put, takeEvery, call} from 'redux-saga/effects';
 import {deleteData, saveAllUserData, saveData} from './action';
 import {getDatafromFirebase, verifyOTP} from '../../utils/CommonFunctions';
-import {put, takeEvery, call} from 'redux-saga/effects';
 
 export function* asyncSaveData(action) {
   const {uid, otp, sucess, error} = action;
@@ -13,7 +13,6 @@ export function* asyncGetAllUser(action) {
   const {uid, success, error} = action;
 
   const data = yield call(getDatafromFirebase, uid, success);
-
   yield put(saveAllUserData(data));
 }
 
