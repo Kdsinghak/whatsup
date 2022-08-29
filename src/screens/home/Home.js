@@ -85,11 +85,20 @@ const Home = () => {
     };
   };
 
-  const processChange = debounce(search => {}, 1000);
+  // const processChange = debounce(search => {
+  //   console.log('serrr', search);
+  //   let searchList = search?.filter(item => {
+  //     return item?.search
+  //       .trim()
+  //       .toLowerCase()
+  //       .includes(search.trim().toLowerCase());
+  //   });
+  //   return searchList;
+  // }, 1000);
 
-  useEffect(() => {
-    processChange(search);
-  }, [search]);
+  // useEffect(() => {
+  //   processChange(search);
+  // }, [search]);
 
   const onRightIconSearchClick = () => {
     Animated.timing(transform, {

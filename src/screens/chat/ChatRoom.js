@@ -16,6 +16,7 @@ import {
   InputToolbar,
 } from 'react-native-gifted-chat';
 import Colors from '../../utils/Colors';
+import Spinner from 'react-native-spinkit';
 import {getAllmessages} from './ChatUtils';
 import {normalize} from '../../utils/Dimensions';
 import LocalImages from '../../utils/LocalImages';
@@ -88,7 +89,7 @@ export default function ChatRoom({route}) {
 
   const renderInputToolbar = props => {
     return (
-      <View style={{marginTop: normalize(60)}}>
+      <View style={styles.inputContainerView}>
         <InputToolbar
           containerStyle={styles.inputToolbarContainerStyle}
           {...props}
@@ -134,11 +135,13 @@ export default function ChatRoom({route}) {
   }, [isTyping]);
 
   const renderFooter = () => {
-    return (
-      <View>
-        <Text>{`${getUserTypingStatus}`}</Text>
-      </View>
-    );
+    if (getUserTypingStatus) {
+      return (
+        <View style={styles.typingStatusView}>
+          <Spinner type="ThreeBounce" size={50} color={Colors.GREY} />
+        </View>
+      );
+    }
   };
 
   const renderSend = props => {
@@ -171,14 +174,14 @@ export default function ChatRoom({route}) {
 
         <GiftedChat
           messages={messages}
-          isTyping={getUserTypingStatus}
+          scrollToBottom
           onSend={messages => onSend(messages)}
           user={{
             _id: userId,
           }}
           showAvatarForEveryMessage={true}
           messagesContainerStyle={{
-            paddingTop: Platform.OS === 'ios' ? normalize(10) : normalize(24),
+            paddingTop: Platform.OS === 'ios' ? normalize(5) : normalize(24),
           }}
           renderInputToolbar={renderInputToolbar}
           renderSend={renderSend}
@@ -197,7 +200,6 @@ export default function ChatRoom({route}) {
                 wrapperStyle={{
                   left: {
                     backgroundColor: Colors.WHITE,
-                    marginVertical: normalize(5),
                   },
                   right: {
                     backgroundColor: Colors.WHATSAPPGREEN,
@@ -252,21 +254,32 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   inputToolbarContainerStyle: {
-    marginHorizontal: normalize(15),
-    borderRadius: normalize(10),
-    justifyContent: 'center',
-    shadowColor: '#000',
     shadowOffset: {
       width: 4,
       height: 3,
     },
     shadowOpacity: 0.2,
     shadowRadius: 5.46,
-    elevation: 9,
+    shadowColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: normalize(10),
+    paddingVertical: normalize(5),
+    marginHorizontal: normalize(15),
   },
   androidSafeView: {
-    height: getStatusBarHeight() + 10,
-    backgroundColor: Colors.WHITE,
     elevation: -1,
+    backgroundColor: Colors.WHITE,
+    height: getStatusBarHeight() + 10,
   },
+  typingStatusView: {
+    width: normalize(80),
+    alignItems: 'center',
+    height: normalize(35),
+    justifyContent: 'center',
+    marginLeft: normalize(8),
+    marginVertical: normalize(5),
+    backgroundColor: 'transparent',
+  },
+  inputContainerView: {marginTop: normalize(53)},
 });

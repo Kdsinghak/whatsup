@@ -3,8 +3,9 @@ import {useDispatch, useSelector} from 'react-redux';
 import React, {useState, useEffect} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {showToast} from '../../utils/CommonFunctions';
-import ChatListRender from '../../components/chatListRender/ChatListRender';
 import {requestDataAllUsers} from '../../redux/userDetails/action';
+import Loader from '../../components/loader/Loader';
+import ChatListRender from '../../components/chatListRender/ChatListRender';
 
 const Chats = () => {
   const [users, setAllUsers] = useState();
@@ -44,6 +45,10 @@ const Chats = () => {
     return <View style={styles.itemSeparatorStyle} />;
   };
 
+  const emptyListComponent = () => {
+    return <Loader />;
+  };
+
   return (
     <View style={styles.contentContainer}>
       <FlatList
@@ -53,6 +58,7 @@ const Chats = () => {
         keyExtractor={item => {
           return item.id;
         }}
+        ListEmptyComponent={emptyListComponent}
       />
     </View>
   );

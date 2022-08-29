@@ -15,6 +15,7 @@ import LocalImages from '../../../utils/LocalImages';
 import ScreenNames from '../../../utils/ScreenNames';
 import LocalStrings from '../../../utils/LocalStrings';
 import Loader from '../../../components/loader/Loader';
+import {CommonActions} from '@react-navigation/native';
 import React, {useState, useEffect, useRef} from 'react';
 import ImageCropPicker from 'react-native-image-crop-picker';
 import CustomText from '../../../components/customTextInput';
@@ -113,8 +114,21 @@ export default function Profile() {
       uid,
       {image, name, about, number},
       success => {
-        setLoader(false);
-        navigation.navigate(ScreenNames.HOME, {success});
+        setUploading(false);
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [
+              {
+                name: ScreenNames.HOME,
+                params: {
+                  success,
+                },
+              },
+            ],
+          }),
+        );
+        // navigation.navigate(ScreenNames.HOME, {success});
       },
       error => {
         setLoader(false);
