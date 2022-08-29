@@ -1,28 +1,29 @@
-import {useCallback} from 'react';
 import {useSelector} from 'react-redux';
 import {
+  Text,
   View,
-  StyleSheet,
-  Platform,
   Image,
-  ImageBackground,
+  Platform,
+  StyleSheet,
   SafeAreaView,
+  ImageBackground,
 } from 'react-native';
 import {
+  Time,
+  Send,
   Bubble,
   GiftedChat,
   InputToolbar,
-  Send,
-  Time,
 } from 'react-native-gifted-chat';
-import React, {useState, useEffect} from 'react';
+import Colors from '../../utils/Colors';
+import {getAllmessages} from './ChatUtils';
+import {normalize} from '../../utils/Dimensions';
 import LocalImages from '../../utils/LocalImages';
 import {showToast} from '../../utils/CommonFunctions';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
+import React, {useState, useEffect, useCallback} from 'react';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-import {View, StyleSheet, Platform, Image, Text} from 'react-native';
-import {GiftedChat, InputToolbar, Send} from 'react-native-gifted-chat';
 import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
 
 export default function ChatRoom({route}) {
@@ -31,6 +32,7 @@ export default function ChatRoom({route}) {
   const [messages, setMessages] = useState([]);
   const [isTyping, setisTyping] = useState(false);
   const {userId} = useSelector(store => store.userDetailsReducer);
+  const [getUserTypingStatus, setUserTypingStatus] = useState(false);
 
   let docid = userId > userID ? userId + '-' + userID : userID + '-' + userId;
 
@@ -44,9 +46,10 @@ export default function ChatRoom({route}) {
         showToast(error.error);
       },
     );
+    console.log(messages);
   }, []);
 
-  const onSend = (messages = []) => {
+  const onSend = useCallback((messages = []) => {
     let msg = messages[0];
 
     const mymsg = {
@@ -56,14 +59,32 @@ export default function ChatRoom({route}) {
       createdAt: new Date(),
     };
 
-    setMessages(previousMessages => GiftedChat.append(previousMessages, mymsg));
-
+    console.log('messages.length', messages.length);
+    console.log('LOGIN,ANOYHER', userId, userID);
+    if (messages.length < 1) {
+      console.log('YAHA');
+      firestore()
+        .collection('Users')
+        .doc(userId)
+        .collection('Inbox')
+        .doc(userID)
+        .set({name, id, lastMessage: mymsg});
+    } else {
+      console.log('vaha');
+      firestore()
+        .collection('Users')
+        .doc(userId)
+        .collection('Inbox')
+        .doc(userID)
+        .update({lastMessage: mymsg});
+    }
     firestore()
       .collection('ChatRooms')
       .doc(docid)
       .collection('messages')
       .add({...mymsg});
-  };
+    setMessages(previousMessages => GiftedChat.append(previousMessages, mymsg));
+  }, []);
 
   const handleBack = useCallback(() => {
     navigation.goBack();
@@ -98,17 +119,30 @@ export default function ChatRoom({route}) {
     if (text.length > 0) startTyping(false);
   };
 
+  useEffect(() => {
+    firestore()
+      .collection('ChatRooms')
+      .doc(docid)
+      .collection('typingStatus')
+      .doc(userId)
+      .set({isTyping: isTyping});
+
+    firestore()
+      .collection('ChatRooms')
+      .doc(docid)
+      .collection('typingStatus')
+      .doc(userId)
+      .get()
+      .then(res => {
+        setUserTypingStatus(res.data().isTyping);
+      });
+  }, [isTyping]);
+
   const renderFooter = () => {
     return (
-      <View
-        style={{
-          marginBottom: 20,
-          height: 20,
-          backgroundColor: 'green',
-        }}>
-        <Text style={{color: 'red'}}>{`${isTyping}`}</Text>
+      <View>
+        <Text>{`${getUserTypingStatus}`}</Text>
       </View>
-      // else return null;
     );
   };
 
@@ -142,6 +176,7 @@ export default function ChatRoom({route}) {
 
         <GiftedChat
           messages={messages}
+          isTypin={true}
           onSend={messages => onSend(messages)}
           user={{
             _id: userId,
