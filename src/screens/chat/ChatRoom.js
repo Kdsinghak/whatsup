@@ -1,33 +1,31 @@
-import {useCallback} from 'react';
 import {useSelector} from 'react-redux';
 import {
-  View,
-  StyleSheet,
-  Platform,
-  Image,
-  ImageBackground,
-  SafeAreaView,
   Text,
+  View,
+  Image,
+  Platform,
+  StyleSheet,
+  SafeAreaView,
+  ImageBackground,
 } from 'react-native';
 import {
+  Time,
+  Send,
   Bubble,
   GiftedChat,
   InputToolbar,
-  Send,
-  Time,
-  Composer,
 } from 'react-native-gifted-chat';
+import Colors from '../../utils/Colors';
 import Spinner from 'react-native-spinkit';
-import React, {useState, useEffect} from 'react';
+import {getAllmessages} from './ChatUtils';
+import {normalize} from '../../utils/Dimensions';
 import LocalImages from '../../utils/LocalImages';
 import {showToast} from '../../utils/CommonFunctions';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
+import React, {useState, useEffect, useCallback} from 'react';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-import {getAllmessages} from '../../screens/chat/ChatUtils';
 import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
-import Colors from '../../utils/Colors';
-import {normalize} from '../../utils/Dimensions';
 
 export default function ChatRoom({route}) {
   const navigation = useNavigation();
@@ -35,6 +33,7 @@ export default function ChatRoom({route}) {
   const [messages, setMessages] = useState([]);
   const [isTyping, setisTyping] = useState(false);
   const {userId} = useSelector(store => store.userDetailsReducer);
+  const [getUserTypingStatus, setUserTypingStatus] = useState(false);
 
   let docid = userId > userID ? userId + '-' + userID : userID + '-' + userId;
 
@@ -48,9 +47,10 @@ export default function ChatRoom({route}) {
         showToast(error.error);
       },
     );
+    console.log(messages);
   }, []);
 
-  const onSend = (messages = []) => {
+  const onSend = useCallback((messages = []) => {
     let msg = messages[0];
 
     const mymsg = {
@@ -60,14 +60,32 @@ export default function ChatRoom({route}) {
       createdAt: new Date(),
     };
 
-    setMessages(previousMessages => GiftedChat.append(previousMessages, mymsg));
-
+    console.log('messages.length', messages.length);
+    console.log('LOGIN,ANOYHER', userId, userID);
+    if (messages.length < 1) {
+      console.log('YAHA');
+      firestore()
+        .collection('Users')
+        .doc(userId)
+        .collection('Inbox')
+        .doc(userID)
+        .set({name, id, lastMessage: mymsg});
+    } else {
+      console.log('vaha');
+      firestore()
+        .collection('Users')
+        .doc(userId)
+        .collection('Inbox')
+        .doc(userID)
+        .update({lastMessage: mymsg});
+    }
     firestore()
       .collection('ChatRooms')
       .doc(docid)
       .collection('messages')
       .add({...mymsg});
-  };
+    setMessages(previousMessages => GiftedChat.append(previousMessages, mymsg));
+  }, []);
 
   const handleBack = useCallback(() => {
     navigation.goBack();
@@ -75,10 +93,12 @@ export default function ChatRoom({route}) {
 
   const renderInputToolbar = props => {
     return (
-      <InputToolbar
-        containerStyle={styles.inputToolbarContainerStyle}
-        {...props}
-      />
+      <View style={styles.inputContainerView}>
+        <InputToolbar
+          containerStyle={styles.inputToolbarContainerStyle}
+          {...props}
+        />
+      </View>
     );
   };
   const debounce = (fun, timeout) => {
@@ -94,18 +114,38 @@ export default function ChatRoom({route}) {
 
   const startTyping = debounce(() => {
     setisTyping(false);
-  }, 1000);
+  }, 2500);
 
   const detectTyping = text => {
     if (text.length > 0) startTyping(false);
   };
 
+  useEffect(() => {
+    firestore()
+      .collection('ChatRooms')
+      .doc(docid)
+      .collection('typingStatus')
+      .doc(userID)
+      .set({isTyping: isTyping});
+
+    firestore()
+      .collection('ChatRooms')
+      .doc(docid)
+      .collection('typingStatus')
+      .doc(userId)
+      .onSnapshot(typingChange => {
+        setUserTypingStatus(typingChange?.data()?.isTyping);
+      });
+  }, [isTyping]);
+
   const renderFooter = () => {
-    return (
-      <View style={styles.typingStatusView}>
-        <Spinner type="ThreeBounce" size={50} color={Colors.GREY} />
-      </View>
-    );
+    if (getUserTypingStatus) {
+      return (
+        <View style={styles.typingStatusView}>
+          <Spinner type="ThreeBounce" size={50} color={Colors.GREY} />
+        </View>
+      );
+    }
   };
 
   const renderSend = props => {
@@ -189,7 +229,6 @@ export default function ChatRoom({route}) {
               />
             );
           }}
-          isTyping={false}
         />
       </ImageBackground>
       {Platform.OS === 'android' && <View style={styles.dummyViewStyle} />}
@@ -219,24 +258,23 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   inputToolbarContainerStyle: {
-    marginHorizontal: normalize(15),
-    paddingVertical: normalize(5),
-    borderRadius: normalize(10),
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
     shadowOffset: {
       width: 4,
       height: 3,
     },
     shadowOpacity: 0.2,
     shadowRadius: 5.46,
-    bottom: normalize(-12),
+    shadowColor: '#000',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: normalize(10),
+    paddingVertical: normalize(5),
+    marginHorizontal: normalize(15),
   },
   androidSafeView: {
-    height: getStatusBarHeight() + 10,
-    backgroundColor: Colors.WHITE,
     elevation: -1,
+    backgroundColor: Colors.WHITE,
+    height: getStatusBarHeight() + 10,
   },
   typingStatusView: {
     width: normalize(80),
@@ -247,4 +285,5 @@ const styles = StyleSheet.create({
     marginVertical: normalize(5),
     backgroundColor: 'transparent',
   },
+  inputContainerView: {marginTop: normalize(53)},
 });

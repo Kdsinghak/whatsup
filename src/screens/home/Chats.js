@@ -56,7 +56,7 @@ const Chats = () => {
         renderItem={onRender}
         ItemSeparatorComponent={flatListItemSeparator}
         keyExtractor={item => {
-          item.id;
+          return item.id;
         }}
         ListEmptyComponent={emptyListComponent}
       />

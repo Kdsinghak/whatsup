@@ -35,9 +35,10 @@ export default function Profile() {
   const [image, setImage] = useState(
     'https://cdn-icons-png.flaticon.com/128/149/149071.png',
   );
-  const [uploading, setUploading] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   useEffect(() => {
+    setLoader(true);
     getDataFromFirebase(
       uid,
       response => {
@@ -45,9 +46,11 @@ export default function Profile() {
         setImage(response._data.image);
         setAbout(response._data.about);
         setNumber(response._data.number);
+        setLoader(false);
       },
       error => {
         showToast(error.message);
+        setLoader(false);
       },
     );
   }, []);
@@ -105,7 +108,7 @@ export default function Profile() {
   };
 
   const onPressNext = () => {
-    setUploading(true);
+    setLoader(true);
 
     updateDataInFirbase(
       uid,
@@ -128,10 +131,17 @@ export default function Profile() {
         // navigation.navigate(ScreenNames.HOME, {success});
       },
       error => {
-        setUploading(false);
+        setLoader(false);
         showToast(error.message);
       },
     );
+  };
+
+  const onimageLoadstart = () => {
+    setLoader(true);
+  };
+  const onimageLoadEnd = () => {
+    setLoader(false);
   };
 
   return (
@@ -156,7 +166,12 @@ export default function Profile() {
           <TouchableOpacity
             onPress={handleImagepick}
             style={styles.editIconContainer}>
-            <Image style={styles.editImageIcon} source={LocalImages.edit} />
+            <Image
+              style={styles.editImageIcon}
+              source={LocalImages.edit}
+              onLoadStart={onimageLoadstart}
+              onLoadEnd={onimageLoadEnd}
+            />
           </TouchableOpacity>
         </View>
         <TouchableOpacity onPress={handleName} style={styles.detailsContainer}>
@@ -199,7 +214,7 @@ export default function Profile() {
           labelStyle={styles.labelStyle}
         />
       </ScrollView>
-      {uploading && <Loader />}
+      {loader && <Loader />}
       <Modal animationType="slide" transparent={true} visible={modal}>
         <View style={styles.madalView}>
           <KeyboardAvoidingView
