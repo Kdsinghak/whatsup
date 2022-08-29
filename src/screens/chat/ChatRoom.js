@@ -113,7 +113,7 @@ export default function ChatRoom({route}) {
 
   const startTyping = debounce(() => {
     setisTyping(false);
-  }, 1000);
+  }, 2500);
 
   const detectTyping = text => {
     if (text.length > 0) startTyping(false);
@@ -124,7 +124,7 @@ export default function ChatRoom({route}) {
       .collection('ChatRooms')
       .doc(docid)
       .collection('typingStatus')
-      .doc(userId)
+      .doc(userID)
       .set({isTyping: isTyping});
 
     firestore()
@@ -132,9 +132,8 @@ export default function ChatRoom({route}) {
       .doc(docid)
       .collection('typingStatus')
       .doc(userId)
-      .get()
-      .then(res => {
-        setUserTypingStatus(res.data().isTyping);
+      .onSnapshot(typingChange => {
+        setUserTypingStatus(typingChange.data().isTyping);
       });
   }, [isTyping]);
 
