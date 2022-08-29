@@ -1,70 +1,83 @@
-import {View, Text, Image, StyleSheet} from 'react-native';
-import React from 'react';
-import localImages from '../../../utils/localImages';
-import colors from '../../../utils/colors';
-import localStrings from '../../../utils/localStrings';
-import PhoneText from '../../../components/text/onBoardingText/index';
-export default function Login() {
-  return (
-    <View style={styles.container}>
-      <Image source={localImages.spalshImg} style={styles.imageStyle} />
-      <View style={styles.innerView}>
-        <Text style={styles.signInHeadingStyle}>
-          {localStrings.sighinHeading}
-        </Text>
-        <Text style={styles.PhoneNumberText}>{localStrings.phoneNumber}</Text>
-        <View style={styles.TextInputView}>
-          <Image source={localImages.phone} style={styles.phoneStyle} />
+import {styles} from './style';
+import React, {useState, useRef} from 'react';
+import localImages from '../../../utils/LocalImages';
+import ScreenNames from '../../../utils/ScreenNames';
+import Loader from '../../../components/loader/Loader';
+import {useNavigation} from '@react-navigation/native';
+import localStrings from '../../../utils/LocalStrings';
+import PhoneText from '../../../components/customTextInput';
+import CustomButton from '../../../components/customButton/CustomButton';
+import {showToast, signInWithPhoneNumber} from '../../../utils/CommonFunctions';
+import {View, Text, Image, Platform, KeyboardAvoidingView} from 'react-native';
 
-          <PhoneText
-            TextStyle={styles.loginText}
-            placeholder={localStrings.phoneNumber}
-            keyBoardType="numeric"
-            maxLength="20"
-          />
-        </View>
+function Login() {
+  const [text, setText] = useState('');
+  const [loader, setLoader] = useState(false);
+  const navigation = useNavigation();
+  const textInput1 = useRef();
+
+  const handleSendOTP = () => {
+    setLoader(true);
+    signInWithPhoneNumber(
+      text,
+      response => {
+        if (response) {
+          const {_authResult} = response._auth;
+
+          if (_authResult) {
+            setLoader(false);
+            navigation.navigate(ScreenNames.OTP, response);
+          }
+        }
+      },
+      error => {
+        console.log('errorr', error);
+        showToast('Too many request, Try again later');
+        setLoader(false);
+      },
+    );
+  };
+
+  const handleDisable = () => {
+    if (text.length < 10 || text.length >= 11) return true;
+    else return false;
+  };
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <Image source={localImages.spalshImg} style={styles.imageStyle} />
+      <Text style={styles.signInHeadingStyle}>
+        {localStrings.sighinHeading}
+      </Text>
+      <Text style={styles.phoneNumberText}>{localStrings.phoneNumber}</Text>
+      <View style={styles.TextInputView}>
+        <Image source={localImages.phone} style={styles.phoneStyle} />
+
+        <PhoneText
+          ref={textInput1}
+          TextStyle={styles.loginText}
+          placeholder={localStrings.phoneNumber}
+          keyBoardType="numeric"
+          maxLength="20"
+          setText={setText}
+        />
       </View>
-    </View>
+      <CustomButton
+        disable={handleDisable()}
+        onPress={handleSendOTP}
+        containerStyle={
+          handleDisable()
+            ? styles.disablebuttonContainerStyle
+            : styles.enablebuttonContainerStyle
+        }
+        buttonLabel={localStrings.signIn}
+        labelStyle={styles.labelStyle}
+      />
+      {loader && <Loader />}
+    </KeyboardAvoidingView>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    marginTop: '10%',
-    backgroundColor: colors.WHITE,
-  },
-  innerView: {marginTop: 10},
-  imageStyle: {
-    height: '70%',
-    width: '100%',
-    alignSelf: 'center',
-  },
-  signInHeadingStyle: {
-    alignSelf: 'center',
-    color: colors.BLACK,
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  PhoneNumberText: {marginLeft: '6%', marginTop: 20, padding: 10},
-  loginText: {
-    marginHorizontal: '5%',
-    width: 250,
-    height: 30,
-    marginBottom: 14,
-  },
-  phoneStyle: {
-    height: 20,
-    width: 20,
-    alignSelf: 'center',
-    marginLeft: '5%',
-  },
-  TextInputView: {
-    flexDirection: 'row',
-    marginHorizontal: '5%',
-    borderColor: colors.GREEN,
-    borderWidth: 2,
-    borderRadius: 30,
-    height: 50,
-    alignItems: 'center',
-  },
-});
+export default React.memo(Login);

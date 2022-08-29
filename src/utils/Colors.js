@@ -1,0 +1,16 @@
+export default {
+  WHITE: '#FFFFFF',
+  GREY: '#8F97A0',
+  GREEN: '#21C585',
+  BLACK: '#09101D',
+  DARK_GREY: '#545A63',
+  LIGHTGREEN: '#87DFBD',
+  SILVER: '#bfbfbf',
+  VERYLIGHTGREY: '#cccccc',
+  GREENISH: '#00cc44',
+  twilightblue: '#0c4599',
+  PALETWO: '#ffecc9',
+  BROWNISHGREY: '#6e6e6e',
+  WHATSAPPGREEN: '#dcfabf',
+  ORCHAR: '#ece6de',
+};
