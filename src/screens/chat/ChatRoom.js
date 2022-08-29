@@ -7,6 +7,7 @@ import {
   Image,
   ImageBackground,
   SafeAreaView,
+  Text,
 } from 'react-native';
 import {
   Bubble,
@@ -14,16 +15,19 @@ import {
   InputToolbar,
   Send,
   Time,
+  Composer,
 } from 'react-native-gifted-chat';
+import Spinner from 'react-native-spinkit';
 import React, {useState, useEffect} from 'react';
 import LocalImages from '../../utils/LocalImages';
 import {showToast} from '../../utils/CommonFunctions';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-import {View, StyleSheet, Platform, Image, Text} from 'react-native';
-import {GiftedChat, InputToolbar, Send} from 'react-native-gifted-chat';
+import {getAllmessages} from '../../screens/chat/ChatUtils';
 import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
+import Colors from '../../utils/Colors';
+import {normalize} from '../../utils/Dimensions';
 
 export default function ChatRoom({route}) {
   const navigation = useNavigation();
@@ -71,12 +75,10 @@ export default function ChatRoom({route}) {
 
   const renderInputToolbar = props => {
     return (
-      <View style={{marginTop: normalize(60)}}>
-        <InputToolbar
-          containerStyle={styles.inputToolbarContainerStyle}
-          {...props}
-        />
-      </View>
+      <InputToolbar
+        containerStyle={styles.inputToolbarContainerStyle}
+        {...props}
+      />
     );
   };
   const debounce = (fun, timeout) => {
@@ -100,15 +102,9 @@ export default function ChatRoom({route}) {
 
   const renderFooter = () => {
     return (
-      <View
-        style={{
-          marginBottom: 20,
-          height: 20,
-          backgroundColor: 'green',
-        }}>
-        <Text style={{color: 'red'}}>{`${isTyping}`}</Text>
+      <View style={styles.typingStatusView}>
+        <Spinner type="ThreeBounce" size={50} color={Colors.GREY} />
       </View>
-      // else return null;
     );
   };
 
@@ -142,13 +138,14 @@ export default function ChatRoom({route}) {
 
         <GiftedChat
           messages={messages}
+          scrollToBottom
           onSend={messages => onSend(messages)}
           user={{
             _id: userId,
           }}
           showAvatarForEveryMessage={true}
           messagesContainerStyle={{
-            paddingTop: Platform.OS === 'ios' ? normalize(10) : normalize(24),
+            paddingTop: Platform.OS === 'ios' ? normalize(5) : normalize(24),
           }}
           renderInputToolbar={renderInputToolbar}
           renderSend={renderSend}
@@ -167,7 +164,6 @@ export default function ChatRoom({route}) {
                 wrapperStyle={{
                   left: {
                     backgroundColor: Colors.WHITE,
-                    marginVertical: normalize(5),
                   },
                   right: {
                     backgroundColor: Colors.WHATSAPPGREEN,
@@ -193,6 +189,7 @@ export default function ChatRoom({route}) {
               />
             );
           }}
+          isTyping={false}
         />
       </ImageBackground>
       {Platform.OS === 'android' && <View style={styles.dummyViewStyle} />}
@@ -223,8 +220,10 @@ const styles = StyleSheet.create({
   },
   inputToolbarContainerStyle: {
     marginHorizontal: normalize(15),
+    paddingVertical: normalize(5),
     borderRadius: normalize(10),
     justifyContent: 'center',
+    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 4,
@@ -232,11 +231,21 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.2,
     shadowRadius: 5.46,
-    elevation: 9,
+    bottom: normalize(-12),
   },
   androidSafeView: {
     height: getStatusBarHeight() + 10,
     backgroundColor: Colors.WHITE,
     elevation: -1,
+  },
+  typingStatusView: {
+    width: normalize(80),
+    alignItems: 'center',
+    height: normalize(35),
+    justifyContent: 'center',
+    marginLeft: normalize(8),
+    borderRadius: normalize(10),
+    marginVertical: normalize(5),
+    backgroundColor: 'transparent',
   },
 });

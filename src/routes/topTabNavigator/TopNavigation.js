@@ -13,6 +13,8 @@ function MyTabs() {
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarStyle: {...styles.statusBarStyle},
+        tabBarPressColor: 'transparent',
+        tabBarPressOpacity: 0.7,
         tabBarLabel: ({focused}) => {
           return (
             <Text style={focused ? styles.focused : styles.notFocused}>
