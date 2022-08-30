@@ -211,6 +211,7 @@ const AllUsers = () => {
         <View style={styles.toolTipView} />
       </Tooltip>
       <FlatList
+        contentContainerStyle={styles.flatListContentContainerStyle}
         data={users}
         renderItem={onRender}
         ItemSeparatorComponent={flatListItemSeparator}
@@ -267,4 +268,9 @@ const styles = StyleSheet.create({
     lineHeight: normalize(26),
   },
   toolTipContentContainer: {width: normalize(100)},
+  flatListContentContainerStyle: {
+    borderTopWidth: normalize(0.7),
+    marginTop: normalize(15),
+    borderTopColor: Colors.SILVER,
+  },
 });

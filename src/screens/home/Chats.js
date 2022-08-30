@@ -20,6 +20,7 @@ import {requestDataAllUsers} from '../../redux/userDetails/action';
 import ChatListRender from '../../components/chatListRender/ChatListRender';
 
 const Chats = () => {
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const [users, setAllUsers] = useState();
   const {userId} = useSelector(store => store.userDetailsReducer);
