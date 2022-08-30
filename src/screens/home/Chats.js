@@ -76,7 +76,7 @@ const Chats = () => {
         name={item.name}
         status={item.status}
         chatImage={item.image}
-        lastmessage={item.lastMessage.text}
+        lastmessage={item?.lastMessage?.text}
       />
     );
   };
@@ -107,7 +107,7 @@ const Chats = () => {
       <TouchableOpacity
         style={styles.plusButtonContainer}
         onPress={handleAddUser}>
-        <Image source={LocalImages.addUserIcon} />
+        <Image style={styles.iconStyle} source={LocalImages.addUserIcon} />
       </TouchableOpacity>
     </View>
   );
@@ -133,5 +133,9 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: normalize(80),
     right: normalize(20),
+  },
+  iconStyle: {
+    height: '100%',
+    width: '100%',
   },
 });
