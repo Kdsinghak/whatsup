@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import {TouchableOpacity, Image, View, Text} from 'react-native';
 import LocalImages from '../../utils/LocalImages';
 
-const ChatListRender = ({name, chatImage, message, id}) => {
+const ChatListRender = ({name, chatImage, message, id, lastmessage}) => {
   const navigation = useNavigation();
 
   const handleNavigation = useCallback(
@@ -32,7 +32,9 @@ const ChatListRender = ({name, chatImage, message, id}) => {
       </View>
       <View style={styles.userDetailsContainer}>
         <Text style={styles.userName}>{name}</Text>
-        <Text style={styles.messageDescriptionStyle}>{message}</Text>
+        <Text numberOfLines={1} style={styles.messageDescriptionStyle}>
+          {lastmessage}
+        </Text>
       </View>
     </TouchableOpacity>
   );

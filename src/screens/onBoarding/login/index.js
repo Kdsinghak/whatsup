@@ -31,8 +31,7 @@ function Login() {
         }
       },
       error => {
-        console.log('errorr', error);
-        showToast('Too many request, Try again later');
+        showToast(error.message);
         setLoader(false);
       },
     );

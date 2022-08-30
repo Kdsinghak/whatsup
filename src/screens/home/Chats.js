@@ -9,6 +9,7 @@ import ChatListRender from '../../components/chatListRender/ChatListRender';
 
 const Chats = () => {
   const [users, setAllUsers] = useState();
+  console.log(users);
   const dispatch = useDispatch();
   const {userId} = useSelector(store => store.userDetailsReducer);
 
@@ -37,6 +38,7 @@ const Chats = () => {
         name={item.name}
         status={item.status}
         chatImage={item.image}
+        lastmessage={item.lastMessage.text}
       />
     );
   };

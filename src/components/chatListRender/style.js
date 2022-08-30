@@ -27,6 +27,8 @@ export const styles = StyleSheet.create({
   },
   userDetailsContainer: {
     padding: normalize(10),
+
+    width: '70%',
   },
   messageDescriptionStyle: {
     color: Colors.GREY,

@@ -23,6 +23,8 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import ChatHeader from '../../../components/chatHeader/ChatHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
 import {showToast, updateDataInFirbase} from '../../../utils/CommonFunctions';
+import {useDispatch} from 'react-redux';
+import {RequestSaveProfile} from '../../../redux/userDetails/action';
 
 export default function Profile() {
   const textInput1 = useRef();
@@ -36,7 +38,7 @@ export default function Profile() {
     'https://cdn-icons-png.flaticon.com/128/149/149071.png',
   );
   const [loader, setLoader] = useState(false);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     setLoader(true);
     getDataFromFirebase(
@@ -114,7 +116,8 @@ export default function Profile() {
       uid,
       {image, name, about, number},
       success => {
-        setUploading(false);
+        dispatch(RequestSaveProfile({image, name, about, number}));
+        setLoader(false);
         navigation.dispatch(
           CommonActions.reset({
             index: 1,
@@ -128,7 +131,6 @@ export default function Profile() {
             ],
           }),
         );
-        // navigation.navigate(ScreenNames.HOME, {success});
       },
       error => {
         setLoader(false);

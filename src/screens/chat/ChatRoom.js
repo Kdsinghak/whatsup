@@ -32,7 +32,9 @@ export default function ChatRoom({route}) {
   const {userID, image, name} = route?.params;
   const [messages, setMessages] = useState([]);
   const [isTyping, setisTyping] = useState(false);
-  const {userId} = useSelector(store => store.userDetailsReducer);
+  const {userId, profileDetails} = useSelector(
+    store => store.userDetailsReducer,
+  );
   const [getUserTypingStatus, setUserTypingStatus] = useState(false);
 
   let docid = userId > userID ? userId + '-' + userID : userID + '-' + userId;
@@ -60,13 +62,25 @@ export default function ChatRoom({route}) {
       createdAt: new Date(),
     };
 
-    if (messages.length < 1) {
+    if (messages.length < 2) {
       firestore()
         .collection('Users')
         .doc(userId)
         .collection('Inbox')
         .doc(userID)
-        .set({name, id, lastMessage: mymsg});
+        .set({name, id: userID, lastMessage: mymsg, image: image});
+
+      firestore()
+        .collection('Users')
+        .doc(userID)
+        .collection('Inbox')
+        .doc(userId)
+        .set({
+          name: profileDetails.name,
+          id: userId,
+          lastMessage: mymsg,
+          image: profileDetails.image,
+        });
     } else {
       firestore()
         .collection('Users')
@@ -108,9 +122,12 @@ export default function ChatRoom({route}) {
     };
   };
 
-  const startTyping = debounce(() => {
-    setisTyping(false);
-  }, 2500);
+  const startTyping = useCallback(
+    debounce(() => {
+      setisTyping(false);
+    }, 10000),
+    [],
+  );
 
   const detectTyping = text => {
     if (text.length > 0) startTyping(false);

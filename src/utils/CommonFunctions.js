@@ -63,13 +63,15 @@ export function updateDataInFirbase(uid, details, success, failure) {
 
 export async function getDatafromFirebase(uid, success) {
   try {
-    const data = await firestore()
+    await firestore()
       .collection('Users')
-      .where('id', '!=', uid)
-      .get();
-    const allUsers = data.docs.map(items => items.data());
-    success(allUsers);
-    return allUsers;
+      .doc(uid)
+      .collection('Inbox')
+      .onSnapshot(onchange => {
+        const allUsers = onchange.docs.map(item => item.data());
+        success(allUsers);
+        return allUsers;
+      });
   } catch (error) {
     error(error);
   }

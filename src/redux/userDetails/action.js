@@ -6,6 +6,14 @@ export const saveData = uid => {
   return {type: 'ADD_DETAILS', payload: {userId: uid}};
 };
 
+export const RequestSaveProfile = details => {
+  return {type: 'REQUEST_SAVE_PROFILE', payload: details};
+};
+
+export const SaveProfile = details => {
+  return {type: 'SAVE_PROFILE', payload: {profileDetails: details}};
+};
+
 export const deleteData = () => {
   return {type: 'DELETE_DETAILS', payload: {userId: ''}};
 };
