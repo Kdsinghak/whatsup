@@ -25,7 +25,7 @@ import CustomButton from '../../../components/customButton/CustomButton';
 import {showToast, updateDataInFirbase} from '../../../utils/CommonFunctions';
 import {useDispatch} from 'react-redux';
 import {RequestSaveProfile} from '../../../redux/userDetails/action';
-
+import firestore from '@react-native-firebase/firestore';
 export default function Profile() {
   const textInput1 = useRef();
   const {uid} = useRoute().params;
@@ -116,7 +116,22 @@ export default function Profile() {
       uid,
       {image, name, about, number},
       success => {
-        dispatch(RequestSaveProfile({image, name, about, number}));
+        getDataFromFirebase(
+          uid,
+          response => {
+            let name = response._data.name;
+            let image = response._data.image;
+            let about = response._data.about;
+            let number = response._data.number;
+
+            dispatch(RequestSaveProfile({image, name, about, number}));
+          },
+          error => {
+            showToast(error.message);
+            setLoader(false);
+          },
+        );
+
         setLoader(false);
         navigation.dispatch(
           CommonActions.reset({
