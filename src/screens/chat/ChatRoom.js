@@ -3,7 +3,6 @@ import {
   View,
   Image,
   Platform,
-  StyleSheet,
   SafeAreaView,
   ImageBackground,
 } from 'react-native';
@@ -24,7 +23,7 @@ import {showToast} from '../../utils/CommonFunctions';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import React, {useState, useEffect, useCallback} from 'react';
-import {getStatusBarHeight} from 'react-native-status-bar-height';
+import {styles} from './style';
 import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
 
 function ChatRoom({route}) {
@@ -35,6 +34,7 @@ function ChatRoom({route}) {
   const {userId, profileDetails} = useSelector(
     store => store.userDetailsReducer,
   );
+
   const [getUserTypingStatus, setUserTypingStatus] = useState(false);
 
   let docid = userId > userID ? userId + '-' + userID : userID + '-' + userId;
@@ -124,7 +124,7 @@ function ChatRoom({route}) {
   const startTyping = useCallback(
     debounce(() => {
       setisTyping(false);
-    }, 10000),
+    }, 2000),
     [],
   );
 
@@ -234,6 +234,7 @@ function ChatRoom({route}) {
           onSend={messages => onSend(messages)}
           user={{
             _id: userId,
+            avatar: profileDetails.image,
           }}
           showAvatarForEveryMessage={true}
           messagesContainerStyle={styles.messagesContainerStyle}
@@ -251,58 +252,3 @@ function ChatRoom({route}) {
 }
 
 export default React.memo(ChatRoom);
-
-const styles = StyleSheet.create({
-  dummyViewStyle: {
-    height: getStatusBarHeight(),
-    backgroundColor: Colors.ORCHAR,
-    elevation: -1,
-  },
-  contentContainer: {flex: 1, backgroundColor: Colors.WHITE},
-  container: {
-    flex: 1,
-    backgroundColor: Colors.ORCHAR,
-  },
-  sendButtonContainer: {
-    overflow: 'hidden',
-    width: normalize(30),
-    height: normalize(30),
-    borderRadius: normalize(15),
-  },
-  imageStyle: {
-    height: '100%',
-    width: '100%',
-  },
-  inputToolbarContainerStyle: {
-    shadowOffset: {
-      width: 4,
-      height: 3,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 5.46,
-    shadowColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: normalize(10),
-    paddingVertical: normalize(5),
-    marginHorizontal: normalize(15),
-  },
-  androidSafeView: {
-    elevation: -1,
-    backgroundColor: Colors.WHITE,
-    height: getStatusBarHeight() + 10,
-  },
-  typingStatusView: {
-    width: normalize(80),
-    alignItems: 'center',
-    height: normalize(35),
-    justifyContent: 'center',
-    marginLeft: normalize(8),
-    marginVertical: normalize(5),
-    backgroundColor: 'transparent',
-  },
-  inputContainerView: {marginTop: normalize(53)},
-  messagesContainerStyle: {
-    paddingTop: Platform.OS === 'ios' ? normalize(5) : normalize(24),
-  },
-});
