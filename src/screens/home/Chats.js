@@ -76,6 +76,7 @@ const Chats = () => {
         name={item.name}
         status={item.status}
         chatImage={item.image}
+        lastmessage={item.lastMessage.text}
       />
     );
   };

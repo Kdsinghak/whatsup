@@ -1,10 +1,11 @@
 import {put, takeEvery, call} from 'redux-saga/effects';
-import {deleteData, saveAllUserData, saveData} from './action';
+import {deleteData, saveAllUserData, saveData, SaveProfile} from './action';
 import {getDatafromFirebase, verifyOTP} from '../../utils/CommonFunctions';
 
 export function* asyncSaveData(action) {
   const {uid, otp, sucess, error} = action;
   const data = yield call(verifyOTP, uid, otp, sucess, error);
+  console.log(data);
   let uidID = data.user._user.uid;
   yield put(saveData(uidID));
 }
@@ -20,6 +21,11 @@ export function* asyncDeleteData() {
   yield put(deleteData());
 }
 
+export function* ayncSaveProfile(action) {
+  console.log('asdfghjk,mnbvcxz', action);
+  yield put(SaveProfile(action.payload));
+}
+
 export function* watcherSaveData() {
   yield takeEvery('CONFIRM_UID', asyncSaveData);
 }
@@ -30,4 +36,8 @@ export function* watcherDeleteData() {
 
 export function* watchergetAlluser() {
   yield takeEvery('REQUEST_ALL_USER', asyncGetAllUser);
+}
+
+export function* watcherRequestProfile() {
+  yield takeEvery('REQUEST_SAVE_PROFILE', ayncSaveProfile);
 }
