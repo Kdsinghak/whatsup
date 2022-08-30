@@ -79,7 +79,7 @@ export const showToast = message => {
   Snackbar.show({
     text: message,
     backgroundColor: Colors.BLACK,
-    duration: 1000,
+    duration: 3000,
     textColor: Colors.WHITE,
   });
 };

@@ -10,6 +10,8 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: normalize(15),
     marginTop: Platform.OS === 'ios' ? normalize(40) : normalize(40),
+    borderBottomWidth: normalize(0.7),
+    borderBottomColor: Colors.SILVER,
   },
   container: {
     width: normalize(25),

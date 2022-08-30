@@ -1,4 +1,3 @@
-import {useSelector} from 'react-redux';
 import {
   Text,
   View,
@@ -16,6 +15,7 @@ import {
   InputToolbar,
 } from 'react-native-gifted-chat';
 import Colors from '../../utils/Colors';
+import {useSelector} from 'react-redux';
 import Spinner from 'react-native-spinkit';
 import {getAllmessages} from './ChatUtils';
 import {normalize} from '../../utils/Dimensions';
@@ -27,7 +27,7 @@ import React, {useState, useEffect, useCallback} from 'react';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
 
-export default function ChatRoom({route}) {
+function ChatRoom({route}) {
   const navigation = useNavigation();
   const {userID, image, name} = route?.params;
   const [messages, setMessages] = useState([]);
@@ -47,7 +47,6 @@ export default function ChatRoom({route}) {
         showToast(error.error);
       },
     );
-    console.log(messages);
   }, []);
 
   const onSend = useCallback((messages = []) => {
@@ -158,6 +157,46 @@ export default function ChatRoom({route}) {
     );
   };
 
+  const renderBubble = props => {
+    return (
+      <Bubble
+        {...props}
+        textStyle={{
+          right: {
+            color: Colors.BLACK,
+          },
+          left: {color: Colors.BLACK},
+        }}
+        wrapperStyle={{
+          left: {
+            backgroundColor: Colors.WHITE,
+          },
+          right: {
+            backgroundColor: Colors.WHATSAPPGREEN,
+          },
+        }}
+      />
+    );
+  };
+
+  const renderTime = props => {
+    return (
+      <Time
+        {...props}
+        timeTextStyle={{
+          left: {
+            color: Colors.BLACK,
+            fontSize: normalize(13),
+          },
+          right: {
+            color: Colors.BROWNISHGREY,
+            fontSize: normalize(13),
+          },
+        }}
+      />
+    );
+  };
+
   return (
     <SafeAreaView style={styles.contentContainer}>
       {Platform.OS === 'android' && <View style={styles.androidSafeView} />}
@@ -180,57 +219,21 @@ export default function ChatRoom({route}) {
             _id: userId,
           }}
           showAvatarForEveryMessage={true}
-          messagesContainerStyle={{
-            paddingTop: Platform.OS === 'ios' ? normalize(5) : normalize(24),
-          }}
+          messagesContainerStyle={styles.messagesContainerStyle}
           renderInputToolbar={renderInputToolbar}
           renderSend={renderSend}
           onInputTextChanged={detectTyping}
           renderFooter={renderFooter}
-          renderBubble={props => {
-            return (
-              <Bubble
-                {...props}
-                textStyle={{
-                  right: {
-                    color: Colors.BLACK,
-                  },
-                  left: {color: Colors.BLACK},
-                }}
-                wrapperStyle={{
-                  left: {
-                    backgroundColor: Colors.WHITE,
-                  },
-                  right: {
-                    backgroundColor: Colors.WHATSAPPGREEN,
-                  },
-                }}
-              />
-            );
-          }}
-          renderTime={props => {
-            return (
-              <Time
-                {...props}
-                timeTextStyle={{
-                  left: {
-                    color: Colors.BLACK,
-                    fontSize: normalize(13),
-                  },
-                  right: {
-                    color: Colors.BROWNISHGREY,
-                    fontSize: normalize(13),
-                  },
-                }}
-              />
-            );
-          }}
+          renderBubble={renderBubble}
+          renderTime={renderTime}
         />
       </ImageBackground>
       {Platform.OS === 'android' && <View style={styles.dummyViewStyle} />}
     </SafeAreaView>
   );
 }
+
+export default React.memo(ChatRoom);
 
 const styles = StyleSheet.create({
   dummyViewStyle: {
@@ -282,4 +285,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   inputContainerView: {marginTop: normalize(53)},
+  messagesContainerStyle: {
+    paddingTop: Platform.OS === 'ios' ? normalize(5) : normalize(24),
+  },
 });
