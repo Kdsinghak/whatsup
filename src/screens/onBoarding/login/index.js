@@ -1,5 +1,5 @@
 import {styles} from './style';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import localImages from '../../../utils/LocalImages';
 import ScreenNames from '../../../utils/ScreenNames';
 import Loader from '../../../components/loader/Loader';
@@ -8,13 +8,46 @@ import localStrings from '../../../utils/LocalStrings';
 import PhoneText from '../../../components/customTextInput';
 import CustomButton from '../../../components/customButton/CustomButton';
 import {showToast, signInWithPhoneNumber} from '../../../utils/CommonFunctions';
-import {View, Text, Image, Platform, KeyboardAvoidingView} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  Platform,
+  KeyboardAvoidingView,
+  BackHandler,
+} from 'react-native';
 
 function Login() {
   const [text, setText] = useState('');
   const [loader, setLoader] = useState(false);
   const navigation = useNavigation();
   const textInput1 = useRef();
+
+  /**
+   * Handle On hardwareBackPress of Android
+   */
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    };
+  }, []);
+
+  const onBackPress = () => {
+    if (navigation.isFocused()) {
+      Alert.alert('', 'You sure you want to close the application?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+        },
+        {text: 'YES', onPress: () => BackHandler.exitApp()},
+      ]);
+      //Return true for stopping default backpress
+      //Return False for performing default backpress
+      return true;
+    }
+  };
 
   const handleSendOTP = () => {
     setLoader(true);

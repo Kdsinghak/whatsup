@@ -1,17 +1,54 @@
+import {
+  View,
+  Alert,
+  Image,
+  FlatList,
+  StyleSheet,
+  BackHandler,
+  TouchableOpacity,
+} from 'react-native';
 import Colors from '../../utils/Colors';
-import {useDispatch, useSelector} from 'react-redux';
 import React, {useState, useEffect} from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
-import {showToast} from '../../utils/CommonFunctions';
-import {requestDataAllUsers} from '../../redux/userDetails/action';
+import {normalize} from '../../utils/Dimensions';
+import LocalImages from '../../utils/LocalImages';
+import ScreenNames from '../../utils/ScreenNames';
 import Loader from '../../components/loader/Loader';
+import {useDispatch, useSelector} from 'react-redux';
+import {showToast} from '../../utils/CommonFunctions';
+import {useNavigation} from '@react-navigation/native';
+import {requestDataAllUsers} from '../../redux/userDetails/action';
 import ChatListRender from '../../components/chatListRender/ChatListRender';
 
 const Chats = () => {
+  const navigation = useNavigation();
   const [users, setAllUsers] = useState();
-  console.log(users);
-  const dispatch = useDispatch();
   const {userId} = useSelector(store => store.userDetailsReducer);
+
+  /**
+   * Handle On hardwareBackPress of Android
+   */
+  useEffect(() => {
+    BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+    return () => {
+      BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    };
+  }, []);
+
+  const onBackPress = () => {
+    if (navigation.isFocused()) {
+      Alert.alert('', 'You sure you want to close the application?', [
+        {
+          text: 'Cancel',
+          onPress: () => null,
+        },
+        {text: 'YES', onPress: () => BackHandler.exitApp()},
+      ]);
+      //Return true for stopping default backpress
+      //Return False for performing default backpress
+      return true;
+    }
+  };
 
   const getAllUsers = () => {
     dispatch(
@@ -51,6 +88,10 @@ const Chats = () => {
     return <Loader />;
   };
 
+  const handleAddUser = () => {
+    navigation.navigate(ScreenNames.ALLUSERS);
+  };
+
   return (
     <View style={styles.contentContainer}>
       <FlatList
@@ -62,6 +103,11 @@ const Chats = () => {
         }}
         ListEmptyComponent={emptyListComponent}
       />
+      <TouchableOpacity
+        style={styles.plusButtonContainer}
+        onPress={handleAddUser}>
+        <Image source={LocalImages.addUserIcon} />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -79,5 +125,12 @@ const styles = StyleSheet.create({
     opacity: 0.3,
     alignSelf: 'center',
     backgroundColor: Colors.BLACK,
+  },
+  plusButtonContainer: {
+    height: normalize(60),
+    width: normalize(60),
+    position: 'absolute',
+    bottom: normalize(80),
+    right: normalize(20),
   },
 });
