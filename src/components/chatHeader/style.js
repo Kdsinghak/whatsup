@@ -47,7 +47,7 @@ export const styles = StyleSheet.create({
 
   rightIconsContainer: {
     height: normalize(50),
-    width: normalize(80),
+    width: normalize(60),
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',

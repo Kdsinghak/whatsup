@@ -110,9 +110,9 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.SILVER,
   },
   imageStyle: {
-    width: '100%',
-    height: '100%',
-    tintColor: '#04e08b',
+    width: '70%',
+    height: '70%',
+    tintColor: Colors.GREEN,
   },
   userImageView: {
     overflow: 'hidden',
@@ -128,6 +128,7 @@ const styles = StyleSheet.create({
   backImageViewStyle: {
     width: normalize(27),
     height: normalize(30),
+    justifyContent: 'center',
   },
   userNameTextStyle: {
     fontWeight: '500',
@@ -146,21 +147,21 @@ const styles = StyleSheet.create({
     height: normalize(35),
     justifyContent: 'center',
     borderRadius: normalize(6),
-    backgroundColor: '#e1f4f2',
   },
   UserImageStyle: {
     height: '100%',
     width: '100%',
   },
   rightImageStyle: {
-    width: '50%',
-    height: '50%',
-    tintColor: '#04e08b',
+    width: '70%',
+    height: '70%',
+    tintColor: Colors.GREEN,
   },
   rightOptionContainer: {
     flexDirection: 'row',
-    width: normalize(100),
-    justifyContent: 'space-around',
+    width: normalize(75),
+    marginLeft: normalize(30),
+    justifyContent: 'space-between',
   },
   userDetailsView: {
     width: normalize(170),
