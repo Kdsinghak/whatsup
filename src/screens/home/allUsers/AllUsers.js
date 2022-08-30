@@ -273,4 +273,11 @@ const styles = StyleSheet.create({
     marginTop: normalize(15),
     borderTopColor: Colors.SILVER,
   },
+  itemSeparatorStyle: {
+    height: 1,
+    width: '98%',
+    opacity: 0.3,
+    alignSelf: 'center',
+    backgroundColor: Colors.BLACK,
+  },
 });

@@ -5,6 +5,8 @@ import {
   Platform,
   SafeAreaView,
   ImageBackground,
+  Clipboard,
+
 } from 'react-native';
 import {
   Time,
@@ -42,6 +44,7 @@ function ChatRoom({route}) {
   useEffect(() => {
     getAllmessages(
       docid,
+      userId,
       success => {
         setMessages(success);
       },
@@ -92,7 +95,8 @@ function ChatRoom({route}) {
       .collection('ChatRooms')
       .doc(docid)
       .collection('messages')
-      .add({...mymsg});
+      .doc(mymsg._id)
+      .set({...mymsg});
     setMessages(previousMessages => GiftedChat.append(previousMessages, mymsg));
   }, []);
 
@@ -102,12 +106,10 @@ function ChatRoom({route}) {
 
   const renderInputToolbar = props => {
     return (
-      <View style={styles.inputContainerView}>
-        <InputToolbar
-          containerStyle={styles.inputToolbarContainerStyle}
-          {...props}
-        />
-      </View>
+      <InputToolbar
+        containerStyle={styles.inputToolbarContainerStyle}
+        {...props}
+      />
     );
   };
   const debounce = (fun, timeout) => {
@@ -150,6 +152,76 @@ function ChatRoom({route}) {
       });
   }, [isTyping]);
 
+  const deletForMe = msg => {
+    firestore()
+      .collection('ChatRooms')
+      .doc(docid)
+      .collection('messages')
+      .doc(msg?._id)
+      .update({...msg, deletedBy: userId})
+      .then(() => {
+        if (messages[0]?._id === msg?._id) {
+        }
+      });
+  };
+
+  const deletedForEveryOne = msg => {
+    firestore()
+      .collection('ChatRooms')
+      .doc(docid)
+      .collection('messages')
+      .doc(msg?._id)
+      .update({...msg, deletedForEveryOne: true})
+      .then(() => {
+        if (messages[0]?._id === msg?._id) {
+        }
+      });
+  };
+
+  const handleLongPress = (context, message) => {
+    let options, cancelButtonIndex;
+    if (userId === message.fromUserId) {
+      options = ['Copy', 'Delete for me', 'Delete for everyone', 'Cancel'];
+      cancelButtonIndex = options.length;
+      context
+        .actionSheet()
+        .showActionSheetWithOptions(
+          {options, cancelButtonIndex},
+          buttonIndex => {
+            switch (buttonIndex) {
+              case 0:
+                Clipboard.setString(message.text);
+                break;
+              case 1:
+                deletForMe(message);
+                break;
+              case 2:
+                deletedForEveryOne(message);
+                break;
+            }
+          },
+        );
+    } else {
+      options = ['Copy', 'Delete for me', 'Cancel'];
+      cancelButtonIndex = options.length;
+      context
+        .actionSheet()
+        .showActionSheetWithOptions(
+          {options, cancelButtonIndex},
+          buttonIndex => {
+            switch (buttonIndex) {
+              case 0:
+                Clipboard.setString(message.text);
+                break;
+              case 1:
+                deletForMe(message);
+                break;
+            }
+          },
+        );
+    }
+  };
+
   const renderFooter = () => {
     if (getUserTypingStatus) {
       return (
@@ -167,7 +239,7 @@ function ChatRoom({route}) {
           <Image
             resizeMode="contain"
             source={LocalImages.send}
-            style={styles.imageStylexcvn}
+            style={styles.imageStyle}
           />
         </View>
       </Send>
@@ -231,10 +303,11 @@ function ChatRoom({route}) {
         <GiftedChat
           messages={messages}
           scrollToBottom
+          onLongPress={handleLongPress}
           onSend={messages => onSend(messages)}
           user={{
             _id: userId,
-            avatar: profileDetails.image,
+            avatar: profileDetails?.image,
           }}
           showAvatarForEveryMessage={true}
           messagesContainerStyle={styles.messagesContainerStyle}
@@ -252,3 +325,5 @@ function ChatRoom({route}) {
 }
 
 export default React.memo(ChatRoom);
+<<<<<<< HEAD
+=======

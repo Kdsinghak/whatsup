@@ -220,7 +220,7 @@ const OTP = ({route}) => {
           <CustomTextInput
             maxLength={1}
             ref={textInput2}
-            keyBoardType={'number'}
+            keyBoardType={'numeric'}
             setText={handleTextInput2}
             onKeyPressText={handleKeyPress2}
             customInputStyle={styles.customInputStyle}
