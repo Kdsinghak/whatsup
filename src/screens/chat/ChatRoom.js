@@ -6,7 +6,6 @@ import {
   SafeAreaView,
   ImageBackground,
   Clipboard,
-
 } from 'react-native';
 import {
   Time,
@@ -325,5 +324,3 @@ function ChatRoom({route}) {
 }
 
 export default React.memo(ChatRoom);
-<<<<<<< HEAD
-=======
