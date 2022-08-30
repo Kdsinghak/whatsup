@@ -114,7 +114,7 @@ export default function Profile() {
       uid,
       {image, name, about, number},
       success => {
-        setUploading(false);
+        setLoader(false);
         navigation.dispatch(
           CommonActions.reset({
             index: 1,
@@ -128,7 +128,6 @@ export default function Profile() {
             ],
           }),
         );
-        // navigation.navigate(ScreenNames.HOME, {success});
       },
       error => {
         setLoader(false);

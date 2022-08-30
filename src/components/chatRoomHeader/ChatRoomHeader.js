@@ -6,9 +6,12 @@ import {normalize} from '../../utils/Dimensions';
 import Colors from '../../utils/Colors';
 
 import firestore from '@react-native-firebase/firestore';
+import Tooltip from 'react-native-walkthrough-tooltip';
+import LocalStrings from '../../utils/LocalStrings';
 
 const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
   const [status, setStaus] = useState();
+  const [showTip, setTip] = useState(false);
 
   useEffect(() => {
     firestore()
@@ -20,37 +23,73 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
       });
   }, []);
 
+  const handleBlockUser = () => {
+    setTip(!showTip);
+  };
+
+  const deleteUserChat = () => {
+    setTip(!showTip);
+  };
+
   return (
-    <View style={[styles.headerViewStyle]}>
-      <TouchableOpacity
-        onPress={onBackPress}
-        style={styles.backImageViewStyle}
-        hitSlop={(10, 10, 10, 10)}>
-        <Image source={LocalImages.backArrow} style={styles.imageStyle} />
-      </TouchableOpacity>
-      <View style={styles.userImageView}>
-        <Image source={{uri: image}} style={styles.UserImageStyle} />
-      </View>
-      <View style={styles.userDetailsView}>
-        <Text
-          onPress={() => {}}
-          numberOfLines={1}
-          style={styles.userNameTextStyle}>
-          {name}
-        </Text>
-        {status === 'online' && (
-          <Text style={styles.userStatusTextStyle}>{status}</Text>
-        )}
-      </View>
-      <View style={styles.rightOptionContainer}>
-        <TouchableOpacity style={styles.iconImageViewStyle} activeOpacity={0.8}>
-          <Image style={styles.rightImageStyle} source={LocalImages.phone} />
+    <>
+      <View style={[styles.headerViewStyle]}>
+        <TouchableOpacity
+          onPress={onBackPress}
+          style={styles.backImageViewStyle}
+          hitSlop={(10, 10, 10, 10)}>
+          <Image source={LocalImages.backArrow} style={styles.imageStyle} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconImageViewStyle} activeOpacity={0.8}>
-          <Image style={styles.rightImageStyle} source={LocalImages.more} />
+        <View style={styles.userImageView}>
+          <Image
+            source={{uri: image} ?? LocalImages.userIcon}
+            style={styles.UserImageStyle}
+          />
+        </View>
+        <TouchableOpacity style={styles.userDetailsView}>
+          <Text numberOfLines={1} style={styles.userNameTextStyle}>
+            {name}
+          </Text>
+          {status === 'online' && (
+            <Text style={styles.userStatusTextStyle}>{status}</Text>
+          )}
         </TouchableOpacity>
+        <View style={styles.rightOptionContainer}>
+          <TouchableOpacity
+            style={styles.iconImageViewStyle}
+            activeOpacity={0.8}>
+            <Image style={styles.rightImageStyle} source={LocalImages.phone} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.iconImageViewStyle}
+            activeOpacity={0.8}
+            onPress={() => setTip(!showTip)}>
+            <Image style={styles.rightImageStyle} source={LocalImages.more} />
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+      <Tooltip
+        topAdjustment={Platform.OS === 'android' ? -StatusBar.currentHeight : 0}
+        backgroundColor="transparent"
+        placement="right"
+        contentStyle={styles.toolTipContentStyle}
+        isVisible={showTip}
+        content={
+          <View style={styles.toolTipContentContainer}>
+            <TouchableOpacity onPress={handleBlockUser}>
+              <Text style={styles.toolTipTextStyle}>{LocalStrings.Block}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={deleteUserChat}>
+              <Text style={styles.toolTipTextStyle}>
+                {LocalStrings.Delete_Chat}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        }
+        onClose={() => setTip(!showTip)}>
+        <View style={styles.toolTipView} />
+      </Tooltip>
+    </>
   );
 };
 
@@ -123,9 +162,28 @@ const styles = StyleSheet.create({
     width: normalize(100),
     justifyContent: 'space-around',
   },
-  userDetailsView: {width: normalize(170), marginHorizontal: normalize(5)},
+  userDetailsView: {
+    width: normalize(170),
+    paddingHorizontal: normalize(5),
+    marginRight: normalize(10),
+  },
   userStatusTextStyle: {
     color: Colors.BROWNISHGREY,
     lineHeight: normalize(20),
+  },
+  toolTipContentStyle: {
+    top: normalize(30),
+    right: normalize(0),
+    position: 'absolute',
+    height: normalize(70),
+  },
+  toolTipTextStyle: {
+    color: Colors.BLACK,
+    fontSize: normalize(18),
+    lineHeight: normalize(26),
+  },
+  toolTipContentContainer: {
+    width: normalize(100),
+    height: normalize(80),
   },
 });
