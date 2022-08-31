@@ -13,6 +13,7 @@ export const renderBubble = props => {
   return (
     <Bubble
       {...props}
+      tickStyle={{color: 'black'}}
       textStyle={{
         right: {
           color: Colors.BLACK,
