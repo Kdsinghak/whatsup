@@ -1,7 +1,8 @@
 import Colors from '../../utils/Colors';
+import {StyleSheet} from 'react-native';
 import {normalize} from '../../utils/Dimensions';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
-import {StyleSheet} from 'react-native';
+
 export const styles = StyleSheet.create({
   dummyViewStyle: {
     height: getStatusBarHeight(),
@@ -36,6 +37,7 @@ export const styles = StyleSheet.create({
     borderRadius: normalize(10),
     paddingVertical: normalize(5),
     marginHorizontal: normalize(15),
+    bottom: normalize(-20),
   },
   androidSafeView: {
     elevation: -1,
@@ -52,6 +54,7 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   inputContainerView: {marginTop: normalize(53)},
+  textColorStyle: {color: Colors.BLACK},
   messagesContainerStyle: {
     paddingTop: Platform.OS === 'ios' ? normalize(5) : normalize(24),
   },

@@ -14,17 +14,17 @@ import {
   GiftedChat,
   InputToolbar,
 } from 'react-native-gifted-chat';
+import {styles} from './style';
 import Colors from '../../utils/Colors';
 import {useSelector} from 'react-redux';
 import Spinner from 'react-native-spinkit';
 import {getAllmessages} from './ChatUtils';
-import {normalize} from '../../utils/Dimensions';
 import LocalImages from '../../utils/LocalImages';
+import LocalStrings from '../../utils/LocalStrings';
 import {showToast} from '../../utils/CommonFunctions';
 import {useNavigation} from '@react-navigation/native';
 import firestore from '@react-native-firebase/firestore';
 import React, {useState, useEffect, useCallback} from 'react';
-import {styles} from './style';
 import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
 
 function ChatRoom({route}) {
@@ -135,16 +135,16 @@ function ChatRoom({route}) {
 
   useEffect(() => {
     firestore()
-      .collection('ChatRooms')
+      .collection(LocalStrings.ChatRoom)
       .doc(docid)
-      .collection('typingStatus')
+      .collection(LocalStrings.TypingStatus)
       .doc(userID)
       .set({isTyping: isTyping});
 
     firestore()
-      .collection('ChatRooms')
+      .collection(LocalStrings.ChatRoom)
       .doc(docid)
-      .collection('typingStatus')
+      .collection(LocalStrings.TypingStatus)
       .doc(userId)
       .onSnapshot(typingChange => {
         setUserTypingStatus(typingChange?.data()?.isTyping);
@@ -153,9 +153,9 @@ function ChatRoom({route}) {
 
   const deletForMe = msg => {
     firestore()
-      .collection('ChatRooms')
+      .collection(LocalStrings.ChatRoom)
       .doc(docid)
-      .collection('messages')
+      .collection(LocalStrings.Messages)
       .doc(msg?._id)
       .update({...msg, deletedBy: userId})
       .then(() => {
@@ -166,9 +166,9 @@ function ChatRoom({route}) {
 
   const deletedForEveryOne = msg => {
     firestore()
-      .collection('ChatRooms')
+      .collection(LocalStrings.ChatRoom)
       .doc(docid)
-      .collection('messages')
+      .collection(LocalStrings.Messages)
       .doc(msg?._id)
       .update({...msg, deletedForEveryOne: true})
       .then(() => {
@@ -180,7 +180,12 @@ function ChatRoom({route}) {
   const handleLongPress = (context, message) => {
     let options, cancelButtonIndex;
     if (userId === message.fromUserId) {
-      options = ['Copy', 'Delete for me', 'Delete for everyone', 'Cancel'];
+      options = [
+        'Copy',
+        'Delete for me',
+        'Delete for everyone',
+        LocalStrings.cancel,
+      ];
       cancelButtonIndex = options.length;
       context
         .actionSheet()
@@ -201,7 +206,7 @@ function ChatRoom({route}) {
           },
         );
     } else {
-      options = ['Copy', 'Delete for me', 'Cancel'];
+      options = ['Copy', 'Delete for me', LocalStrings.cancel];
       cancelButtonIndex = options.length;
       context
         .actionSheet()
@@ -250,10 +255,8 @@ function ChatRoom({route}) {
       <Bubble
         {...props}
         textStyle={{
-          right: {
-            color: Colors.BLACK,
-          },
-          left: {color: Colors.BLACK},
+          right: styles.textColorStyle,
+          left: styles.textColorStyle,
         }}
         wrapperStyle={{
           left: {
@@ -272,13 +275,9 @@ function ChatRoom({route}) {
       <Time
         {...props}
         timeTextStyle={{
-          left: {
-            color: Colors.BLACK,
-            fontSize: normalize(13),
-          },
+          left: styles.textColorStyle,
           right: {
             color: Colors.BROWNISHGREY,
-            fontSize: normalize(13),
           },
         }}
       />
