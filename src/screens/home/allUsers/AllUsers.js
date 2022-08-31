@@ -184,6 +184,7 @@ const AllUsers = () => {
         </Animated.View>
       ) : (
         <ChatHeader
+          leftIcon={LocalImages.backArrow}
           text={LocalStrings.WhatsUp}
           onRightIconClick={() => setTip(!showTip)}
           rightIconProfile={LocalImages.more}

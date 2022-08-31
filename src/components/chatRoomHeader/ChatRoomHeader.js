@@ -42,7 +42,7 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
         </TouchableOpacity>
         <View style={styles.userImageView}>
           <FastImage
-            source={{uri: image} ?? LocalImages.userIcon}
+            source={image ? {uri: image} : LocalImages.userIcon}
             style={styles.UserImageStyle}
           />
         </View>
@@ -51,7 +51,7 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
             {name}
           </Text>
           {status === 'online' && (
-            <Text style={styles.userStatusTextStyle}>{'Active Now'}</Text>
+            <Text style={styles.userStatusTextStyle}>{status}</Text>
           )}
         </TouchableOpacity>
         <View style={styles.rightOptionContainer}>

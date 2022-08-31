@@ -164,12 +164,14 @@ const Home = () => {
         isVisible={showTip}
         content={
           <View style={styles.toolTipContentContainer}>
-            <Text style={styles.toolTipTextStyle} onPress={handleTooltipPress}>
-              {LocalStrings.Profile}
-            </Text>
-            <Text style={styles.toolTipTextStyle} onPress={logoutUser}>
-              {LocalStrings.Logout}
-            </Text>
+            <TouchableOpacity onPress={handleTooltipPress}>
+              <Text style={styles.toolTipTextStyle}>
+                {LocalStrings.Profile}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={logoutUser}>
+              <Text style={styles.toolTipTextStyle}>{LocalStrings.Logout}</Text>
+            </TouchableOpacity>
           </View>
         }
         onClose={() => setTip(!showTip)}>
