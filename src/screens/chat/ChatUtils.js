@@ -1,6 +1,12 @@
 import firestore from '@react-native-firebase/firestore';
 
-export async function getAllmessages(docid, userId, success, error) {
+export async function getAllmessages(
+  docid,
+  userId,
+  success,
+  error,
+  hanleReadStatus,
+) {
   try {
     const data = await firestore()
       .collection('ChatRooms')
@@ -9,6 +15,7 @@ export async function getAllmessages(docid, userId, success, error) {
       .orderBy('createdAt', 'desc');
 
     data.onSnapshot(doc => {
+      hanleReadStatus();
       const dataArray = doc?._docs.map(element => {
         return {...element._data, createdAt: element.data().createdAt.toDate()};
       });
@@ -59,7 +66,6 @@ export const setMessagesInFirebase = (docid, mymsg) => {
 };
 
 export const setTypingOnFirebase = (docid, userID, isTyping) => {
-  console.log(docid, isTyping);
   firestore()
     .collection('ChatRooms')
     .doc(docid)

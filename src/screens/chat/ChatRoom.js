@@ -4,6 +4,7 @@ import {
   Clipboard,
   SafeAreaView,
   ImageBackground,
+  Alert,
 } from 'react-native';
 import {styles} from './style';
 import {useSelector} from 'react-redux';
@@ -25,11 +26,12 @@ import LocalStrings from '../../utils/LocalStrings';
 import {showToast} from '../../utils/CommonFunctions';
 import {useNavigation} from '@react-navigation/native';
 import {renderBubble} from './components/RenderBubble';
-import {renderFooter} from './components/RenderFooter';
+import Spinner from 'react-native-spinkit';
+import Colors from '../../utils/Colors';
 import React, {useState, useEffect, useCallback} from 'react';
 import {renderInputToolbar} from './components/RenderInputToolBar';
 import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
-
+import firestore from '@react-native-firebase/firestore';
 function ChatRoom({route}) {
   const navigation = useNavigation();
   const {userID, image, name} = route?.params;
@@ -43,6 +45,23 @@ function ChatRoom({route}) {
 
   let docid = userId > userID ? userId + '-' + userID : userID + '-' + userId;
 
+  const hanleReadStatus = async () => {
+    const validate = await firestore()
+      .collection('ChatRooms')
+      .doc(docid)
+      .collection('messages')
+      .get();
+    const batch = firestore()?.batch();
+    validate.forEach(documentSnapshot => {
+      console.log('documentSnapshot', documentSnapshot._data.toUserId);
+      console.log('USerId', userId);
+      if (documentSnapshot._data.toUserId === userId) {
+        batch.update(documentSnapshot.ref, {received: true});
+      }
+    });
+    return batch.commit();
+  };
+  useEffect(() => {}, []);
   useEffect(() => {
     getAllmessages(
       docid,
@@ -53,6 +72,7 @@ function ChatRoom({route}) {
       error => {
         showToast(error.error);
       },
+      hanleReadStatus,
     );
   }, []);
 
@@ -63,6 +83,8 @@ function ChatRoom({route}) {
       ...msg,
       fromUserId: userId,
       toUserId: userID,
+      sent: true,
+      received: false,
       createdAt: new Date(),
     };
 
@@ -97,12 +119,9 @@ function ChatRoom({route}) {
     };
   };
 
-  const startTyping = useCallback(
-    debounce(() => {
-      setisTyping(false);
-    }, 2000),
-    [],
-  );
+  const startTyping = debounce(() => {
+    setisTyping(false);
+  }, 2000);
 
   const detectTyping = text => {
     if (text.length > 0) startTyping(false);
@@ -110,7 +129,6 @@ function ChatRoom({route}) {
 
   useEffect(() => {
     setTypingOnFirebase(docid, userID, isTyping);
-
     getTypingStatus(docid, userId, onSucess => {
       setUserTypingStatus(onSucess);
     });
@@ -165,6 +183,16 @@ function ChatRoom({route}) {
     }
   };
 
+  const renderFooter = () => {
+    if (getUserTypingStatus) {
+      return (
+        <View style={styles.typingStatusView}>
+          <Spinner type="ThreeBounce" size={50} color={Colors.GREY} />
+        </View>
+      );
+    }
+  };
+
   return (
     <SafeAreaView style={styles.contentContainer}>
       {Platform.OS === 'android' && <View style={styles.androidSafeView} />}
@@ -193,7 +221,7 @@ function ChatRoom({route}) {
           renderInputToolbar={renderInputToolbar}
           renderSend={renderSend}
           onInputTextChanged={detectTyping}
-          renderFooter={() => renderFooter(getUserTypingStatus)}
+          renderFooter={renderFooter}
           renderBubble={renderBubble}
           renderTime={renderTime}
         />
