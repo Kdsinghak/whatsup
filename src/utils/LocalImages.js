@@ -13,6 +13,7 @@ export default {
   userNameIcon: require('../assets/icons/user.png'),
   userIcon: require('../assets/icons/userIcon.png'),
   addUserIcon: require('../assets/icons/comment.png'),
+  Background: require('../assets/images/Background.png'),
   spalshImg: require('../assets/images/chatSplashScreen.png'),
   backGroundImage: require('../assets/images/DiscussionBg.png'),
 };

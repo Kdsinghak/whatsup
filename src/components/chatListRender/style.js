@@ -27,7 +27,7 @@ export const styles = StyleSheet.create({
   },
   userDetailsContainer: {
     padding: normalize(10),
-
+    justifyContent: 'space-between',
     width: '70%',
   },
   messageDescriptionStyle: {

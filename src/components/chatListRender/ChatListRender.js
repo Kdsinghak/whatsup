@@ -38,16 +38,23 @@ const ChatListRender = ({name, chatImage, message, id, lastmessage}) => {
       onPress={() => handleNavigation(id)}>
       <View style={styles.userIconContainer}>
         <FastImage
-          source={{uri: chatImage} ?? LocalImages.userIcon}
+          source={chatImage ? {uri: chatImage} : LocalImages.userIcon}
           resizeMode="cover"
           style={styles.smallImage}
         />
       </View>
       <View style={styles.userDetailsContainer}>
         <Text style={styles.userName}>{name}</Text>
-        <Text numberOfLines={1} style={styles.messageDescriptionStyle}>
-          {lastmessage}
-        </Text>
+        {lastmessage ? (
+          <Text numberOfLines={1} style={styles.messageDescriptionStyle}>
+            {lastmessage}
+          </Text>
+        ) : null}
+        {route?.name !== 'Chats' ? (
+          <Text style={[styles.messageDescriptionStyle, {fontStyle: 'italic'}]}>
+            {profileDetails.about}
+          </Text>
+        ) : null}
       </View>
     </TouchableOpacity>
   );
