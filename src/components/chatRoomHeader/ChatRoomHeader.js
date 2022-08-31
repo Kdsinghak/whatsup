@@ -4,10 +4,10 @@ import {getStatusBarHeight} from 'react-native-status-bar-height';
 import LocalImages from '../../utils/LocalImages';
 import {normalize} from '../../utils/Dimensions';
 import Colors from '../../utils/Colors';
-
 import firestore from '@react-native-firebase/firestore';
 import Tooltip from 'react-native-walkthrough-tooltip';
 import LocalStrings from '../../utils/LocalStrings';
+import FastImage from 'react-native-fast-image';
 
 const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
   const [status, setStaus] = useState();
@@ -41,7 +41,7 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
           <Image source={LocalImages.backArrow} style={styles.imageStyle} />
         </TouchableOpacity>
         <View style={styles.userImageView}>
-          <Image
+          <FastImage
             source={{uri: image} ?? LocalImages.userIcon}
             style={styles.UserImageStyle}
           />
@@ -51,7 +51,7 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
             {name}
           </Text>
           {status === 'online' && (
-            <Text style={styles.userStatusTextStyle}>{status}</Text>
+            <Text style={styles.userStatusTextStyle}>{'Active Now'}</Text>
           )}
         </TouchableOpacity>
         <View style={styles.rightOptionContainer}>
@@ -167,10 +167,11 @@ const styles = StyleSheet.create({
     width: normalize(170),
     paddingHorizontal: normalize(5),
     marginRight: normalize(10),
+    height: normalize(40),
   },
   userStatusTextStyle: {
     color: Colors.BROWNISHGREY,
-    lineHeight: normalize(20),
+    lineHeight: normalize(22),
   },
   toolTipContentStyle: {
     top: normalize(30),
