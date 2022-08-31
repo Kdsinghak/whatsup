@@ -6,6 +6,7 @@ import {
   StyleSheet,
   BackHandler,
   TouchableOpacity,
+  Text,
 } from 'react-native';
 import Colors from '../../utils/Colors';
 import React, {useState, useEffect} from 'react';
@@ -17,12 +18,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {showToast} from '../../utils/CommonFunctions';
 import {useNavigation} from '@react-navigation/native';
 import {requestDataAllUsers} from '../../redux/userDetails/action';
+import CustomButton from '../../components/customButton/CustomButton';
 import ChatListRender from '../../components/chatListRender/ChatListRender';
 
 const Chats = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [users, setAllUsers] = useState();
+  const [loader, setLoader] = useState(false);
   const {userId} = useSelector(store => store.userDetailsReducer);
 
   /**
@@ -52,14 +55,16 @@ const Chats = () => {
   };
 
   const getAllUsers = () => {
+    setLoader(true);
     dispatch(
       requestDataAllUsers(
         userId,
         sucess => {
-          console.log(sucess);
+          setLoader(false);
           setAllUsers(sucess);
         },
         error => {
+          setLoader(false);
           showToast(error.message);
         },
       ),
@@ -87,7 +92,21 @@ const Chats = () => {
   };
 
   const emptyListComponent = () => {
-    return <Loader />;
+    return (
+      <>
+        <View style={styles.backgroundContentContainer}>
+          <Image style={styles.iconStyle} source={LocalImages.Background} />
+        </View>
+
+        <Text style={styles.noChatTextStyle}>{"You haven't chat yet"}</Text>
+        <CustomButton
+          containerStyle={styles.buttonViewStyle}
+          buttonLabel={'Start Chatting'}
+          labelStyle={styles.labelStyle}
+          onPress={handleAddUser}
+        />
+      </>
+    );
   };
 
   const handleAddUser = () => {
@@ -110,6 +129,7 @@ const Chats = () => {
         onPress={handleAddUser}>
         <Image style={styles.iconStyle} source={LocalImages.addUserIcon} />
       </TouchableOpacity>
+      {loader && <Loader />}
     </View>
   );
 };
@@ -119,6 +139,7 @@ export default React.memo(Chats);
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
+    justifyContent: 'center',
     backgroundColor: Colors.WHITE,
   },
   itemSeparatorStyle: {
@@ -138,5 +159,31 @@ const styles = StyleSheet.create({
   iconStyle: {
     height: '100%',
     width: '100%',
+  },
+  backgroundContentContainer: {
+    height: normalize(200),
+    width: normalize(200),
+    marginTop: normalize(80),
+    alignSelf: 'center',
+  },
+  buttonViewStyle: {
+    height: normalize(70),
+    borderRadius: normalize(50),
+    backgroundColor: Colors.GREEN,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: normalize(40),
+  },
+  labelStyle: {
+    color: Colors.WHITE,
+    fontWeight: 'bold',
+    fontSize: normalize(20),
+  },
+  noChatTextStyle: {
+    alignSelf: 'center',
+    color: Colors.GREEN,
+    fontWeight: 'bold',
+    fontSize: normalize(25),
+    marginVertical: normalize(10),
   },
 });

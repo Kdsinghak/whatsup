@@ -188,6 +188,7 @@ function ChatRoom({route}) {
             _id: userId,
             avatar: profileDetails?.image,
           }}
+          minInputToolbarHeight={44}
           showAvatarForEveryMessage={true}
           messagesContainerStyle={styles.messagesContainerStyle}
           renderInputToolbar={renderInputToolbar}
