@@ -19,6 +19,7 @@ export const styles = StyleSheet.create({
     width: normalize(30),
     height: normalize(30),
     borderRadius: normalize(15),
+    bottom: normalize(12),
   },
   imageStyle: {
     height: '100%',
