@@ -1,30 +1,33 @@
 import {
-  Text,
   View,
-  Image,
   Platform,
+  Clipboard,
   SafeAreaView,
   ImageBackground,
-  Clipboard,
 } from 'react-native';
-import {
-  Time,
-  Send,
-  Bubble,
-  GiftedChat,
-  InputToolbar,
-} from 'react-native-gifted-chat';
 import {styles} from './style';
-import Colors from '../../utils/Colors';
 import {useSelector} from 'react-redux';
-import Spinner from 'react-native-spinkit';
-import {getAllmessages} from './ChatUtils';
+import {
+  deletForMe,
+  getAllmessages,
+  getTypingStatus,
+  updateLastMessage,
+  setDataInFirebase,
+  setTypingOnFirebase,
+  deletedForEveryOne,
+  setMessagesInFirebase,
+} from './ChatUtils';
 import LocalImages from '../../utils/LocalImages';
+import {renderSend} from './components/RenderSend';
+import {renderTime} from './components/RenderTime';
+import {GiftedChat} from 'react-native-gifted-chat';
 import LocalStrings from '../../utils/LocalStrings';
 import {showToast} from '../../utils/CommonFunctions';
 import {useNavigation} from '@react-navigation/native';
-import firestore from '@react-native-firebase/firestore';
+import {renderBubble} from './components/RenderBubble';
+import {renderFooter} from './components/RenderFooter';
 import React, {useState, useEffect, useCallback} from 'react';
+import {renderInputToolbar} from './components/RenderInputToolBar';
 import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
 
 function ChatRoom({route}) {
@@ -64,38 +67,18 @@ function ChatRoom({route}) {
     };
 
     if (messages.length < 2) {
-      firestore()
-        .collection('Users')
-        .doc(userId)
-        .collection('Inbox')
-        .doc(userID)
-        .set({name, id: userID, lastMessage: mymsg, image: image});
-
-      firestore()
-        .collection('Users')
-        .doc(userID)
-        .collection('Inbox')
-        .doc(userId)
-        .set({
-          name: profileDetails.name,
-          id: userId,
-          lastMessage: mymsg,
-          image: profileDetails.image,
-        });
+      setDataInFirebase(name, userId, userID, mymsg, image);
+      setDataInFirebase(
+        profileDetails.name,
+        userID,
+        userId,
+        mymsg,
+        profileDetails.image,
+      );
     } else {
-      firestore()
-        .collection('Users')
-        .doc(userId)
-        .collection('Inbox')
-        .doc(userID)
-        .update({lastMessage: mymsg});
+      updateLastMessage(userId, userID, mymsg);
     }
-    firestore()
-      .collection('ChatRooms')
-      .doc(docid)
-      .collection('messages')
-      .doc(mymsg._id)
-      .set({...mymsg});
+    setMessagesInFirebase(docid, mymsg);
     setMessages(previousMessages => GiftedChat.append(previousMessages, mymsg));
   }, []);
 
@@ -103,14 +86,6 @@ function ChatRoom({route}) {
     navigation.goBack();
   }, [navigation]);
 
-  const renderInputToolbar = props => {
-    return (
-      <InputToolbar
-        containerStyle={styles.inputToolbarContainerStyle}
-        {...props}
-      />
-    );
-  };
   const debounce = (fun, timeout) => {
     let timer;
     return args => {
@@ -134,48 +109,12 @@ function ChatRoom({route}) {
   };
 
   useEffect(() => {
-    firestore()
-      .collection(LocalStrings.ChatRoom)
-      .doc(docid)
-      .collection(LocalStrings.TypingStatus)
-      .doc(userID)
-      .set({isTyping: isTyping});
+    setTypingOnFirebase(docid, userID, isTyping);
 
-    firestore()
-      .collection(LocalStrings.ChatRoom)
-      .doc(docid)
-      .collection(LocalStrings.TypingStatus)
-      .doc(userId)
-      .onSnapshot(typingChange => {
-        setUserTypingStatus(typingChange?.data()?.isTyping);
-      });
+    getTypingStatus(docid, userId, onSucess => {
+      setUserTypingStatus(onSucess);
+    });
   }, [isTyping]);
-
-  const deletForMe = msg => {
-    firestore()
-      .collection(LocalStrings.ChatRoom)
-      .doc(docid)
-      .collection(LocalStrings.Messages)
-      .doc(msg?._id)
-      .update({...msg, deletedBy: userId})
-      .then(() => {
-        if (messages[0]?._id === msg?._id) {
-        }
-      });
-  };
-
-  const deletedForEveryOne = msg => {
-    firestore()
-      .collection(LocalStrings.ChatRoom)
-      .doc(docid)
-      .collection(LocalStrings.Messages)
-      .doc(msg?._id)
-      .update({...msg, deletedForEveryOne: true})
-      .then(() => {
-        if (messages[0]?._id === msg?._id) {
-        }
-      });
-  };
 
   const handleLongPress = (context, message) => {
     let options, cancelButtonIndex;
@@ -197,10 +136,10 @@ function ChatRoom({route}) {
                 Clipboard.setString(message.text);
                 break;
               case 1:
-                deletForMe(message);
+                deletForMe(message, docid);
                 break;
               case 2:
-                deletedForEveryOne(message);
+                deletedForEveryOne(message, docid);
                 break;
             }
           },
@@ -224,64 +163,6 @@ function ChatRoom({route}) {
           },
         );
     }
-  };
-
-  const renderFooter = () => {
-    if (getUserTypingStatus) {
-      return (
-        <View style={styles.typingStatusView}>
-          <Spinner type="ThreeBounce" size={50} color={Colors.GREY} />
-        </View>
-      );
-    }
-  };
-
-  const renderSend = props => {
-    return (
-      <Send {...props}>
-        <View style={styles.sendButtonContainer}>
-          <Image
-            resizeMode="contain"
-            source={LocalImages.send}
-            style={styles.imageStyle}
-          />
-        </View>
-      </Send>
-    );
-  };
-
-  const renderBubble = props => {
-    return (
-      <Bubble
-        {...props}
-        textStyle={{
-          right: styles.textColorStyle,
-          left: styles.textColorStyle,
-        }}
-        wrapperStyle={{
-          left: {
-            backgroundColor: Colors.WHITE,
-          },
-          right: {
-            backgroundColor: Colors.WHATSAPPGREEN,
-          },
-        }}
-      />
-    );
-  };
-
-  const renderTime = props => {
-    return (
-      <Time
-        {...props}
-        timeTextStyle={{
-          left: styles.textColorStyle,
-          right: {
-            color: Colors.BROWNISHGREY,
-          },
-        }}
-      />
-    );
   };
 
   return (
@@ -312,7 +193,7 @@ function ChatRoom({route}) {
           renderInputToolbar={renderInputToolbar}
           renderSend={renderSend}
           onInputTextChanged={detectTyping}
-          renderFooter={renderFooter}
+          renderFooter={() => renderFooter(getUserTypingStatus)}
           renderBubble={renderBubble}
           renderTime={renderTime}
         />

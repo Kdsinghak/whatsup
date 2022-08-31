@@ -33,11 +33,11 @@ export const styles = StyleSheet.create({
     shadowRadius: 5.46,
     shadowColor: '#000',
     alignItems: 'center',
+    bottom: normalize(-12),
     justifyContent: 'center',
     borderRadius: normalize(10),
     paddingVertical: normalize(5),
     marginHorizontal: normalize(15),
-    bottom: normalize(-20),
   },
   androidSafeView: {
     elevation: -1,
@@ -53,7 +53,7 @@ export const styles = StyleSheet.create({
     marginVertical: normalize(5),
     backgroundColor: 'transparent',
   },
-  inputContainerView: {marginTop: normalize(53)},
+
   textColorStyle: {color: Colors.BLACK},
   messagesContainerStyle: {
     paddingTop: Platform.OS === 'ios' ? normalize(5) : normalize(24),
