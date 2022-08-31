@@ -56,6 +56,7 @@ const Chats = () => {
       requestDataAllUsers(
         userId,
         sucess => {
+          console.log(sucess);
           setAllUsers(sucess);
         },
         error => {
