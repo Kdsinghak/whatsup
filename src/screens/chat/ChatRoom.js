@@ -21,11 +21,11 @@ import LocalImages from '../../utils/LocalImages';
 import {renderSend} from './components/RenderSend';
 import {renderTime} from './components/RenderTime';
 import {GiftedChat} from 'react-native-gifted-chat';
+import LocalStrings from '../../utils/LocalStrings';
 import {showToast} from '../../utils/CommonFunctions';
 import {useNavigation} from '@react-navigation/native';
 import {renderBubble} from './components/RenderBubble';
 import {renderFooter} from './components/RenderFooter';
-import firestore from '@react-native-firebase/firestore';
 import React, {useState, useEffect, useCallback} from 'react';
 import {renderInputToolbar} from './components/RenderInputToolBar';
 import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
@@ -119,7 +119,12 @@ function ChatRoom({route}) {
   const handleLongPress = (context, message) => {
     let options, cancelButtonIndex;
     if (userId === message.fromUserId) {
-      options = ['Copy', 'Delete for me', 'Delete for everyone', 'Cancel'];
+      options = [
+        'Copy',
+        'Delete for me',
+        'Delete for everyone',
+        LocalStrings.cancel,
+      ];
       cancelButtonIndex = options.length;
       context
         .actionSheet()
@@ -140,7 +145,7 @@ function ChatRoom({route}) {
           },
         );
     } else {
-      options = ['Copy', 'Delete for me', 'Cancel'];
+      options = ['Copy', 'Delete for me', LocalStrings.cancel];
       cancelButtonIndex = options.length;
       context
         .actionSheet()

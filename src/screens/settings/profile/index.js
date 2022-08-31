@@ -26,6 +26,7 @@ import {showToast, updateDataInFirbase} from '../../../utils/CommonFunctions';
 import {useDispatch} from 'react-redux';
 import {RequestSaveProfile} from '../../../redux/userDetails/action';
 import firestore from '@react-native-firebase/firestore';
+import FastImage from 'react-native-fast-image';
 export default function Profile() {
   const textInput1 = useRef();
   const {uid} = useRoute().params;
@@ -171,7 +172,7 @@ export default function Profile() {
       <ScrollView bounces={false}>
         <View style={styles.profileImageView}>
           <View style={styles.profileImage}>
-            <Image
+            <FastImage
               source={
                 {
                   uri: image,
