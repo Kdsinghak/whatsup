@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: normalize(8),
     marginVertical: normalize(5),
-    backgroundColor: Colors.GREY,
+    backgroundColor: 'transparent',
   },
 
   textColorStyle: {color: Colors.GREY, fontSize: normalize(13)},

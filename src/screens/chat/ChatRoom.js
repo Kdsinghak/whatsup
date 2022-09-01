@@ -11,8 +11,8 @@ import {
   getTypingStatus,
   updateLastMessage,
   setDataInFirebase,
-  setTypingOnFirebase,
   deletedForEveryOne,
+  setTypingOnFirebase,
   setMessagesInFirebase,
 } from './ChatUtils';
 import {styles} from './style';
