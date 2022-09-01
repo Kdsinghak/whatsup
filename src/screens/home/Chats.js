@@ -4,14 +4,12 @@ import {
   Alert,
   Image,
   FlatList,
-  StyleSheet,
   BackHandler,
   TouchableOpacity,
 } from 'react-native';
 import {useCallback} from 'react';
 import Colors from '../../utils/Colors';
 import React, {useState, useEffect} from 'react';
-import {normalize} from '../../utils/Dimensions';
 import LocalImages from '../../utils/LocalImages';
 import ScreenNames from '../../utils/ScreenNames';
 import Loader from '../../components/loader/Loader';
@@ -22,7 +20,7 @@ import {useNavigation} from '@react-navigation/native';
 import {requestDataAllUsers} from '../../redux/userDetails/action';
 import CustomButton from '../../components/customButton/CustomButton';
 import ChatListRender from '../../components/chatListRender/ChatListRender';
-
+import {styles} from './styles';
 const Chats = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -94,7 +92,7 @@ const Chats = () => {
   };
 
   const emptyListComponent = () => {
-    return users ? (
+    return !users ? (
       <Loader />
     ) : (
       <>
@@ -139,55 +137,3 @@ const Chats = () => {
 };
 
 export default React.memo(Chats);
-
-const styles = StyleSheet.create({
-  contentContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: Colors.WHITE,
-  },
-  itemSeparatorStyle: {
-    height: 1,
-    width: '95%',
-    opacity: 0.3,
-    alignSelf: 'center',
-    backgroundColor: Colors.BLACK,
-  },
-  plusButtonContainer: {
-    height: normalize(60),
-    width: normalize(60),
-    position: 'absolute',
-    bottom: normalize(80),
-    right: normalize(20),
-  },
-  iconStyle: {
-    height: '100%',
-    width: '100%',
-  },
-  backgroundContentContainer: {
-    alignSelf: 'center',
-    height: normalize(200),
-    width: normalize(200),
-    marginTop: normalize(80),
-  },
-  buttonViewStyle: {
-    alignItems: 'center',
-    height: normalize(70),
-    justifyContent: 'center',
-    borderRadius: normalize(50),
-    backgroundColor: Colors.GREEN,
-    marginHorizontal: normalize(40),
-  },
-  labelStyle: {
-    fontWeight: 'bold',
-    color: Colors.WHITE,
-    fontSize: normalize(20),
-  },
-  noChatTextStyle: {
-    alignSelf: 'center',
-    fontWeight: 'bold',
-    color: Colors.GREEN,
-    fontSize: normalize(25),
-    marginVertical: normalize(10),
-  },
-});

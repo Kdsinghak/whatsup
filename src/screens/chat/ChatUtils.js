@@ -86,20 +86,23 @@ export const getTypingStatus = (docid, userId, success) => {
     });
 };
 
-export const deletForMe = (msg, docid) => {
+export const deletForMe = (msg, docid, userId, userID, messages) => {
+  console.log('messages', messages);
+
   firestore()
     .collection(LocalStrings.ChatRoom)
     .doc(docid)
     .collection(LocalStrings.Messages)
     .doc(msg?._id)
     .update({...msg, deletedBy: userId})
-    .then(() => {
-      if (messages[0]?._id === msg?._id) {
+    .then(res => {
+      if (msg[0]?._id === msg?._id) {
+        // updateInbox(userId, userID, msg[1]);
       }
     });
 };
 
-export const deletedForEveryOne = (msg, docid) => {
+export const deletedForEveryOne = (msg, docid, userID, userId) => {
   firestore()
     .collection(LocalStrings.ChatRoom)
     .doc(docid)
@@ -108,6 +111,16 @@ export const deletedForEveryOne = (msg, docid) => {
     .update({...msg, deletedForEveryOne: true})
     .then(() => {
       if (messages[0]?._id === msg?._id) {
+        // updateInbox(userID, userId, messages[1]);
       }
     });
+};
+
+const updateInbox = (userID, userId, message) => {
+  firestore()
+    .collection('Users')
+    .doc(userId)
+    .collection('Inbox')
+    .doc(userID)
+    .update(message);
 };

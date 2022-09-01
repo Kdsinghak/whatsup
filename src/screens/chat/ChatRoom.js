@@ -8,12 +8,12 @@ import {
 import {
   deletForMe,
   getAllmessages,
-  getTypingStatus,
   updateLastMessage,
   setDataInFirebase,
   deletedForEveryOne,
   setTypingOnFirebase,
   setMessagesInFirebase,
+  getTypingStatus,
 } from './ChatUtils';
 import {styles} from './style';
 import {useSelector} from 'react-redux';
@@ -53,9 +53,7 @@ function ChatRoom({route}) {
       .get();
     const batch = firestore()?.batch();
     validate.forEach(documentSnapshot => {
-      console.log('documentSnapshot', documentSnapshot?._data?.toUserId);
-      console.log('USerId', userId);
-      if (documentSnapshot?._data?.toUserId === userId) {
+      if (documentSnapshot._data.toUserId === userId) {
         batch.update(documentSnapshot.ref, {received: true});
       }
     });
@@ -160,10 +158,10 @@ function ChatRoom({route}) {
                   Clipboard.setString(message.text);
                   break;
                 case 1:
-                  deletForMe(message, docid);
+                  deletForMe(message, docid, userId, userID, messages);
                   break;
                 case 2:
-                  deletedForEveryOne(message, docid);
+                  deletedForEveryOne(message, docid, userID, userId);
                   break;
               }
             },
@@ -185,7 +183,7 @@ function ChatRoom({route}) {
                   Clipboard.setString(message.text);
                   break;
                 case 1:
-                  deletForMe(message);
+                  deletForMe(message, docid, userId, userID, messages);
                   break;
               }
             },
