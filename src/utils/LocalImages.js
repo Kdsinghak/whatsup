@@ -15,6 +15,7 @@ export default {
   userIcon: require('../assets/icons/userIcon.png'),
   addUserIcon: require('../assets/icons/comment.png'),
   Background: require('../assets/images/Background.png'),
+  noInternet: require('../assets/images/noInternet.jpeg'),
   spalshImg: require('../assets/images/chatSplashScreen.png'),
   backGroundImage: require('../assets/images/DiscussionBg.png'),
 };
