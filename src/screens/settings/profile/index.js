@@ -23,7 +23,10 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import ChatHeader from '../../../components/chatHeader/ChatHeader';
 import CustomButton from '../../../components/customButton/CustomButton';
 import {showToast, updateDataInFirbase} from '../../../utils/CommonFunctions';
-
+import {useDispatch} from 'react-redux';
+import {RequestSaveProfile} from '../../../redux/userDetails/action';
+import firestore from '@react-native-firebase/firestore';
+import FastImage from 'react-native-fast-image';
 export default function Profile() {
   const textInput1 = useRef();
   const {uid} = useRoute().params;
@@ -36,7 +39,7 @@ export default function Profile() {
     'https://cdn-icons-png.flaticon.com/128/149/149071.png',
   );
   const [loader, setLoader] = useState(false);
-
+  const dispatch = useDispatch();
   useEffect(() => {
     setLoader(true);
     getDataFromFirebase(
@@ -114,7 +117,23 @@ export default function Profile() {
       uid,
       {image, name, about, number},
       success => {
-        setUploading(false);
+        getDataFromFirebase(
+          uid,
+          response => {
+            let name = response._data.name;
+            let image = response._data.image;
+            let about = response._data.about;
+            let number = response._data.number;
+
+            dispatch(RequestSaveProfile({image, name, about, number}));
+          },
+          error => {
+            showToast(error.message);
+            setLoader(false);
+          },
+        );
+
+        setLoader(false);
         navigation.dispatch(
           CommonActions.reset({
             index: 1,
@@ -128,7 +147,6 @@ export default function Profile() {
             ],
           }),
         );
-        // navigation.navigate(ScreenNames.HOME, {success});
       },
       error => {
         setLoader(false);
@@ -154,7 +172,7 @@ export default function Profile() {
       <ScrollView bounces={false}>
         <View style={styles.profileImageView}>
           <View style={styles.profileImage}>
-            <Image
+            <FastImage
               source={
                 {
                   uri: image,

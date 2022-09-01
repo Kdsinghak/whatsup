@@ -5,7 +5,8 @@ export default {
   CHATS: 'Chats',
   STATUS: 'Status',
   PROFILE: 'Profile',
+  ALLUSERS: 'AllUSers',
+  CHATROOM: 'ChatRoom',
   CHATLIST: 'ChatList',
   SPLASH: 'Splash_Screen',
-  CHATROOM: 'ChatRoom',
 };

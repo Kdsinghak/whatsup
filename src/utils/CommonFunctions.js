@@ -63,15 +63,15 @@ export function updateDataInFirbase(uid, details, success, failure) {
 
 export async function getDatafromFirebase(uid, success) {
   try {
-    const data = await firestore().collection('Users').where('id', '!=', uid);
-
-    data.onSnapshot(onsnap => {
-      const allUsers = onsnap.docs.map(items => {
-        return items.data();
+    await firestore()
+      .collection('Users')
+      .doc(uid)
+      .collection('Inbox')
+      .onSnapshot(onchange => {
+        const allUsers = onchange.docs.map(item => item.data());
+        success(allUsers);
+        return allUsers;
       });
-
-      success(allUsers);
-    });
   } catch (error) {
     error(error);
   }
@@ -81,7 +81,7 @@ export const showToast = message => {
   Snackbar.show({
     text: message,
     backgroundColor: Colors.BLACK,
-    duration: 1000,
+    duration: 3000,
     textColor: Colors.WHITE,
   });
 };

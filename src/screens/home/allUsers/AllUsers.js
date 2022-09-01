@@ -3,34 +3,37 @@ import {
   View,
   Image,
   Animated,
+  FlatList,
   Platform,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import Colors from '../../utils/Colors';
+import Colors from '../../../utils/Colors';
 import auth from '@react-native-firebase/auth';
-import {normalize} from '../../utils/Dimensions';
-import ScreenNames from '../../utils/ScreenNames';
-import LocalImages from '../../utils/LocalImages';
-import Loader from '../../components/loader/Loader';
-import LocalStrings from '../../utils/LocalStrings';
 import {useDispatch, useSelector} from 'react-redux';
-import {showToast} from '../../utils/CommonFunctions';
+import ScreenNames from '../../../utils/ScreenNames';
+import LocalImages from '../../../utils/LocalImages';
+import {normalize} from '../../../utils/Dimensions';
+import Loader from '../../../components/loader/Loader';
+import LocalStrings from '../../../utils/LocalStrings';
 import Tooltip from 'react-native-walkthrough-tooltip';
 import {useNavigation} from '@react-navigation/native';
 import {CommonActions} from '@react-navigation/native';
-import React, {useEffect, useRef, useState} from 'react';
-import CustomTextInput from '../../components/customTextInput';
-import ChatHeader from '../../components/chatHeader/ChatHeader';
-import MyTabs from '../../routes/topTabNavigator/TopNavigation';
-import {requestDeleteUid} from '../../redux/userDetails/action';
+import {showToast} from '../../../utils/CommonFunctions';
+import firestore from '@react-native-firebase/firestore';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
+import ChatHeader from '../../../components/chatHeader/ChatHeader';
+import {requestDeleteUid} from '../../../redux/userDetails/action';
+import CustomTextInput from '../../../components/customTextInput';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import ChatListRender from '../../../components/chatListRender/ChatListRender';
 
-const Home = () => {
+const AllUsers = () => {
   const {inputRef} = useRef();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const [users, setUsers] = useState();
   const [search, setDetails] = useState();
   const [showTip, setTip] = useState(false);
   const [loader, setLoader] = useState(false);
@@ -47,6 +50,19 @@ const Home = () => {
       }),
     },
   ];
+
+  const getAllUsers = async () => {
+    const data = await firestore()
+      .collection('Users')
+      .where('id', '!=', userId)
+      .get();
+    const allUsers = data.docs.map(item => item.data());
+    setUsers(allUsers);
+  };
+
+  useEffect(() => {
+    getAllUsers();
+  }, []);
 
   const handleTooltipPress = () => {
     setTip(!showTip);
@@ -100,15 +116,16 @@ const Home = () => {
   //   processChange(search);
   // }, [search]);
 
-  const onRightIconSearchClick = () => {
+  const onRightIconSearchClick = useCallback(() => {
     Animated.timing(transform, {
       duration: 400,
       toValue: 1,
       useNativeDriver: true,
     }).start();
     setSearch(true);
-  };
-  const handleTextInputBack = () => {
+  }, [isSearch]);
+
+  const handleTextInputBack = useCallback(() => {
     Animated.timing(transform, {
       duration: 400,
       toValue: 0,
@@ -118,7 +135,30 @@ const Home = () => {
         setSearch(false);
       }
     });
+  }, [isSearch]);
+
+  const onRender = ({item}) => {
+    return (
+      <ChatListRender
+        id={item.id}
+        name={item.name}
+        status={item.status}
+        chatImage={item.image}
+      />
+    );
   };
+
+  const flatListItemSeparator = () => {
+    return <View style={styles.itemSeparatorStyle} />;
+  };
+
+  const emptyListComponent = () => {
+    return <Loader />;
+  };
+
+  const onPressBackIcon = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
 
   return (
     <View style={styles.contentContainer}>
@@ -149,7 +189,9 @@ const Home = () => {
         </Animated.View>
       ) : (
         <ChatHeader
+          backHandle={onPressBackIcon}
           text={LocalStrings.WhatsUp}
+          leftIcon={LocalImages.backArrow}
           onRightIconClick={() => setTip(!showTip)}
           rightIconProfile={LocalImages.more}
           rightIconSearch={LocalImages.search}
@@ -164,26 +206,33 @@ const Home = () => {
         isVisible={showTip}
         content={
           <View style={styles.toolTipContentContainer}>
-            <TouchableOpacity onPress={handleTooltipPress}>
-              <Text style={styles.toolTipTextStyle}>
-                {LocalStrings.Profile}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={logoutUser}>
-              <Text style={styles.toolTipTextStyle}>{LocalStrings.Logout}</Text>
-            </TouchableOpacity>
+            <Text style={styles.toolTipTextStyle} onPress={handleTooltipPress}>
+              {LocalStrings.Profile}
+            </Text>
+            <Text style={styles.toolTipTextStyle} onPress={logoutUser}>
+              {LocalStrings.Logout}
+            </Text>
           </View>
         }
         onClose={() => setTip(!showTip)}>
         <View style={styles.toolTipView} />
       </Tooltip>
-      <MyTabs />
+      <FlatList
+        contentContainerStyle={styles.flatListContentContainerStyle}
+        data={users}
+        renderItem={onRender}
+        ItemSeparatorComponent={flatListItemSeparator}
+        keyExtractor={item => {
+          return item.id;
+        }}
+        ListEmptyComponent={emptyListComponent}
+      />
       {loader && <Loader />}
     </View>
   );
 };
 
-export default React.memo(Home);
+export default React.memo(AllUsers);
 
 const styles = StyleSheet.create({
   contentContainer: {
@@ -213,7 +262,7 @@ const styles = StyleSheet.create({
   },
   ContentContainerStyle: {
     width: '80%',
-    height: normalize(40),
+    height: normalize(70),
     justifyContent: 'center',
     marginHorizontal: normalize(10),
   },
@@ -226,4 +275,16 @@ const styles = StyleSheet.create({
     lineHeight: normalize(26),
   },
   toolTipContentContainer: {width: normalize(100)},
+  flatListContentContainerStyle: {
+    borderTopWidth: normalize(0.7),
+    marginTop: normalize(15),
+    borderTopColor: Colors.SILVER,
+  },
+  itemSeparatorStyle: {
+    height: 1,
+    width: '98%',
+    opacity: 0.3,
+    alignSelf: 'center',
+    backgroundColor: Colors.BLACK,
+  },
 });

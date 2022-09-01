@@ -1,14 +1,16 @@
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {getStatusBarHeight} from 'react-native-status-bar-height';
-import LocalImages from '../../utils/LocalImages';
-import {normalize} from '../../utils/Dimensions';
 import Colors from '../../utils/Colors';
-
+import FastImage from 'react-native-fast-image';
+import {normalize} from '../../utils/Dimensions';
+import React, {useCallback, useEffect, useState} from 'react';
+import LocalImages from '../../utils/LocalImages';
+import LocalStrings from '../../utils/LocalStrings';
+import Tooltip from 'react-native-walkthrough-tooltip';
 import firestore from '@react-native-firebase/firestore';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 
 const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
   const [status, setStaus] = useState();
+  const [showTip, setTip] = useState(false);
 
   useEffect(() => {
     firestore()
@@ -20,41 +22,77 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
       });
   }, []);
 
+  const handleBlockUser = useCallback(() => {
+    setTip(!showTip);
+  }, [showTip]);
+
+  const deleteUserChat = useCallback(() => {
+    setTip(!showTip);
+  }, [showTip]);
+
   return (
-    <View style={[styles.headerViewStyle]}>
-      <TouchableOpacity
-        onPress={onBackPress}
-        style={styles.backImageViewStyle}
-        hitSlop={(10, 10, 10, 10)}>
-        <Image source={LocalImages.backArrow} style={styles.imageStyle} />
-      </TouchableOpacity>
-      <View style={styles.userImageView}>
-        <Image source={{uri: image}} style={styles.UserImageStyle} />
-      </View>
-      <View style={styles.userDetailsView}>
-        <Text
-          onPress={() => {}}
-          numberOfLines={1}
-          style={styles.userNameTextStyle}>
-          {name}
-        </Text>
-        {status === 'online' && (
-          <Text style={styles.userStatusTextStyle}>{status}</Text>
-        )}
-      </View>
-      <View style={styles.rightOptionContainer}>
-        <TouchableOpacity style={styles.iconImageViewStyle} activeOpacity={0.8}>
-          <Image style={styles.rightImageStyle} source={LocalImages.phone} />
+    <>
+      <View style={[styles.headerViewStyle]}>
+        <TouchableOpacity
+          onPress={onBackPress}
+          style={styles.backImageViewStyle}
+          hitSlop={(10, 10, 10, 10)}>
+          <Image source={LocalImages.backArrow} style={styles.imageStyle} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconImageViewStyle} activeOpacity={0.8}>
-          <Image style={styles.rightImageStyle} source={LocalImages.more} />
+        <View style={styles.userImageView}>
+          <FastImage
+            source={image ? {uri: image} : LocalImages.userIcon}
+            style={styles.UserImageStyle}
+          />
+        </View>
+        <TouchableOpacity style={styles.userDetailsView}>
+          <Text numberOfLines={1} style={styles.userNameTextStyle}>
+            {name}
+          </Text>
+          {status === 'online' && (
+            <Text style={styles.userStatusTextStyle}>{status}</Text>
+          )}
         </TouchableOpacity>
+        <View style={styles.rightOptionContainer}>
+          <TouchableOpacity
+            style={styles.iconImageViewStyle}
+            activeOpacity={0.8}>
+            <Image style={styles.rightImageStyle} source={LocalImages.phone} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.iconImageViewStyle}
+            activeOpacity={0.8}
+            onPress={() => setTip(!showTip)}>
+            <Image style={styles.rightImageStyle} source={LocalImages.more} />
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+      <Tooltip
+        topAdjustment={Platform.OS === 'android' ? -StatusBar.currentHeight : 0}
+        backgroundColor="transparent"
+        placement="right"
+        contentStyle={styles.toolTipContentStyle}
+        isVisible={showTip}
+        content={
+          <View style={styles.toolTipContentContainer}>
+            <TouchableOpacity onPress={handleBlockUser}>
+              <Text style={styles.toolTipTextStyle}>{LocalStrings.Block}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={deleteUserChat}>
+              <Text style={styles.toolTipTextStyle}>
+                {LocalStrings.Delete_Chat}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        }
+        onClose={() => setTip(!showTip)}>
+        <View style={styles.toolTipView} />
+      </Tooltip>
+    </>
   );
 };
 
-export default ChatRoomHeader;
+export default React.memo(ChatRoomHeader);
 
 const styles = StyleSheet.create({
   headerViewStyle: {
@@ -71,9 +109,9 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.SILVER,
   },
   imageStyle: {
-    width: '100%',
-    height: '100%',
-    tintColor: '#04e08b',
+    width: '70%',
+    height: '70%',
+    tintColor: Colors.GREEN,
   },
   userImageView: {
     overflow: 'hidden',
@@ -89,6 +127,7 @@ const styles = StyleSheet.create({
   backImageViewStyle: {
     width: normalize(27),
     height: normalize(30),
+    justifyContent: 'center',
   },
   userNameTextStyle: {
     fontWeight: '500',
@@ -107,25 +146,45 @@ const styles = StyleSheet.create({
     height: normalize(35),
     justifyContent: 'center',
     borderRadius: normalize(6),
-    backgroundColor: '#e1f4f2',
   },
   UserImageStyle: {
     height: '100%',
     width: '100%',
   },
   rightImageStyle: {
-    width: '50%',
-    height: '50%',
-    tintColor: '#04e08b',
+    width: '70%',
+    height: '70%',
+    tintColor: Colors.GREEN,
   },
   rightOptionContainer: {
     flexDirection: 'row',
-    width: normalize(100),
-    justifyContent: 'space-around',
+    width: normalize(75),
+    marginLeft: normalize(30),
+    justifyContent: 'space-between',
   },
-  userDetailsView: {width: normalize(170), marginHorizontal: normalize(5)},
+  userDetailsView: {
+    width: normalize(170),
+    paddingHorizontal: normalize(5),
+    marginRight: normalize(10),
+    height: normalize(40),
+  },
   userStatusTextStyle: {
     color: Colors.BROWNISHGREY,
-    lineHeight: normalize(20),
+    lineHeight: normalize(22),
+  },
+  toolTipContentStyle: {
+    top: normalize(30),
+    right: normalize(0),
+    position: 'absolute',
+    height: normalize(70),
+  },
+  toolTipTextStyle: {
+    color: Colors.BLACK,
+    fontSize: normalize(18),
+    lineHeight: normalize(26),
+  },
+  toolTipContentContainer: {
+    width: normalize(100),
+    height: normalize(80),
   },
 });

@@ -11,6 +11,7 @@ import firestore from '@react-native-firebase/firestore';
 import {NavigationContainer} from '@react-navigation/native';
 import SplashScreen from '../screens/onBoarding/splashScreens';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import AllUsers from '../screens/home/allUsers/AllUsers';
 
 const Stack = createNativeStackNavigator();
 
@@ -75,6 +76,7 @@ const AppRoutes = () => {
           options={{gestureEnabled: false}}
         />
         <Stack.Screen component={ChatRoom} name={ScreenNames.CHATROOM} />
+        <Stack.Screen component={AllUsers} name={ScreenNames.ALLUSERS} />
       </Stack.Navigator>
     </NavigationContainer>
   );

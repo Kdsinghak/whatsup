@@ -1,106 +1,116 @@
-import {useSelector} from 'react-redux';
 import {
-  Text,
   View,
-  Image,
   Platform,
-  StyleSheet,
+  Clipboard,
   SafeAreaView,
   ImageBackground,
 } from 'react-native';
 import {
-  Time,
-  Send,
-  Bubble,
-  GiftedChat,
-  InputToolbar,
-} from 'react-native-gifted-chat';
+  deletForMe,
+  getAllmessages,
+  updateLastMessage,
+  setDataInFirebase,
+  deletedForEveryOne,
+  setTypingOnFirebase,
+  setMessagesInFirebase,
+  getTypingStatus,
+} from './ChatUtils';
+import {styles} from './style';
+import {useSelector} from 'react-redux';
 import Colors from '../../utils/Colors';
 import Spinner from 'react-native-spinkit';
-import {getAllmessages} from './ChatUtils';
-import {normalize} from '../../utils/Dimensions';
 import LocalImages from '../../utils/LocalImages';
+import {renderSend} from './components/RenderSend';
+import {renderTime} from './components/RenderTime';
+import LocalStrings from '../../utils/LocalStrings';
 import {showToast} from '../../utils/CommonFunctions';
 import {useNavigation} from '@react-navigation/native';
+import {renderBubble} from './components/RenderBubble';
 import firestore from '@react-native-firebase/firestore';
+import {Day, GiftedChat} from 'react-native-gifted-chat';
 import React, {useState, useEffect, useCallback} from 'react';
-import {getStatusBarHeight} from 'react-native-status-bar-height';
+import {renderInputToolbar} from './components/RenderInputToolBar';
 import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
 
-export default function ChatRoom({route}) {
+function ChatRoom({route}) {
   const navigation = useNavigation();
   const {userID, image, name} = route?.params;
   const [messages, setMessages] = useState([]);
   const [isTyping, setisTyping] = useState(false);
-  const {userId} = useSelector(store => store.userDetailsReducer);
+  const {userId, profileDetails} = useSelector(
+    store => store.userDetailsReducer,
+  );
+
   const [getUserTypingStatus, setUserTypingStatus] = useState(false);
 
   let docid = userId > userID ? userId + '-' + userID : userID + '-' + userId;
 
+  const hanleReadStatus = async () => {
+    const validate = await firestore()
+      .collection(LocalStrings.ChatRoom)
+      .doc(docid)
+      .collection(LocalStrings.Messages)
+      .get();
+    const batch = firestore()?.batch();
+    validate.forEach(documentSnapshot => {
+      if (documentSnapshot._data.toUserId === userId) {
+        batch.update(documentSnapshot.ref, {received: true});
+      }
+    });
+    return batch.commit();
+  };
+
   useEffect(() => {
     getAllmessages(
       docid,
+      userId,
       success => {
         setMessages(success);
       },
       error => {
         showToast(error.error);
       },
+      hanleReadStatus,
     );
-    console.log(messages);
   }, []);
 
-  const onSend = useCallback((messages = []) => {
-    let msg = messages[0];
+  const onSend = useCallback(
+    (messages = []) => {
+      let msg = messages[0];
 
-    const mymsg = {
-      ...msg,
-      fromUserId: userId,
-      toUserId: userID,
-      createdAt: new Date(),
-    };
+      const mymsg = {
+        ...msg,
+        fromUserId: userId,
+        toUserId: userID,
+        sent: true,
+        received: false,
+        createdAt: new Date(),
+      };
 
-    console.log('messages.length', messages.length);
-    console.log('LOGIN,ANOYHER', userId, userID);
-    if (messages.length < 1) {
-      console.log('YAHA');
-      firestore()
-        .collection('Users')
-        .doc(userId)
-        .collection('Inbox')
-        .doc(userID)
-        .set({name, id, lastMessage: mymsg});
-    } else {
-      console.log('vaha');
-      firestore()
-        .collection('Users')
-        .doc(userId)
-        .collection('Inbox')
-        .doc(userID)
-        .update({lastMessage: mymsg});
-    }
-    firestore()
-      .collection('ChatRooms')
-      .doc(docid)
-      .collection('messages')
-      .add({...mymsg});
-    setMessages(previousMessages => GiftedChat.append(previousMessages, mymsg));
-  }, []);
+      if (messages.length < 2) {
+        setDataInFirebase(name, userId, userID, mymsg, image);
+        setDataInFirebase(
+          profileDetails.name,
+          userID,
+          userId,
+          mymsg,
+          profileDetails.image,
+        );
+      } else {
+        updateLastMessage(userId, userID, mymsg);
+      }
+      setMessagesInFirebase(docid, mymsg);
+      setMessages(previousMessages =>
+        GiftedChat.append(previousMessages, mymsg),
+      );
+    },
+    [messages],
+  );
 
   const handleBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
 
-  const renderInputToolbar = props => {
-    return (
-      <View style={styles.inputContainerView}>
-        <InputToolbar
-          containerStyle={styles.inputToolbarContainerStyle}
-          {...props}
-        />
-      </View>
-    );
-  };
   const debounce = (fun, timeout) => {
     let timer;
     return args => {
@@ -114,31 +124,76 @@ export default function ChatRoom({route}) {
 
   const startTyping = debounce(() => {
     setisTyping(false);
-  }, 2500);
+  }, 2000);
 
   const detectTyping = text => {
     if (text.length > 0) startTyping(false);
   };
 
   useEffect(() => {
-    firestore()
-      .collection('ChatRooms')
-      .doc(docid)
-      .collection('typingStatus')
-      .doc(userID)
-      .set({isTyping: isTyping});
-
-    firestore()
-      .collection('ChatRooms')
-      .doc(docid)
-      .collection('typingStatus')
-      .doc(userId)
-      .onSnapshot(typingChange => {
-        setUserTypingStatus(typingChange?.data()?.isTyping);
-      });
+    setTypingOnFirebase(docid, userID, isTyping);
+    getTypingStatus(docid, userId, onSucess => {
+      setUserTypingStatus(onSucess);
+    });
   }, [isTyping]);
 
-  const renderFooter = () => {
+  const handleLongPress = useCallback(
+    (context, message) => {
+      let options, cancelButtonIndex;
+      if (userId === message.fromUserId) {
+        options = [
+          LocalStrings.Copy,
+          LocalStrings.Delete_Me,
+          LocalStrings.DeleteEveryOne,
+          LocalStrings.cancel,
+        ];
+        cancelButtonIndex = options.length;
+        context
+          .actionSheet()
+          .showActionSheetWithOptions(
+            {options, cancelButtonIndex},
+            buttonIndex => {
+              switch (buttonIndex) {
+                case 0:
+                  Clipboard.setString(message.text);
+                  break;
+                case 1:
+                  deletForMe(message, docid, userID, userId);
+                  break;
+                case 2:
+                  deletedForEveryOne(message, docid, userID, userId);
+                  break;
+              }
+            },
+          );
+      } else {
+        options = [
+          LocalStrings.Copy,
+          LocalStrings.Delete_Me,
+          LocalStrings.cancel,
+        ];
+        cancelButtonIndex = options.length;
+        context
+          .actionSheet()
+          .showActionSheetWithOptions(
+            {options, cancelButtonIndex},
+            buttonIndex => {
+              switch (buttonIndex) {
+                case 0:
+                  Clipboard.setString(message.text);
+                  break;
+                case 1:
+                  deletForMe(message, docid, userId, userID);
+                  break;
+              }
+            },
+          );
+      }
+    },
+    [messages],
+  );
+
+  const renderFooter = useCallback(() => {
     if (getUserTypingStatus) {
       return (
         <View style={styles.typingStatusView}>
@@ -146,19 +201,15 @@ export default function ChatRoom({route}) {
         </View>
       );
     }
-  };
+  }, [getUserTypingStatus]);
 
-  const renderSend = props => {
+  const renderDay = props => {
     return (
-      <Send {...props}>
-        <View style={styles.sendButtonContainer}>
-          <Image
-            resizeMode="contain"
-            source={LocalImages.send}
-            style={styles.imageStyle}
-          />
-        </View>
-      </Send>
+      <Day
+        {...props}
+        textStyle={styles.textColorStyle}
+        wrapperStyle={styles.dayWrapperStyle}
+      />
     );
   };
 
@@ -177,58 +228,24 @@ export default function ChatRoom({route}) {
         />
 
         <GiftedChat
-          messages={messages}
-          scrollToBottom
-          onSend={messages => onSend(messages)}
           user={{
             _id: userId,
+            avatar: profileDetails?.image,
           }}
-          showAvatarForEveryMessage={true}
-          messagesContainerStyle={{
-            paddingTop: Platform.OS === 'ios' ? normalize(5) : normalize(24),
-          }}
-          renderInputToolbar={renderInputToolbar}
+          scrollToBottom
+          messages={messages}
+          renderDay={renderDay}
+          renderTime={renderTime}
           renderSend={renderSend}
-          onInputTextChanged={detectTyping}
+          minInputToolbarHeight={44}
           renderFooter={renderFooter}
-          renderBubble={props => {
-            return (
-              <Bubble
-                {...props}
-                textStyle={{
-                  right: {
-                    color: Colors.BLACK,
-                  },
-                  left: {color: Colors.BLACK},
-                }}
-                wrapperStyle={{
-                  left: {
-                    backgroundColor: Colors.WHITE,
-                  },
-                  right: {
-                    backgroundColor: Colors.WHATSAPPGREEN,
-                  },
-                }}
-              />
-            );
-          }}
-          renderTime={props => {
-            return (
-              <Time
-                {...props}
-                timeTextStyle={{
-                  left: {
-                    color: Colors.BLACK,
-                    fontSize: normalize(13),
-                  },
-                  right: {
-                    color: Colors.BROWNISHGREY,
-                    fontSize: normalize(13),
-                  },
-                }}
-              />
-            );
-          }}
+          renderBubble={renderBubble}
+          onLongPress={handleLongPress}
+          showAvatarForEveryMessage={true}
+          onInputTextChanged={detectTyping}
+          onSend={messages => onSend(messages)}
+          renderInputToolbar={renderInputToolbar}
+          messagesContainerStyle={styles.messagesContainerStyle}
         />
       </ImageBackground>
       {Platform.OS === 'android' && <View style={styles.dummyViewStyle} />}
@@ -236,54 +253,4 @@ export default function ChatRoom({route}) {
   );
 }
 
-const styles = StyleSheet.create({
-  dummyViewStyle: {
-    height: getStatusBarHeight(),
-    backgroundColor: Colors.ORCHAR,
-    elevation: -1,
-  },
-  contentContainer: {flex: 1, backgroundColor: Colors.WHITE},
-  container: {
-    flex: 1,
-    backgroundColor: Colors.ORCHAR,
-  },
-  sendButtonContainer: {
-    overflow: 'hidden',
-    width: normalize(30),
-    height: normalize(30),
-    borderRadius: normalize(15),
-  },
-  imageStyle: {
-    height: '100%',
-    width: '100%',
-  },
-  inputToolbarContainerStyle: {
-    shadowOffset: {
-      width: 4,
-      height: 3,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 5.46,
-    shadowColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: normalize(10),
-    paddingVertical: normalize(5),
-    marginHorizontal: normalize(15),
-  },
-  androidSafeView: {
-    elevation: -1,
-    backgroundColor: Colors.WHITE,
-    height: getStatusBarHeight() + 10,
-  },
-  typingStatusView: {
-    width: normalize(80),
-    alignItems: 'center',
-    height: normalize(35),
-    justifyContent: 'center',
-    marginLeft: normalize(8),
-    marginVertical: normalize(5),
-    backgroundColor: 'transparent',
-  },
-  inputContainerView: {marginTop: normalize(53)},
-});
+export default React.memo(ChatRoom);

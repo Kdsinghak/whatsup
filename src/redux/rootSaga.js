@@ -3,8 +3,13 @@ import {
   watcherDeleteData,
   watcherSaveData,
   watchergetAlluser,
+  watcherRequestProfile,
 } from './userDetails/saga';
-
 export default function* rootSaga() {
-  yield all([watcherSaveData(), watcherDeleteData(), watchergetAlluser()]);
+  yield all([
+    watcherSaveData(),
+    watcherDeleteData(),
+    watchergetAlluser(),
+    watcherRequestProfile(),
+  ]);
 }
