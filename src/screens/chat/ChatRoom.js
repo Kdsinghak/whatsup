@@ -203,7 +203,7 @@ function ChatRoom({route}) {
         </View>
       );
     }
-  }, [isTyping]);
+  }, [getUserTypingStatus]);
 
   const renderDay = props => {
     return (
