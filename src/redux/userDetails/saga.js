@@ -14,6 +14,7 @@ export function* asyncGetAllUser(action) {
   const {uid, success, error} = action;
 
   const data = yield call(getDatafromFirebase, uid, success);
+
   yield put(saveAllUserData(data));
 }
 

@@ -68,9 +68,10 @@ export async function getDatafromFirebase(uid, success) {
       .doc(uid)
       .collection('Inbox')
       .onSnapshot(onchange => {
-        const allUsers = onchange.docs.map(item => item.data());
+        var allUsers = onchange.docs.map(item => {
+          return item.data();
+        });
         success(allUsers);
-        return allUsers;
       });
   } catch (error) {
     error(error);

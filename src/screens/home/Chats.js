@@ -92,7 +92,7 @@ const Chats = () => {
   };
 
   const emptyListComponent = () => {
-    return users ? (
+    return !users ? (
       <Loader />
     ) : (
       <>
