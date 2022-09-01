@@ -1,12 +1,7 @@
-import {
-  Time,
-  Send,
-  Bubble,
-  GiftedChat,
-  InputToolbar,
-} from 'react-native-gifted-chat';
-import {styles} from '../style';
 import React from 'react';
+import {styles} from '../style';
+import {InputToolbar} from 'react-native-gifted-chat';
+
 export const renderInputToolbar = props => {
   return (
     <InputToolbar

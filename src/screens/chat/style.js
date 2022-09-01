@@ -52,11 +52,18 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: normalize(8),
     marginVertical: normalize(5),
-    backgroundColor: Colors.GREY,
+    backgroundColor: 'transparent',
   },
 
-  textColorStyle: {color: Colors.BLACK},
+  textColorStyle: {color: Colors.GREY, fontSize: normalize(13)},
   messagesContainerStyle: {
     paddingTop: Platform.OS === 'ios' ? normalize(5) : normalize(24),
+  },
+  dayWrapperStyle: {
+    alignItems: 'center',
+    padding: normalize(10),
+    justifyContent: 'center',
+    borderRadius: normalize(10),
+    backgroundColor: Colors.WHITE,
   },
 });

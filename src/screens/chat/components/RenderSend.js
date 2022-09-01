@@ -1,14 +1,9 @@
 import React from 'react';
-import {View, Image} from 'react-native';
-import {
-  Time,
-  Send,
-  Bubble,
-  GiftedChat,
-  InputToolbar,
-} from 'react-native-gifted-chat';
-import LocalImages from '../../../utils/LocalImages';
 import {styles} from '../style';
+import {View, Image} from 'react-native';
+import {Send} from 'react-native-gifted-chat';
+import LocalImages from '../../../utils/LocalImages';
+
 export const renderSend = props => {
   return (
     <Send {...props}>

@@ -1,13 +1,6 @@
-import React, {useState, useEffect, useCallback} from 'react';
-import {
-  Time,
-  Send,
-  Bubble,
-  GiftedChat,
-  InputToolbar,
-} from 'react-native-gifted-chat';
-
+import React from 'react';
 import Colors from '../../../utils/Colors';
+import {Bubble} from 'react-native-gifted-chat';
 
 export const renderBubble = props => {
   return (
