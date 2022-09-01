@@ -4,10 +4,7 @@ import {
   Clipboard,
   SafeAreaView,
   ImageBackground,
-  Alert,
 } from 'react-native';
-import {styles} from './style';
-import {useSelector} from 'react-redux';
 import {
   deletForMe,
   getAllmessages,
@@ -18,20 +15,23 @@ import {
   deletedForEveryOne,
   setMessagesInFirebase,
 } from './ChatUtils';
+import {styles} from './style';
+import {useSelector} from 'react-redux';
+import Colors from '../../utils/Colors';
+import Spinner from 'react-native-spinkit';
 import LocalImages from '../../utils/LocalImages';
 import {renderSend} from './components/RenderSend';
 import {renderTime} from './components/RenderTime';
-import {GiftedChat} from 'react-native-gifted-chat';
 import LocalStrings from '../../utils/LocalStrings';
 import {showToast} from '../../utils/CommonFunctions';
 import {useNavigation} from '@react-navigation/native';
 import {renderBubble} from './components/RenderBubble';
-import Spinner from 'react-native-spinkit';
-import Colors from '../../utils/Colors';
+import firestore from '@react-native-firebase/firestore';
+import {Day, GiftedChat} from 'react-native-gifted-chat';
 import React, {useState, useEffect, useCallback} from 'react';
 import {renderInputToolbar} from './components/RenderInputToolBar';
 import ChatRoomHeader from '../../components/chatRoomHeader/ChatRoomHeader';
-import firestore from '@react-native-firebase/firestore';
+
 function ChatRoom({route}) {
   const navigation = useNavigation();
   const {userID, image, name} = route?.params;
@@ -47,21 +47,21 @@ function ChatRoom({route}) {
 
   const hanleReadStatus = async () => {
     const validate = await firestore()
-      .collection('ChatRooms')
+      .collection(LocalStrings.ChatRoom)
       .doc(docid)
-      .collection('messages')
+      .collection(LocalStrings.Messages)
       .get();
     const batch = firestore()?.batch();
     validate.forEach(documentSnapshot => {
-      console.log('documentSnapshot', documentSnapshot._data.toUserId);
+      console.log('documentSnapshot', documentSnapshot?._data?.toUserId);
       console.log('USerId', userId);
-      if (documentSnapshot._data.toUserId === userId) {
+      if (documentSnapshot?._data?.toUserId === userId) {
         batch.update(documentSnapshot.ref, {received: true});
       }
     });
     return batch.commit();
   };
-  useEffect(() => {}, []);
+
   useEffect(() => {
     getAllmessages(
       docid,
@@ -76,33 +76,38 @@ function ChatRoom({route}) {
     );
   }, []);
 
-  const onSend = useCallback((messages = []) => {
-    let msg = messages[0];
+  const onSend = useCallback(
+    (messages = []) => {
+      let msg = messages[0];
 
-    const mymsg = {
-      ...msg,
-      fromUserId: userId,
-      toUserId: userID,
-      sent: true,
-      received: false,
-      createdAt: new Date(),
-    };
+      const mymsg = {
+        ...msg,
+        fromUserId: userId,
+        toUserId: userID,
+        sent: true,
+        received: false,
+        createdAt: new Date(),
+      };
 
-    if (messages.length < 2) {
-      setDataInFirebase(name, userId, userID, mymsg, image);
-      setDataInFirebase(
-        profileDetails.name,
-        userID,
-        userId,
-        mymsg,
-        profileDetails.image,
+      if (messages.length < 2) {
+        setDataInFirebase(name, userId, userID, mymsg, image);
+        setDataInFirebase(
+          profileDetails.name,
+          userID,
+          userId,
+          mymsg,
+          profileDetails.image,
+        );
+      } else {
+        updateLastMessage(userId, userID, mymsg);
+      }
+      setMessagesInFirebase(docid, mymsg);
+      setMessages(previousMessages =>
+        GiftedChat.append(previousMessages, mymsg),
       );
-    } else {
-      updateLastMessage(userId, userID, mymsg);
-    }
-    setMessagesInFirebase(docid, mymsg);
-    setMessages(previousMessages => GiftedChat.append(previousMessages, mymsg));
-  }, []);
+    },
+    [messages],
+  );
 
   const handleBack = useCallback(() => {
     navigation.goBack();
@@ -134,56 +139,63 @@ function ChatRoom({route}) {
     });
   }, [isTyping]);
 
-  const handleLongPress = (context, message) => {
-    let options, cancelButtonIndex;
-    if (userId === message.fromUserId) {
-      options = [
-        'Copy',
-        'Delete for me',
-        'Delete for everyone',
-        LocalStrings.cancel,
-      ];
-      cancelButtonIndex = options.length;
-      context
-        .actionSheet()
-        .showActionSheetWithOptions(
-          {options, cancelButtonIndex},
-          buttonIndex => {
-            switch (buttonIndex) {
-              case 0:
-                Clipboard.setString(message.text);
-                break;
-              case 1:
-                deletForMe(message, docid);
-                break;
-              case 2:
-                deletedForEveryOne(message, docid);
-                break;
-            }
-          },
-        );
-    } else {
-      options = ['Copy', 'Delete for me', LocalStrings.cancel];
-      cancelButtonIndex = options.length;
-      context
-        .actionSheet()
-        .showActionSheetWithOptions(
-          {options, cancelButtonIndex},
-          buttonIndex => {
-            switch (buttonIndex) {
-              case 0:
-                Clipboard.setString(message.text);
-                break;
-              case 1:
-                deletForMe(message);
-                break;
-            }
-          },
-        );
-    }
-  };
+  const handleLongPress = useCallback(
+    (context, message) => {
+      let options, cancelButtonIndex;
+      if (userId === message.fromUserId) {
+        options = [
+          LocalStrings.Copy,
+          LocalStrings.Delete_Me,
+          LocalStrings.DeleteEveryOne,
+          LocalStrings.cancel,
+        ];
+        cancelButtonIndex = options.length;
+        context
+          .actionSheet()
+          .showActionSheetWithOptions(
+            {options, cancelButtonIndex},
+            buttonIndex => {
+              switch (buttonIndex) {
+                case 0:
+                  Clipboard.setString(message.text);
+                  break;
+                case 1:
+                  deletForMe(message, docid);
+                  break;
+                case 2:
+                  deletedForEveryOne(message, docid);
+                  break;
+              }
+            },
+          );
+      } else {
+        options = [
+          LocalStrings.Copy,
+          LocalStrings.Delete_Me,
+          LocalStrings.cancel,
+        ];
+        cancelButtonIndex = options.length;
+        context
+          .actionSheet()
+          .showActionSheetWithOptions(
+            {options, cancelButtonIndex},
+            buttonIndex => {
+              switch (buttonIndex) {
+                case 0:
+                  Clipboard.setString(message.text);
+                  break;
+                case 1:
+                  deletForMe(message);
+                  break;
+              }
+            },
+          );
+      }
+    },
+    [messages],
+  );
 
-  const renderFooter = () => {
+  const renderFooter = useCallback(() => {
     if (getUserTypingStatus) {
       return (
         <View style={styles.typingStatusView}>
@@ -191,6 +203,16 @@ function ChatRoom({route}) {
         </View>
       );
     }
+  }, [isTyping]);
+
+  const renderDay = props => {
+    return (
+      <Day
+        {...props}
+        textStyle={styles.textColorStyle}
+        wrapperStyle={styles.dayWrapperStyle}
+      />
+    );
   };
 
   return (
@@ -208,23 +230,24 @@ function ChatRoom({route}) {
         />
 
         <GiftedChat
-          messages={messages}
-          scrollToBottom
-          onLongPress={handleLongPress}
-          onSend={messages => onSend(messages)}
           user={{
             _id: userId,
             avatar: profileDetails?.image,
           }}
-          minInputToolbarHeight={44}
-          showAvatarForEveryMessage={true}
-          messagesContainerStyle={styles.messagesContainerStyle}
-          renderInputToolbar={renderInputToolbar}
+          scrollToBottom
+          messages={messages}
+          renderDay={renderDay}
+          renderTime={renderTime}
           renderSend={renderSend}
-          onInputTextChanged={detectTyping}
+          minInputToolbarHeight={44}
           renderFooter={renderFooter}
           renderBubble={renderBubble}
-          renderTime={renderTime}
+          onLongPress={handleLongPress}
+          showAvatarForEveryMessage={true}
+          onInputTextChanged={detectTyping}
+          onSend={messages => onSend(messages)}
+          renderInputToolbar={renderInputToolbar}
+          messagesContainerStyle={styles.messagesContainerStyle}
         />
       </ImageBackground>
       {Platform.OS === 'android' && <View style={styles.dummyViewStyle} />}

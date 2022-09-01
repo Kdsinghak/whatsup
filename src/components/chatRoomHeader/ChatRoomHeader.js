@@ -1,13 +1,12 @@
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {getStatusBarHeight} from 'react-native-status-bar-height';
-import LocalImages from '../../utils/LocalImages';
-import {normalize} from '../../utils/Dimensions';
 import Colors from '../../utils/Colors';
-import firestore from '@react-native-firebase/firestore';
-import Tooltip from 'react-native-walkthrough-tooltip';
-import LocalStrings from '../../utils/LocalStrings';
 import FastImage from 'react-native-fast-image';
+import {normalize} from '../../utils/Dimensions';
+import React, {useCallback, useEffect, useState} from 'react';
+import LocalImages from '../../utils/LocalImages';
+import LocalStrings from '../../utils/LocalStrings';
+import Tooltip from 'react-native-walkthrough-tooltip';
+import firestore from '@react-native-firebase/firestore';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 
 const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
   const [status, setStaus] = useState();
@@ -23,13 +22,13 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
       });
   }, []);
 
-  const handleBlockUser = () => {
+  const handleBlockUser = useCallback(() => {
     setTip(!showTip);
-  };
+  }, [showTip]);
 
-  const deleteUserChat = () => {
+  const deleteUserChat = useCallback(() => {
     setTip(!showTip);
-  };
+  }, [showTip]);
 
   return (
     <>
@@ -93,7 +92,7 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
   );
 };
 
-export default ChatRoomHeader;
+export default React.memo(ChatRoomHeader);
 
 const styles = StyleSheet.create({
   headerViewStyle: {

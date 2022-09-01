@@ -1,8 +1,8 @@
 import React from 'react';
-
+import {styles} from './style';
 import {normalize} from '../../utils/Dimensions';
 import {Text, View, TouchableOpacity, Image} from 'react-native';
-import {styles} from './style';
+
 const ChatHeader = props => {
   const {
     text,

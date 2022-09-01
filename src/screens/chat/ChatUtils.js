@@ -1,4 +1,5 @@
 import firestore from '@react-native-firebase/firestore';
+import LocalStrings from '../../utils/LocalStrings';
 
 export async function getAllmessages(
   docid,
@@ -9,9 +10,9 @@ export async function getAllmessages(
 ) {
   try {
     const data = await firestore()
-      .collection('ChatRooms')
+      .collection(LocalStrings.ChatRoom)
       .doc(docid)
-      .collection('messages')
+      .collection(LocalStrings.Messages)
       .orderBy('createdAt', 'desc');
 
     data.onSnapshot(doc => {
@@ -40,45 +41,45 @@ export async function getAllmessages(
 
 export const setDataInFirebase = (name, userId, userID, mymsg, image) => {
   firestore()
-    .collection('Users')
+    .collection(LocalStrings.Users)
     .doc(userId)
-    .collection('Inbox')
+    .collection(LocalStrings.Inbox)
     .doc(userID)
     .set({name, id: userID, lastMessage: mymsg, image: image});
 };
 
 export const updateLastMessage = (userId, userID, mymsg) => {
   firestore()
-    .collection('Users')
+    .collection(LocalStrings.Users)
     .doc(userId)
-    .collection('Inbox')
+    .collection(LocalStrings.Inbox)
     .doc(userID)
     .update({lastMessage: mymsg});
 };
 
 export const setMessagesInFirebase = (docid, mymsg) => {
   firestore()
-    .collection('ChatRooms')
+    .collection(LocalStrings.ChatRoom)
     .doc(docid)
-    .collection('messages')
+    .collection(LocalStrings.Messages)
     .doc(mymsg._id)
     .set({...mymsg});
 };
 
 export const setTypingOnFirebase = (docid, userID, isTyping) => {
   firestore()
-    .collection('ChatRooms')
+    .collection(LocalStrings.ChatRoom)
     .doc(docid)
-    .collection('typingStatus')
+    .collection(LocalStrings.TypingStatus)
     .doc(userID)
     .set({isTyping: isTyping});
 };
 
 export const getTypingStatus = (docid, userId, success) => {
   firestore()
-    .collection('ChatRooms')
+    .collection(LocalStrings.ChatRoom)
     .doc(docid)
-    .collection('typingStatus')
+    .collection(LocalStrings.TypingStatus)
     .doc(userId)
     .onSnapshot(typingChange => {
       success(typingChange?.data()?.isTyping);
@@ -87,9 +88,9 @@ export const getTypingStatus = (docid, userId, success) => {
 
 export const deletForMe = (msg, docid) => {
   firestore()
-    .collection('ChatRooms')
+    .collection(LocalStrings.ChatRoom)
     .doc(docid)
-    .collection('messages')
+    .collection(LocalStrings.Messages)
     .doc(msg?._id)
     .update({...msg, deletedBy: userId})
     .then(() => {
@@ -100,9 +101,9 @@ export const deletForMe = (msg, docid) => {
 
 export const deletedForEveryOne = (msg, docid) => {
   firestore()
-    .collection('ChatRooms')
+    .collection(LocalStrings.ChatRoom)
     .doc(docid)
-    .collection('messages')
+    .collection(LocalStrings.Messages)
     .doc(msg?._id)
     .update({...msg, deletedForEveryOne: true})
     .then(() => {

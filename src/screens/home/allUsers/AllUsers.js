@@ -3,11 +3,11 @@ import {
   View,
   Image,
   Animated,
+  FlatList,
   Platform,
   StatusBar,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
 } from 'react-native';
 import Colors from '../../../utils/Colors';
 import auth from '@react-native-firebase/auth';
@@ -21,23 +21,23 @@ import Tooltip from 'react-native-walkthrough-tooltip';
 import {useNavigation} from '@react-navigation/native';
 import {CommonActions} from '@react-navigation/native';
 import {showToast} from '../../../utils/CommonFunctions';
-import React, {useEffect, useRef, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import ChatHeader from '../../../components/chatHeader/ChatHeader';
 import {requestDeleteUid} from '../../../redux/userDetails/action';
 import CustomTextInput from '../../../components/customTextInput';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import ChatListRender from '../../../components/chatListRender/ChatListRender';
 
 const AllUsers = () => {
   const {inputRef} = useRef();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const [users, setUsers] = useState();
   const [search, setDetails] = useState();
   const [showTip, setTip] = useState(false);
   const [loader, setLoader] = useState(false);
   const [isSearch, setSearch] = useState(false);
-  const [users, setUsers] = useState();
   const transform = useState(new Animated.Value(0))[0];
   const {userId} = useSelector(store => store.userDetailsReducer);
 
@@ -116,15 +116,16 @@ const AllUsers = () => {
   //   processChange(search);
   // }, [search]);
 
-  const onRightIconSearchClick = () => {
+  const onRightIconSearchClick = useCallback(() => {
     Animated.timing(transform, {
       duration: 400,
       toValue: 1,
       useNativeDriver: true,
     }).start();
     setSearch(true);
-  };
-  const handleTextInputBack = () => {
+  }, [isSearch]);
+
+  const handleTextInputBack = useCallback(() => {
     Animated.timing(transform, {
       duration: 400,
       toValue: 0,
@@ -134,7 +135,7 @@ const AllUsers = () => {
         setSearch(false);
       }
     });
-  };
+  }, [isSearch]);
 
   const onRender = ({item}) => {
     return (
@@ -154,6 +155,10 @@ const AllUsers = () => {
   const emptyListComponent = () => {
     return <Loader />;
   };
+
+  const onPressBackIcon = useCallback(() => {
+    navigation.goBack();
+  }, [navigation]);
 
   return (
     <View style={styles.contentContainer}>
@@ -184,8 +189,9 @@ const AllUsers = () => {
         </Animated.View>
       ) : (
         <ChatHeader
-          leftIcon={LocalImages.backArrow}
+          backHandle={onPressBackIcon}
           text={LocalStrings.WhatsUp}
+          leftIcon={LocalImages.backArrow}
           onRightIconClick={() => setTip(!showTip)}
           rightIconProfile={LocalImages.more}
           rightIconSearch={LocalImages.search}
