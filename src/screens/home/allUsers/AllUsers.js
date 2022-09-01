@@ -41,6 +41,9 @@ const AllUsers = () => {
   const transform = useState(new Animated.Value(0))[0];
   const {userId} = useSelector(store => store.userDetailsReducer);
 
+  /**
+   * Animation Scale
+   */
   let scale = [
     {
       scale: transform.interpolate({
@@ -51,6 +54,9 @@ const AllUsers = () => {
     },
   ];
 
+  /**
+   * @function for getting users from firebase
+   */
   const getAllUsers = async () => {
     const data = await firestore()
       .collection('Users')
@@ -68,6 +74,10 @@ const AllUsers = () => {
     setTip(!showTip);
     navigation.navigate(ScreenNames.PROFILE, {uid: userId});
   };
+
+  /**
+   * @function to logout user
+   */
 
   const logoutUser = () => {
     setLoader(true);
@@ -137,6 +147,11 @@ const AllUsers = () => {
     });
   }, [isSearch]);
 
+  /**
+   *
+   * @param {*} param0
+   * @returns
+   */
   const onRender = ({item}) => {
     return (
       <ChatListRender
@@ -160,6 +175,9 @@ const AllUsers = () => {
     navigation.goBack();
   }, [navigation]);
 
+  /**
+   * @return
+   */
   return (
     <View style={styles.contentContainer}>
       {isSearch ? (
@@ -234,6 +252,9 @@ const AllUsers = () => {
 
 export default React.memo(AllUsers);
 
+/**
+ * @styles
+ */
 const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,

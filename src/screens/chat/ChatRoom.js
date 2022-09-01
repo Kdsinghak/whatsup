@@ -158,7 +158,7 @@ function ChatRoom({route}) {
                   Clipboard.setString(message.text);
                   break;
                 case 1:
-                  deletForMe(message, docid, userID, userId);
+                  deletForMe(message, docid, userId, userID, messages);
                   break;
                 case 2:
                   deletedForEveryOne(message, docid, userID, userId);
@@ -183,7 +183,7 @@ function ChatRoom({route}) {
                   Clipboard.setString(message.text);
                   break;
                 case 1:
-                  deletForMe(message, docid, userId, userID);
+                  deletForMe(message, docid, userId, userID, messages);
                   break;
               }
             },
@@ -245,6 +245,7 @@ function ChatRoom({route}) {
           onInputTextChanged={detectTyping}
           onSend={messages => onSend(messages)}
           renderInputToolbar={renderInputToolbar}
+          wrapInSafeArea={true}
           messagesContainerStyle={styles.messagesContainerStyle}
         />
       </ImageBackground>

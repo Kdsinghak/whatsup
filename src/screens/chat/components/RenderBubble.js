@@ -6,7 +6,7 @@ export const renderBubble = props => {
   return (
     <Bubble
       {...props}
-      tickStyle={{color: 'black'}}
+      tickStyle={{color: Colors.BLACK}}
       textStyle={{
         right: {
           color: Colors.BLACK,
