@@ -1,17 +1,19 @@
 import {
+  Text,
   View,
   Alert,
   Image,
   FlatList,
   BackHandler,
   TouchableOpacity,
-  Text,
 } from 'react-native';
-
+import {useCallback} from 'react';
+import Colors from '../../utils/Colors';
 import React, {useState, useEffect} from 'react';
 import LocalImages from '../../utils/LocalImages';
 import ScreenNames from '../../utils/ScreenNames';
 import Loader from '../../components/loader/Loader';
+import LocalStrings from '../../utils/LocalStrings';
 import {useDispatch, useSelector} from 'react-redux';
 import {showToast} from '../../utils/CommonFunctions';
 import {useNavigation} from '@react-navigation/native';
@@ -90,16 +92,18 @@ const Chats = () => {
   };
 
   const emptyListComponent = () => {
-    return (
+    return users ? (
+      <Loader />
+    ) : (
       <>
         <View style={styles.backgroundContentContainer}>
           <Image style={styles.iconStyle} source={LocalImages.Background} />
         </View>
 
-        <Text style={styles.noChatTextStyle}>{"You haven't chat yet"}</Text>
+        <Text style={styles.noChatTextStyle}>{LocalStrings.NoChats}</Text>
         <CustomButton
           containerStyle={styles.buttonViewStyle}
-          buttonLabel={'Start Chatting'}
+          buttonLabel={LocalStrings.StartChatting}
           labelStyle={styles.labelStyle}
           onPress={handleAddUser}
         />
@@ -107,9 +111,9 @@ const Chats = () => {
     );
   };
 
-  const handleAddUser = () => {
+  const handleAddUser = useCallback(() => {
     navigation.navigate(ScreenNames.ALLUSERS);
-  };
+  }, [navigation]);
 
   return (
     <View style={styles.contentContainer}>

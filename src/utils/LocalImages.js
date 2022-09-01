@@ -7,6 +7,7 @@ export default {
   search: require('../assets/icons/search.png'),
   edit: require('../assets/icons/edit-text.png'),
   backArrow: require('../assets/icons/back.png'),
+  status: require('../assets/images/StatusBG.jpeg'),
   phone: require('../assets/icons/phone-call.png'),
   info: require('../assets/icons/information.png'),
   uncheck: require('../assets/icons/unchecked.png'),

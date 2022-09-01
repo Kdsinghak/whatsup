@@ -1,13 +1,13 @@
 import {styles} from './style';
+import {useSelector} from 'react-redux';
 import React, {useCallback} from 'react';
 import FastImage from 'react-native-fast-image';
 import ScreenNames from '../../utils/ScreenNames';
 import LocalImages from '../../utils/LocalImages';
 import {TouchableOpacity, View, Text} from 'react-native';
 import {useNavigation, useRoute} from '@react-navigation/native';
-import {useSelector} from 'react-redux';
 
-const ChatListRender = ({name, chatImage, message, id, lastmessage}) => {
+const ChatListRender = ({name, chatImage, id, lastmessage}) => {
   const navigation = useNavigation();
   const route = useRoute();
   const {profileDetails} = useSelector(store => store.userDetailsReducer);
