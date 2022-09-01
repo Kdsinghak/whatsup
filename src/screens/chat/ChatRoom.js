@@ -11,12 +11,12 @@ import {useSelector} from 'react-redux';
 import {
   deletForMe,
   getAllmessages,
-  getTypingStatus,
   updateLastMessage,
   setDataInFirebase,
   setTypingOnFirebase,
   deletedForEveryOne,
   setMessagesInFirebase,
+  getTypingStatus,
 } from './ChatUtils';
 import LocalImages from '../../utils/LocalImages';
 import {renderSend} from './components/RenderSend';
@@ -53,15 +53,13 @@ function ChatRoom({route}) {
       .get();
     const batch = firestore()?.batch();
     validate.forEach(documentSnapshot => {
-      console.log('documentSnapshot', documentSnapshot._data.toUserId);
-      console.log('USerId', userId);
       if (documentSnapshot._data.toUserId === userId) {
         batch.update(documentSnapshot.ref, {received: true});
       }
     });
     return batch.commit();
   };
-  useEffect(() => {}, []);
+
   useEffect(() => {
     getAllmessages(
       docid,
@@ -154,10 +152,10 @@ function ChatRoom({route}) {
                 Clipboard.setString(message.text);
                 break;
               case 1:
-                deletForMe(message, docid);
+                deletForMe(message, docid, userID, userId);
                 break;
               case 2:
-                deletedForEveryOne(message, docid);
+                deletedForEveryOne(message, docid, userID, userId);
                 break;
             }
           },
@@ -175,7 +173,7 @@ function ChatRoom({route}) {
                 Clipboard.setString(message.text);
                 break;
               case 1:
-                deletForMe(message);
+                deletForMe(message, docid, userId, userID);
                 break;
             }
           },
@@ -184,6 +182,7 @@ function ChatRoom({route}) {
   };
 
   const renderFooter = () => {
+    console.log('w456789olk,mnbvcxz', getUserTypingStatus);
     if (getUserTypingStatus) {
       return (
         <View style={styles.typingStatusView}>
