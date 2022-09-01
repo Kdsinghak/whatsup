@@ -247,6 +247,7 @@ function ChatRoom({route}) {
           onInputTextChanged={detectTyping}
           onSend={messages => onSend(messages)}
           renderInputToolbar={renderInputToolbar}
+          wrapInSafeArea={true}
           messagesContainerStyle={styles.messagesContainerStyle}
         />
       </ImageBackground>

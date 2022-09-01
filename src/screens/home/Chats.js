@@ -56,6 +56,9 @@ const Chats = () => {
     }
   };
 
+  /**
+   * getUSer @function
+   */
   const getAllUsers = () => {
     setLoader(true);
     dispatch(
@@ -77,6 +80,11 @@ const Chats = () => {
     getAllUsers();
   }, []);
 
+  /**
+   *
+   * @param {*} param0
+   * @returns
+   */
   const onRender = ({item}) => {
     return (
       <ChatListRender
@@ -94,7 +102,7 @@ const Chats = () => {
   };
 
   const emptyListComponent = () => {
-    return users ? (
+    return !users ? (
       <Loader />
     ) : (
       <>
@@ -117,6 +125,9 @@ const Chats = () => {
     navigation.navigate(ScreenNames.ALLUSERS);
   }, [navigation]);
 
+  /**
+   * @returns
+   */
   return (
     <View style={styles.contentContainer}>
       <FlatList

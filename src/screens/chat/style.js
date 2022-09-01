@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
     bottom: normalize(-12),
     justifyContent: 'center',
     borderRadius: normalize(10),
-    paddingVertical: normalize(5),
+    paddingVertical: normalize(7),
     marginHorizontal: normalize(15),
   },
   androidSafeView: {
