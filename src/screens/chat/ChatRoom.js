@@ -9,13 +9,13 @@ import {
 import {
   deletForMe,
   getAllmessages,
+  getTypingStatus,
+  getBlockedStatus,
   updateLastMessage,
   setDataInFirebase,
   deletedForEveryOne,
   setTypingOnFirebase,
   setMessagesInFirebase,
-  getTypingStatus,
-  getBlockedStatus,
 } from './ChatUtils';
 import {styles} from './style';
 import {useSelector} from 'react-redux';
@@ -39,7 +39,7 @@ function ChatRoom({route}) {
   const {userID, image, name} = route?.params;
   const [messages, setMessages] = useState([]);
   const [isTyping, setisTyping] = useState(false);
-  const [isBlocked, setisBlocked] = useState(false);
+  const [blockedDetails, setisBlocked] = useState(false);
   const {userId, profileDetails} = useSelector(
     store => store.userDetailsReducer,
   );
@@ -73,7 +73,6 @@ function ChatRoom({route}) {
       error => {},
     );
 
-    console.log('isBlocked', isBlocked);
     getAllmessages(
       docid,
       userId,
@@ -81,6 +80,7 @@ function ChatRoom({route}) {
       success => {
         setMessages(success);
       },
+
       error => {
         showToast(error.error);
       },
@@ -113,7 +113,8 @@ function ChatRoom({route}) {
       } else {
         updateLastMessage(userId, userID, mymsg);
       }
-      if (isBlocked === false) setMessagesInFirebase(docid, mymsg);
+      if (blockedDetails?.isBlocked === false)
+        setMessagesInFirebase(docid, mymsg);
       setMessages(previousMessages =>
         GiftedChat.append(previousMessages, mymsg),
       );
@@ -208,15 +209,23 @@ function ChatRoom({route}) {
   );
 
   const renderFooter = () => {
-    if (getUserTypingStatus && isBlocked === false) {
+    if (getUserTypingStatus && blockedDetails?.isBlocked === false) {
       return (
         <View style={styles.typingStatusView}>
           <Spinner type="ThreeBounce" size={50} color={Colors.GREY} />
         </View>
       );
-    } else if (isBlocked === true)
-      return <Text>{'You Blocked This User'}</Text>;
+    } else if (
+      blockedDetails?.isBlocked === true &&
+      blockedDetails?.blockedBy === userId
+    )
+      return (
+        <View style={styles.blockedUSertextView}>
+          <Text style={styles.textColorStyle}>{'You Blocked This User'}</Text>
+        </View>
+      );
   };
+
   const renderDay = props => {
     return (
       <Day

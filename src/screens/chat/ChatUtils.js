@@ -88,8 +88,6 @@ export const getTypingStatus = (docid, userId, success) => {
 };
 
 export const deletForMe = (msg, docid, userId, userID, messages) => {
-  console.log('messages', messages);
-
   firestore()
     .collection(LocalStrings.ChatRoom)
     .doc(docid)
@@ -132,7 +130,7 @@ export const getBlockedStatus = (userId, userID, success, error) => {
     .doc(userId)
     .collection('blockList')
     .doc(userID);
-  isBlocked.onSnapshot(onchange => {
-    success(onchange.data()?.isBlocked);
+  isBlocked?.onSnapshot(onchange => {
+    success(onchange?.data());
   });
 };

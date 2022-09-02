@@ -31,16 +31,24 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
       .doc(userId)
       .collection('blockList')
       .doc(uid)
-      .set({isBlocked: !isBlocked});
+      .set({isBlocked: !isBlocked, blockedBy: userId});
 
     firestore()
       .collection('Users')
       .doc(uid)
       .collection('blockList')
       .doc(userId)
-      .set({isBlocked: !isBlocked});
-    setisBolcked(!isBlocked);
+      .set({isBlocked: !isBlocked, blockedBy: userId});
   }, [showTip]);
+
+  const isblocked = firestore()
+    .collection('Users')
+    .doc(uid)
+    .collection('blockList')
+    .doc(userId);
+  isblocked.onSnapshot(onChange => {
+    setisBolcked(onChange?.data()?.isBlocked);
+  });
 
   const deleteUserChat = useCallback(() => {
     setTip(!showTip);
