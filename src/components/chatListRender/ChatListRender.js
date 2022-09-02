@@ -11,7 +11,6 @@ const ChatListRender = ({name, chatImage, id, lastmessage}) => {
   const navigation = useNavigation();
   const route = useRoute();
   const {profileDetails} = useSelector(store => store.userDetailsReducer);
-  console.log('about', profileDetails.about);
 
   const handleNavigation = useCallback(
     id => {

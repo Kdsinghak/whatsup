@@ -88,8 +88,6 @@ export const getTypingStatus = (docid, userId, success) => {
 };
 
 export const deletForMe = (msg, docid, userId, userID, messages) => {
-  console.log('messages', messages);
-
   firestore()
     .collection(LocalStrings.ChatRoom)
     .doc(docid)

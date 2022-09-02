@@ -5,7 +5,7 @@ import {getDatafromFirebase, verifyOTP} from '../../utils/CommonFunctions';
 export function* asyncSaveData(action) {
   const {uid, otp, sucess, error} = action;
   const data = yield call(verifyOTP, uid, otp, sucess, error);
-  console.log(data);
+
   let uidID = data.user._user.uid;
   yield put(saveData(uidID));
 }
@@ -23,7 +23,6 @@ export function* asyncDeleteData() {
 }
 
 export function* ayncSaveProfile(action) {
-  console.log('asdfghjk,mnbvcxz', action);
   yield put(SaveProfile(action.payload));
 }
 
