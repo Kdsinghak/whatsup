@@ -111,21 +111,6 @@ const AllUsers = () => {
     };
   };
 
-  // const processChange = debounce(search => {
-  //   console.log('serrr', search);
-  //   let searchList = search?.filter(item => {
-  //     return item?.search
-  //       .trim()
-  //       .toLowerCase()
-  //       .includes(search.trim().toLowerCase());
-  //   });
-  //   return searchList;
-  // }, 1000);
-
-  // useEffect(() => {
-  //   processChange(search);
-  // }, [search]);
-
   const onRightIconSearchClick = useCallback(() => {
     Animated.timing(transform, {
       duration: 400,
