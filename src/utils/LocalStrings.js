@@ -12,6 +12,7 @@ export default {
   Verify: 'Verify',
   Logout: 'Logout',
   signIn: 'Sign In',
+  UnBlock: 'UnBlock',
   Profile: 'Profile',
   WhatsUp: 'WhatsUp',
   Setting: 'Setting',
