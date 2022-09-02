@@ -14,6 +14,7 @@ import {
   setTypingOnFirebase,
   setMessagesInFirebase,
   getTypingStatus,
+  getBlockedStatus,
 } from './ChatUtils';
 import {styles} from './style';
 import {useSelector} from 'react-redux';
@@ -37,6 +38,7 @@ function ChatRoom({route}) {
   const {userID, image, name} = route?.params;
   const [messages, setMessages] = useState([]);
   const [isTyping, setisTyping] = useState(false);
+  const [isBlocked, setisBlocked] = useState(false);
   const {userId, profileDetails} = useSelector(
     store => store.userDetailsReducer,
   );
@@ -61,17 +63,29 @@ function ChatRoom({route}) {
   };
 
   useEffect(() => {
-    getAllmessages(
-      docid,
+    getBlockedStatus(
       userId,
+      userID,
       success => {
-        setMessages(success);
+        setisBlocked(success);
       },
-      error => {
-        showToast(error.error);
-      },
-      hanleReadStatus,
+      error => {},
     );
+
+    if (!isBlocked) {
+      getAllmessages(
+        docid,
+        userId,
+        userID,
+        success => {
+          setMessages(success);
+        },
+        error => {
+          showToast(error.error);
+        },
+        hanleReadStatus,
+      );
+    }
   }, []);
 
   const onSend = useCallback(
