@@ -1,4 +1,5 @@
 import {
+  Text,
   View,
   Platform,
   Clipboard,
@@ -72,20 +73,19 @@ function ChatRoom({route}) {
       error => {},
     );
 
-    if (!isBlocked) {
-      getAllmessages(
-        docid,
-        userId,
-        userID,
-        success => {
-          setMessages(success);
-        },
-        error => {
-          showToast(error.error);
-        },
-        hanleReadStatus,
-      );
-    }
+    console.log('isBlocked', isBlocked);
+    getAllmessages(
+      docid,
+      userId,
+      userID,
+      success => {
+        setMessages(success);
+      },
+      error => {
+        showToast(error.error);
+      },
+      hanleReadStatus,
+    );
   }, []);
 
   const onSend = useCallback(
@@ -113,7 +113,7 @@ function ChatRoom({route}) {
       } else {
         updateLastMessage(userId, userID, mymsg);
       }
-      setMessagesInFirebase(docid, mymsg);
+      if (isBlocked === false) setMessagesInFirebase(docid, mymsg);
       setMessages(previousMessages =>
         GiftedChat.append(previousMessages, mymsg),
       );
@@ -207,16 +207,16 @@ function ChatRoom({route}) {
     [messages],
   );
 
-  const renderFooter = useCallback(() => {
-    if (getUserTypingStatus) {
+  const renderFooter = () => {
+    if (getUserTypingStatus && isBlocked === false) {
       return (
         <View style={styles.typingStatusView}>
           <Spinner type="ThreeBounce" size={50} color={Colors.GREY} />
         </View>
       );
-    }
-  }, [getUserTypingStatus]);
-
+    } else if (isBlocked === true)
+      return <Text>{'You Blocked This User'}</Text>;
+  };
   const renderDay = props => {
     return (
       <Day

@@ -38,7 +38,7 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
       .doc(uid)
       .collection('blockList')
       .doc(userId)
-      .set({youBlocked: !isBlocked});
+      .set({isBlocked: !isBlocked});
     setisBolcked(!isBlocked);
   }, [showTip]);
 
