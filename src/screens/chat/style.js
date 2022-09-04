@@ -66,4 +66,13 @@ export const styles = StyleSheet.create({
     borderRadius: normalize(10),
     backgroundColor: Colors.WHITE,
   },
+  blockedUSertextView: {
+    alignItems: 'center',
+    height: normalize(40),
+    justifyContent: 'center',
+    borderRadius: normalize(10),
+    marginBottom: normalize(10),
+    backgroundColor: Colors.WHITE,
+    marginHorizontal: normalize(50),
+  },
 });

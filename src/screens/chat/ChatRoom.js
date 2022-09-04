@@ -1,4 +1,5 @@
 import {
+  Text,
   View,
   Platform,
   Clipboard,
@@ -8,12 +9,13 @@ import {
 import {
   deletForMe,
   getAllmessages,
+  getTypingStatus,
+  getBlockedStatus,
   updateLastMessage,
   setDataInFirebase,
   deletedForEveryOne,
   setTypingOnFirebase,
   setMessagesInFirebase,
-  getTypingStatus,
 } from './ChatUtils';
 import {styles} from './style';
 import {useSelector} from 'react-redux';
@@ -37,6 +39,7 @@ function ChatRoom({route}) {
   const {userID, image, name} = route?.params;
   const [messages, setMessages] = useState([]);
   const [isTyping, setisTyping] = useState(false);
+  const [blockedDetails, setisBlocked] = useState(false);
   const {userId, profileDetails} = useSelector(
     store => store.userDetailsReducer,
   );
@@ -61,12 +64,23 @@ function ChatRoom({route}) {
   };
 
   useEffect(() => {
+    getBlockedStatus(
+      userId,
+      userID,
+      success => {
+        setisBlocked(success);
+      },
+      error => {},
+    );
+
     getAllmessages(
       docid,
       userId,
+      userID,
       success => {
         setMessages(success);
       },
+
       error => {
         showToast(error.error);
       },
@@ -99,7 +113,14 @@ function ChatRoom({route}) {
       } else {
         updateLastMessage(userId, userID, mymsg);
       }
-      setMessagesInFirebase(docid, mymsg);
+
+      if (
+        blockedDetails?.isBlocked === false ||
+        blockedDetails === undefined ||
+        blockedDetails === false
+      ) {
+        setMessagesInFirebase(docid, mymsg);
+      }
       setMessages(previousMessages =>
         GiftedChat.append(previousMessages, mymsg),
       );
@@ -110,25 +131,6 @@ function ChatRoom({route}) {
   const handleBack = useCallback(() => {
     navigation.goBack();
   }, [navigation]);
-
-  const debounce = (fun, timeout) => {
-    let timer;
-    return args => {
-      clearTimeout(timer);
-      timer = setTimeout(() => {
-        fun(args);
-      }, timeout);
-      setisTyping(true);
-    };
-  };
-
-  const startTyping = debounce(() => {
-    setisTyping(false);
-  }, 2000);
-
-  const detectTyping = text => {
-    if (text.length > 0) startTyping(false);
-  };
 
   useEffect(() => {
     setTypingOnFirebase(docid, userID, isTyping);
@@ -193,15 +195,42 @@ function ChatRoom({route}) {
     [messages],
   );
 
-  const renderFooter = useCallback(() => {
-    if (getUserTypingStatus) {
+  const debounce = (fun, timeout) => {
+    let timer;
+    return args => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        fun(args);
+      }, timeout);
+      setisTyping(true);
+    };
+  };
+
+  const startTyping = debounce(() => {
+    setisTyping(false);
+  }, 2000);
+
+  const detectTyping = text => {
+    if (text.length > 0) startTyping(false);
+  };
+
+  const renderFooter = () => {
+    if (getUserTypingStatus && blockedDetails?.isBlocked === false) {
       return (
         <View style={styles.typingStatusView}>
           <Spinner type="ThreeBounce" size={50} color={Colors.GREY} />
         </View>
       );
-    }
-  }, [getUserTypingStatus]);
+    } else if (
+      blockedDetails?.isBlocked === true &&
+      blockedDetails?.blockedBy === userId
+    )
+      return (
+        <View style={styles.blockedUSertextView}>
+          <Text style={styles.textColorStyle}>{'You Blocked This User'}</Text>
+        </View>
+      );
+  };
 
   const renderDay = props => {
     return (

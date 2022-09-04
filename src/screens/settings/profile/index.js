@@ -25,7 +25,7 @@ import CustomButton from '../../../components/customButton/CustomButton';
 import {showToast, updateDataInFirbase} from '../../../utils/CommonFunctions';
 import {useDispatch} from 'react-redux';
 import {RequestSaveProfile} from '../../../redux/userDetails/action';
-import firestore from '@react-native-firebase/firestore';
+
 import FastImage from 'react-native-fast-image';
 export default function Profile() {
   const textInput1 = useRef();
@@ -39,6 +39,7 @@ export default function Profile() {
     'https://cdn-icons-png.flaticon.com/128/149/149071.png',
   );
   const [loader, setLoader] = useState(false);
+  const [isdisabled, setisDisabled] = useState(true);
   const dispatch = useDispatch();
   useEffect(() => {
     setLoader(true);
@@ -70,7 +71,9 @@ export default function Profile() {
         } else {
           userImage = image.path;
         }
+
         setImage(userImage);
+        setisDisabled(false);
       })
       .catch(error => {
         if (error.message == LocalStrings.Image_picker_Error) {
@@ -226,8 +229,13 @@ export default function Profile() {
           </View>
         </View>
         <CustomButton
+          disable={isdisabled}
           onPress={onPressNext}
-          containerStyle={styles.enablebuttonContainerStyle}
+          containerStyle={
+            isdisabled
+              ? styles.disablebuttonContainerStyle
+              : styles.enablebuttonContainerStyle
+          }
           buttonLabel={LocalStrings.Next}
           labelStyle={styles.labelStyle}
         />

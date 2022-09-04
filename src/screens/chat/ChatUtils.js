@@ -4,6 +4,7 @@ import LocalStrings from '../../utils/LocalStrings';
 export async function getAllmessages(
   docid,
   userId,
+  userID,
   success,
   error,
   hanleReadStatus,
@@ -87,8 +88,6 @@ export const getTypingStatus = (docid, userId, success) => {
 };
 
 export const deletForMe = (msg, docid, userId, userID, messages) => {
-  console.log('messages', messages);
-
   firestore()
     .collection(LocalStrings.ChatRoom)
     .doc(docid)
@@ -123,4 +122,15 @@ const updateInbox = (userID, userId, message) => {
     .collection('Inbox')
     .doc(userID)
     .update(message);
+};
+
+export const getBlockedStatus = (userId, userID, success, error) => {
+  const isBlocked = firestore()
+    .collection('Users')
+    .doc(userId)
+    .collection('blockList')
+    .doc(userID);
+  isBlocked?.onSnapshot(onchange => {
+    success(onchange?.data());
+  });
 };

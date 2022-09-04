@@ -7,11 +7,13 @@ import LocalStrings from '../../utils/LocalStrings';
 import Tooltip from 'react-native-walkthrough-tooltip';
 import firestore from '@react-native-firebase/firestore';
 import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
-
+import {useSelector} from 'react-redux';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
   const [status, setStaus] = useState();
   const [showTip, setTip] = useState(false);
-
+  const [isBlocked, setisBolcked] = useState(false);
+  const {userId} = useSelector(store => store.userDetailsReducer);
   useEffect(() => {
     firestore()
       .collection('Users')
@@ -24,7 +26,29 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
 
   const handleBlockUser = useCallback(() => {
     setTip(!showTip);
+    firestore()
+      .collection('Users')
+      .doc(userId)
+      .collection('blockList')
+      .doc(uid)
+      .set({isBlocked: !isBlocked, blockedBy: userId});
+
+    firestore()
+      .collection('Users')
+      .doc(uid)
+      .collection('blockList')
+      .doc(userId)
+      .set({isBlocked: !isBlocked, blockedBy: userId});
   }, [showTip]);
+
+  const isblocked = firestore()
+    .collection('Users')
+    .doc(uid)
+    .collection('blockList')
+    .doc(userId);
+  isblocked.onSnapshot(onChange => {
+    setisBolcked(onChange?.data()?.isBlocked);
+  });
 
   const deleteUserChat = useCallback(() => {
     setTip(!showTip);
@@ -41,7 +65,7 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
         </TouchableOpacity>
         <View style={styles.userImageView}>
           <FastImage
-            source={image ? {uri: image} : LocalImages.userIcon}
+            source={image && !isBlocked ? {uri: image} : LocalImages.userIcon}
             style={styles.UserImageStyle}
           />
         </View>
@@ -49,7 +73,7 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
           <Text numberOfLines={1} style={styles.userNameTextStyle}>
             {name}
           </Text>
-          {status === 'online' && (
+          {status === 'online' && !isBlocked && (
             <Text style={styles.userStatusTextStyle}>{status}</Text>
           )}
         </TouchableOpacity>
@@ -68,7 +92,7 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
         </View>
       </View>
       <Tooltip
-        topAdjustment={Platform.OS === 'android' ? -StatusBar.currentHeight : 0}
+        topAdjustment={Platform.OS === 'android' ? -getStatusBarHeight() : 0}
         backgroundColor="transparent"
         placement="right"
         contentStyle={styles.toolTipContentStyle}
@@ -76,7 +100,9 @@ const ChatRoomHeader = ({image, name, onBackPress, uid}) => {
         content={
           <View style={styles.toolTipContentContainer}>
             <TouchableOpacity onPress={handleBlockUser}>
-              <Text style={styles.toolTipTextStyle}>{LocalStrings.Block}</Text>
+              <Text style={styles.toolTipTextStyle}>
+                {!isBlocked ? LocalStrings.Block : LocalStrings.UnBlock}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={deleteUserChat}>
               <Text style={styles.toolTipTextStyle}>

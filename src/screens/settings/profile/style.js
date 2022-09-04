@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
     height: normalize(120),
     width: normalize(120),
     borderRadius: normalize(60),
+    backgroundColor: Colors.SILVER,
   },
   iconStyleView: {
     height: normalize(20),
