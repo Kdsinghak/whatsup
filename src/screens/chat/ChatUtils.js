@@ -130,7 +130,7 @@ export const getBlockedStatus = (userId, userID, success, error) => {
     .doc(userId)
     .collection('blockList')
     .doc(userID);
-  isBlocked.onSnapshot(onchange => {
-    success(onchange.data()?.isBlocked);
+  isBlocked?.onSnapshot(onchange => {
+    success(onchange?.data());
   });
 };
