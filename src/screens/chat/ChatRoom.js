@@ -135,6 +135,7 @@ function ChatRoom({route}) {
   useEffect(() => {
     setTypingOnFirebase(docid, userID, isTyping);
     getTypingStatus(docid, userId, onSucess => {
+      console.log('success', onSucess);
       setUserTypingStatus(onSucess);
     });
   }, [isTyping]);
@@ -215,8 +216,13 @@ function ChatRoom({route}) {
   };
 
   const renderFooter = () => {
-    if (getUserTypingStatus && blockedDetails?.isBlocked === false) {
-      console.log('isfalse', getUserTypingStatus);
+    console.log(blockedDetails);
+    if (
+      getUserTypingStatus &&
+      (blockedDetails?.isBlocked === false ||
+        blockedDetails === undefined ||
+        blockedDetails === false)
+    ) {
       return (
         <View style={styles.typingStatusView}>
           <Spinner type="ThreeBounce" size={50} color={Colors.GREY} />
