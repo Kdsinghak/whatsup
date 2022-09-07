@@ -216,6 +216,7 @@ function ChatRoom({route}) {
 
   const renderFooter = () => {
     if (getUserTypingStatus && blockedDetails?.isBlocked === false) {
+      console.log('isfalse', getUserTypingStatus);
       return (
         <View style={styles.typingStatusView}>
           <Spinner type="ThreeBounce" size={50} color={Colors.GREY} />
